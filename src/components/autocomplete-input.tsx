@@ -11,7 +11,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import type { SuggestedItem } from "@/lib/definitions";
 
 interface AutocompleteInputProps {
@@ -103,8 +102,7 @@ export function AutocompleteInput({
             />
             {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
           </div>
-          <ScrollArea className="h-auto" style={{ maxHeight: "240px" }}>
-            <div className="p-1">
+          <div className="overflow-y-auto p-1" style={{ maxHeight: "240px" }}>
             {suggestions.length === 0 && !isLoading && inputValue.length > 0 && (
                 <div className="px-2 py-1.5 text-sm text-muted-foreground">No results found.</div>
               )}
@@ -125,7 +123,6 @@ export function AutocompleteInput({
                 </Button>
               ))}
             </div>
-          </ScrollArea>
         </PopoverContent>
       </Popover>
     </div>
