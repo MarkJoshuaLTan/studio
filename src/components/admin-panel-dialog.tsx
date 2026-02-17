@@ -21,7 +21,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-
 export function AdminPanelDialog({ settings, onSettingsChange }: { settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void }) {
   const [open, setOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,7 +49,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem("admin-auth");
-    setOpen(false);
+    setOpen(false); // This will close the dialog and return to the app
   };
   
   return (
@@ -226,6 +225,8 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange }: { settings
             return newSettings; // invalid input
         } else if (location[field] === 0 && value.length > 1 && !value.startsWith("0.")) {
            finalValue = value.substring(1);
+        } else if (location[field].toString() === "0" && value.length > 1 && !value.startsWith("0.")) {
+           finalValue = value.substring(1);
         }
       }
       (location as any)[field] = finalValue;
@@ -257,11 +258,14 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange }: { settings
       }
 
       onSettingsChange(settingsToSave);
-      toast({ title: 'Success!', description: 'Settings have been saved.' });
+      toast({ title: 'Success!', description: 'Settings have been saved. Reloading...' });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+
     } catch (error: any) {
        toast({ variant: "destructive", title: "Error", description: error.message || "Could not save settings." });
-    } finally {
-      setIsSaving(false);
+       setIsSaving(false);
     }
   };
 
@@ -414,10 +418,12 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange }: { setti
 
             onSettingsChange(updatedSettings);
 
-            toast({ title: 'Success!', description: 'Settings have been saved.' });
+            toast({ title: 'Success!', description: 'Settings have been saved. Reloading...' });
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
         } catch (error: any) {
             toast({ variant: "destructive", title: "Error", description: error.message || "Could not save settings." });
-        } finally {
             setIsSaving(false);
         }
     };
