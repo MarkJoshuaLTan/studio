@@ -28,11 +28,3 @@ export interface TaxSettings {
   taxRates: Record<string, number>;
   taxData: TaxData;
 }
-
-export interface Report {
-  id: string;
-  email: string;
-  message: string;
-  createdAt: string;
-  read: boolean;
-}

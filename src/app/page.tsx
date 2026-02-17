@@ -8,35 +8,40 @@ import { ResultsDisplay, type CalculationResults } from '@/components/results-di
 import { AssessmentLevelResults } from '@/components/assessment-level-results';
 import { InstallPWAButton } from '@/components/install-pwa-button';
 import type { TaxSettings } from '@/lib/definitions';
-import { ReportProblemDialog } from '@/components/report-problem-dialog';
 import { cn } from '@/lib/utils';
 import { AdminPanelDialog } from '@/components/admin-panel-dialog';
+import { initialTaxSettings } from '@/lib/tax-settings';
 
 export default function Home() {
   const [results, setResults] = useState<CalculationResults | null>(null);
   const [settings, setSettings] = useState<TaxSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
-    setCurrentYear(new Date().getFullYear());
-    const fetchSettings = async () => {
-      try {
-        const response = await fetch('/api/settings');
-        if (!response.ok) {
-          throw new Error('Failed to fetch settings');
-        }
-        const data = await response.json();
-        setSettings(data);
-      } catch (error) {
-        console.error(error);
-        // Handle error, maybe show a toast
-      } finally {
-        setIsLoading(false);
+    // This now runs only on the client.
+    try {
+      const localSettings = localStorage.getItem('tax-settings');
+      if (localSettings) {
+        setSettings(JSON.parse(localSettings));
+      } else {
+        // No local settings, use the initial default settings
+        setSettings(initialTaxSettings);
+        localStorage.setItem('tax-settings', JSON.stringify(initialTaxSettings));
       }
-    };
-    fetchSettings();
+    } catch (error) {
+      console.error("Failed to load settings:", error);
+      // Fallback to initial settings in case of parsing error
+      setSettings(initialTaxSettings);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  const handleSettingsChange = (newSettings: TaxSettings) => {
+    setSettings(newSettings);
+    localStorage.setItem('tax-settings', JSON.stringify(newSettings));
+  };
+
 
   return (
     <div className="relative flex min-h-screen flex-col">
@@ -49,7 +54,7 @@ export default function Home() {
             </h1>
           </div>
           <div className="flex items-center">
-            <AdminPanelDialog />
+            <AdminPanelDialog settings={settings} onSettingsChange={handleSettingsChange} />
             <InstallPWAButton />
             <ThemeToggle />
           </div>
@@ -106,7 +111,7 @@ export default function Home() {
             {/* Footer content can go here */}
           </p>
           <div className="flex items-center">
-            <ReportProblemDialog />
+             {/* Intentionally empty */}
           </div>
         </div>
       </footer>

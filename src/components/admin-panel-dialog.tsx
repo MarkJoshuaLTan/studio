@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,34 +14,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Loader2, ArrowLeft, Mail, Trash2, Eye, EyeOff } from "lucide-react";
-import type { TaxSettings, LocationDetails, PropertyType, Report } from "@/lib/definitions";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Settings, Loader2, ArrowLeft } from "lucide-react";
+import type { TaxSettings, LocationDetails, PropertyType } from "@/lib/definitions";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
-import { format } from 'date-fns';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 
-export function AdminPanelDialog() {
+export function AdminPanelDialog({ settings, onSettingsChange }: { settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void }) {
   const [open, setOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
   useEffect(() => {
-    // This effect runs once on mount to check the initial state on the client.
     const auth = localStorage.getItem("admin-auth");
     if (auth === "true") {
       setIsAuthenticated(true);
@@ -49,7 +35,6 @@ export function AdminPanelDialog() {
     setIsLoadingAuth(false);
   }, []);
 
-  // When dialog opens, recheck auth in case it changed in another tab.
   useEffect(() => {
     if (open) {
       const auth = localStorage.getItem("admin-auth");
@@ -78,7 +63,7 @@ export function AdminPanelDialog() {
           <DialogHeader>
             <DialogTitle>Admin Panel</DialogTitle>
             <DialogDescription>
-              {isAuthenticated ? "Manage application settings and view reports." : "Please login to continue."}
+              {isAuthenticated ? "Manage application settings." : "Please login to continue."}
             </DialogDescription>
           </DialogHeader>
           <AdminPanel 
@@ -87,6 +72,8 @@ export function AdminPanelDialog() {
             onLogout={handleLogout}
             isLoadingAuth={isLoadingAuth}
             onClose={() => setOpen(false)}
+            settings={settings}
+            onSettingsChange={onSettingsChange}
           />
       </DialogContent>
     </Dialog>
@@ -94,7 +81,7 @@ export function AdminPanelDialog() {
 }
 
 
-function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, onClose }: { isAuthenticated: boolean; onLoginSuccess: () => void; onLogout: () => void; isLoadingAuth: boolean; onClose: () => void; }) {
+function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, onClose, settings, onSettingsChange }: { isAuthenticated: boolean; onLoginSuccess: () => void; onLogout: () => void; isLoadingAuth: boolean; onClose: () => void; settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void }) {
   if (isLoadingAuth) {
      return <div className="flex-1 flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>
   }
@@ -102,7 +89,7 @@ function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, 
   return (
       <div className="flex-1 overflow-hidden pt-4">
         {isAuthenticated ? (
-            <AdminTabs onLogout={onLogout} onClose={onClose} />
+            <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} />
         ) : (
             <LoginForm onLoginSuccess={onLoginSuccess} />
         )}
@@ -177,7 +164,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
   )
 }
 
-function AdminTabs({ onLogout, onClose }: { onLogout: () => void; onClose: () => void; }) {
+function AdminTabs({ onLogout, onClose, settings, onSettingsChange }: { onLogout: () => void; onClose: () => void; settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void; }) {
   return (
     <div className="h-full flex flex-col">
        <Tabs defaultValue="dashboard" className="flex-1 flex flex-col overflow-hidden">
@@ -185,7 +172,6 @@ function AdminTabs({ onLogout, onClose }: { onLogout: () => void; onClose: () =>
           <TabsList>
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="calibrate">Calibrate</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
           </TabsList>
           <div className="flex items-center gap-2">
             <Button variant="ghost" onClick={onClose}><ArrowLeft className="mr-2 h-4 w-4"/> Back to App</Button>
@@ -193,13 +179,10 @@ function AdminTabs({ onLogout, onClose }: { onLogout: () => void; onClose: () =>
           </div>
         </div>
         <TabsContent value="dashboard" className="flex-1 overflow-y-auto mt-4 pr-4">
-            <AdminDashboard />
+            {settings && <AdminDashboard settings={settings} onSettingsChange={onSettingsChange} />}
         </TabsContent>
         <TabsContent value="calibrate" className="flex-1 overflow-y-auto mt-4 pr-4">
-            <CalibrateSettings />
-        </TabsContent>
-        <TabsContent value="reports" className="flex-1 overflow-y-auto mt-4 pr-4">
-            <ViewReports />
+            {settings && <CalibrateSettings settings={settings} onSettingsChange={onSettingsChange} />}
         </TabsContent>
       </Tabs>
     </div>
@@ -207,53 +190,43 @@ function AdminTabs({ onLogout, onClose }: { onLogout: () => void; onClose: () =>
 }
 
 
-function AdminDashboard() {
+function AdminDashboard({ settings: settingsProp, onSettingsChange }: { settings: TaxSettings, onSettingsChange: (newSettings: TaxSettings) => void }) {
   const { toast } = useToast();
-  const [settings, setSettings] = useState<any>(null);
+  const [editedSettings, setEditedSettings] = useState<TaxSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [selectedBarangay, setSelectedBarangay] = useState<string>('');
   const [locationSearch, setLocationSearch] = useState('');
 
   useEffect(() => {
-      const fetchSettings = async () => {
+    if (settingsProp) {
         setIsLoading(true);
-        try {
-          const response = await fetch('/api/settings');
-          if (!response.ok) throw new Error("Failed to fetch settings.");
-          const data = await response.json();
-          setSettings(data);
-          if (data?.taxData && !selectedBarangay) {
-            setSelectedBarangay(Object.keys(data.taxData)[0] || '');
-          }
-        } catch (error) {
-          toast({ variant: "destructive", title: "Error", description: "Could not load settings." });
-        } finally {
-          setIsLoading(false);
+        setEditedSettings(JSON.parse(JSON.stringify(settingsProp))); // Deep copy
+        if (!selectedBarangay) {
+            setSelectedBarangay(Object.keys(settingsProp.taxData)[0] || '');
         }
-      };
-      fetchSettings();
-  }, [toast]);
+        setIsLoading(false);
+    }
+  }, [settingsProp, selectedBarangay]);
   
   const handleLocationDataChange = (locationName: string, field: keyof LocationDetails, value: string) => {
-    if (!settings || !selectedBarangay) return;
+    if (!editedSettings || !selectedBarangay) return;
 
-    setSettings((prev: TaxSettings) => {
+    setEditedSettings((prev: TaxSettings | null) => {
       if (!prev) return null;
       const newSettings = JSON.parse(JSON.stringify(prev));
       const location = newSettings.taxData[selectedBarangay][locationName];
       
+      let finalValue = value;
       if (field === 'unitValue2028' || field === 'unitValue2029') {
-        const currentVal = location[field];
-        if (currentVal === "0" && value.length > 1 && !value.startsWith("0.")) {
-            location[field] = value.substring(1);
-        } else {
-            location[field] = value;
+        if (finalValue !== '' && !/^\d*\.?\d*$/.test(finalValue)) {
+            return newSettings; // invalid input
         }
-
-      } else {
-        location[field] = value;
+        if (location[field].toString() === '0' && value.length > 1 && !value.startsWith("0.")) {
+            finalValue = value.substring(1);
+        }
       }
+      (location as any)[field] = finalValue;
       return newSettings;
     });
   };
@@ -261,33 +234,27 @@ function AdminDashboard() {
   const handleSaveUnitValues = async () => {
     setIsSaving(true);
     try {
-      if(!settings) return;
+      if(!editedSettings) return;
       
-      const settingsToSave = JSON.parse(JSON.stringify(settings));
+      const settingsToSave = JSON.parse(JSON.stringify(editedSettings));
       
       for (const barangay in settingsToSave.taxData) {
           for (const location in settingsToSave.taxData[barangay]) {
               const details = settingsToSave.taxData[barangay][location];
-              if (details.unitValue2028 === '' || isNaN(parseFloat(details.unitValue2028))) {
+              if (details.unitValue2028 === '' || isNaN(parseFloat(details.unitValue2028 as any))) {
                   details.unitValue2028 = 0;
               } else {
-                  details.unitValue2028 = parseFloat(details.unitValue2028);
+                  details.unitValue2028 = parseFloat(details.unitValue2028 as any);
               }
-              if (details.unitValue2029 === '' || isNaN(parseFloat(details.unitValue2029))) {
+              if (details.unitValue2029 === '' || isNaN(parseFloat(details.unitValue2029 as any))) {
                   details.unitValue2029 = 0;
               } else {
-                  details.unitValue2029 = parseFloat(details.unitValue2029);
+                  details.unitValue2029 = parseFloat(details.unitValue2029 as any);
               }
           }
       }
 
-      const response = await fetch('/api/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ settings: settingsToSave, password: 'admin2026' }),
-      });
-      if (!response.ok) throw new Error('Failed to save settings.');
-      setSettings(settingsToSave);
+      onSettingsChange(settingsToSave);
       toast({ title: 'Success!', description: 'Settings have been saved.' });
     } catch (error: any) {
        toast({ variant: "destructive", title: "Error", description: error.message || "Could not save settings." });
@@ -296,14 +263,13 @@ function AdminDashboard() {
     }
   };
 
-
-  const filteredLocations = settings && selectedBarangay && settings.taxData[selectedBarangay]
-    ? Object.entries(settings.taxData[selectedBarangay]).filter(([name]) =>
+  const filteredLocations = editedSettings && selectedBarangay && editedSettings.taxData[selectedBarangay]
+    ? Object.entries(editedSettings.taxData[selectedBarangay]).filter(([name]) =>
         name.toLowerCase().includes(locationSearch.toLowerCase())
       )
     : [];
 
-  if (isLoading) {
+  if (isLoading || !editedSettings) {
     return <div className="flex h-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;
   }
 
@@ -321,7 +287,7 @@ function AdminDashboard() {
                     <Select onValueChange={(value) => { setSelectedBarangay(value); setLocationSearch(''); }} value={selectedBarangay}>
                         <SelectTrigger><SelectValue placeholder="Select a Barangay" /></SelectTrigger>
                         <SelectContent>
-                            {settings && Object.keys(settings.taxData).sort().map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                            {editedSettings && Object.keys(editedSettings.taxData).sort().map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
                         </SelectContent>
                     </Select>
                 </div>
@@ -378,83 +344,67 @@ function AdminDashboard() {
   )
 }
 
-function CalibrateSettings() {
+function CalibrateSettings({ settings: settingsProp, onSettingsChange }: { settings: TaxSettings, onSettingsChange: (newSettings: TaxSettings) => void }) {
     const { toast } = useToast();
-    const [settings, setSettings] = useState<any>(null);
-    const [fullSettings, setFullSettings] = useState<TaxSettings | null>(null);
+    const [formValues, setFormValues] = useState<any>({ assessmentLevels: {}, taxRates: {} });
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
-        const fetchSettings = async () => {
+        if (settingsProp) {
             setIsLoading(true);
-            try {
-            const response = await fetch('/api/settings');
-            if (!response.ok) throw new Error("Failed to fetch settings.");
-            const data: TaxSettings = await response.json();
-            
-            const initialSettings: any = { assessmentLevels: {}, taxRates: {} };
-             Object.entries(data.assessmentLevels).forEach(([key, value]) => {
-                initialSettings.assessmentLevels[key] = (value * 100).toString();
+            const initialFormValues: any = { assessmentLevels: {}, taxRates: {} };
+            Object.entries(settingsProp.assessmentLevels).forEach(([key, value]) => {
+                initialFormValues.assessmentLevels[key] = (value * 100).toString();
             });
-            Object.entries(data.taxRates).forEach(([key, value]) => {
-                initialSettings.taxRates[key] = (value * 100).toString();
+            Object.entries(settingsProp.taxRates).forEach(([key, value]) => {
+                initialFormValues.taxRates[key] = (value * 100).toString();
             });
-
-            setSettings(initialSettings);
-            setFullSettings(data);
-            } catch (error) {
-            toast({ variant: "destructive", title: "Error", description: "Could not load settings." });
-            } finally {
+            setFormValues(initialFormValues);
             setIsLoading(false);
-            }
-        };
-        fetchSettings();
-    }, [toast]);
+        }
+    }, [settingsProp]);
 
     const handleSettingChange = ( category: 'assessmentLevels' | 'taxRates', key: string, value: string) => {
-        if (settings === null) return;
+        if (formValues === null) return;
         
         let finalValue = value;
-        const currentVal = settings[category][key];
-
+        if (finalValue !== '' && !/^\d*\.?\d*$/.test(finalValue)) {
+            return;
+        }
+        
+        const currentVal = formValues[category][key];
         if (currentVal === "0" && value.length > 1 && !value.startsWith("0.")) {
            finalValue = value.substring(1);
         }
         
-        if (finalValue === '' || /^\d*\.?\d*$/.test(finalValue)) {
-            setSettings((prevSettings: any) => {
-                if (!prevSettings) return null;
-                const newCategory = { ...prevSettings[category], [key]: finalValue };
-                return { ...prevSettings, [category]: newCategory };
-            });
-        }
+        setFormValues((prev: any) => {
+            if (!prev) return null;
+            const newCategory = { ...prev[category], [key]: finalValue };
+            return { ...prev, [category]: newCategory };
+        });
     };
     
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            if(!settings || !fullSettings) return;
+            if(!formValues || !settingsProp) return;
 
-            const updatedSettings = JSON.parse(JSON.stringify(fullSettings));
+            const updatedSettings = JSON.parse(JSON.stringify(settingsProp));
 
-            for (const key in settings.assessmentLevels) {
-                let val = parseFloat(settings.assessmentLevels[key]);
+            for (const key in formValues.assessmentLevels) {
+                let val = parseFloat(formValues.assessmentLevels[key]);
                 if (isNaN(val)) val = 0;
                 updatedSettings.assessmentLevels[key] = val / 100;
             }
-            for (const key in settings.taxRates) {
-                let val = parseFloat(settings.taxRates[key]);
+            for (const key in formValues.taxRates) {
+                let val = parseFloat(formValues.taxRates[key]);
                 if (isNaN(val)) val = 0;
                 updatedSettings.taxRates[key] = val / 100;
             }
 
-            const response = await fetch('/api/settings', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ settings: updatedSettings, password: 'admin2026' }),
-            });
-            if (!response.ok) throw new Error('Failed to save settings.');
+            onSettingsChange(updatedSettings);
+
             toast({ title: 'Success!', description: 'Settings have been saved.' });
         } catch (error: any) {
             toast({ variant: "destructive", title: "Error", description: error.message || "Could not save settings." });
@@ -476,7 +426,7 @@ function CalibrateSettings() {
                     <CardDescription>Set the assessment level percentage (e.g., 20 for 20%).</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {settings && Object.entries(settings.assessmentLevels).map(([key, value]) => (
+                    {formValues && Object.entries(formValues.assessmentLevels).map(([key, value]) => (
                         <div key={key} className="flex items-center justify-between space-x-4">
                             <Label htmlFor={`assessment-${key}`}>{key}</Label>
                             <Input id={`assessment-${key}`} type="text" inputMode="decimal" step="1" className="w-32 text-right" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
@@ -490,7 +440,7 @@ function CalibrateSettings() {
                     <CardDescription>Set the tax rate percentage (e.g., 2 for 2%).</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {settings && Object.entries(settings.taxRates).map(([key, value]) => (
+                    {formValues && Object.entries(formValues.taxRates).map(([key, value]) => (
                         <div key={key} className="flex items-center justify-between space-x-4">
                             <Label htmlFor={`taxrate-${key}`}>{key}</Label>
                             <Input id={`taxrate-${key}`} type="text" inputMode="decimal" step="0.1" className="w-32 text-right" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
@@ -506,116 +456,4 @@ function CalibrateSettings() {
             </div>
         </div>
     )
-}
-
-
-function ViewReports() {
-  const { toast } = useToast();
-  const [reports, setReports] = useState<Report[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchReports = useCallback(async () => {
-    try {
-      const response = await fetch('/api/report');
-      if (!response.ok) throw new Error("Failed to fetch reports.");
-      const data: Report[] = await response.json();
-      setReports(data);
-    } catch (error) {
-      toast({ variant: "destructive", title: "Error", description: "Could not load reports." });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [toast]);
-
-  useEffect(() => {
-    fetchReports();
-  }, [fetchReports]);
-  
-  const handleToggleRead = async (id: string) => {
-    try {
-      const response = await fetch('/api/report', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, password: 'admin2026' }),
-      });
-      if (!response.ok) throw new Error("Failed to update report status.");
-      await fetchReports();
-    } catch(error: any) {
-       toast({ variant: "destructive", title: "Error", description: error.message || "Could not update report." });
-    }
-  };
-  
-  const handleDelete = async (id: string) => {
-    try {
-      const response = await fetch('/api/report', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, password: 'admin2026' }),
-      });
-      if (!response.ok) throw new Error("Failed to delete report.");
-      toast({ title: "Success", description: "Report deleted."});
-      await fetchReports();
-    } catch(error: any) {
-       toast({ variant: "destructive", title: "Error", description: error.message || "Could not delete report." });
-    }
-  }
-
-  if (isLoading) {
-    return <div className="flex h-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;
-  }
-
-  return (
-    <div className="space-y-6">
-      {reports.length > 0 ? (
-        reports.map((report) => (
-            <Card key={report.id} className={!report.read ? "border-primary" : ""}>
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                    <div>
-                        <CardTitle className="text-lg flex items-center gap-2">
-                             <Mail className="h-5 w-5 text-muted-foreground" />
-                            {report.email}
-                        </CardTitle>
-                        <CardDescription>
-                            {format(new Date(report.createdAt), "PPP p")}
-                        </CardDescription>
-                    </div>
-                    {!report.read && <Badge>Unread</Badge>}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm whitespace-pre-wrap">{report.message}</p>
-              </CardContent>
-              <CardFooter className="flex justify-end gap-2">
-                <Button variant="outline" size="sm" onClick={() => handleToggleRead(report.id)}>
-                  {report.read ? <EyeOff className="mr-2 h-4 w-4"/> : <Eye className="mr-2 h-4 w-4"/>}
-                  {report.read ? 'Mark as Unread' : 'Mark as Read'}
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" size="sm"><Trash2 className="mr-2 h-4 w-4"/>Delete</Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete the report.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDelete(report.id)}>Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </CardFooter>
-            </Card>
-        ))
-      ) : (
-        <div className="text-center text-muted-foreground py-20 border-2 border-dashed rounded-lg">
-          <p>No reports found.</p>
-        </div>
-      )}
-    </div>
-  );
 }
