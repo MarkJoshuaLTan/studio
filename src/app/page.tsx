@@ -11,7 +11,7 @@ import type { TaxSettings } from '@/lib/definitions';
 import { cn } from '@/lib/utils';
 import { AdminPanelDialog } from '@/components/admin-panel-dialog';
 import { initialTaxSettings } from '@/lib/tax-settings';
-import { Button } from '@/components/ui/button';
+import { ContactSupportButton } from '@/components/contact-support-button';
 
 export default function Home() {
   const [results, setResults] = useState<CalculationResults | null>(null);
@@ -55,6 +55,7 @@ export default function Home() {
             </h1>
           </div>
           <div className="flex items-center">
+            <ContactSupportButton />
             <AdminPanelDialog settings={settings} onSettingsChange={handleSettingsChange} />
             <InstallPWAButton />
             <ThemeToggle />
