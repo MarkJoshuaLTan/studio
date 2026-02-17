@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Building2, Loader2 } from 'lucide-react';
+import { Building2, Loader2, Headset } from 'lucide-react';
 import TaxCalculator from '@/components/tax-calculator';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ResultsDisplay, type CalculationResults } from '@/components/results-display';
@@ -11,6 +11,7 @@ import type { TaxSettings } from '@/lib/definitions';
 import { cn } from '@/lib/utils';
 import { AdminPanelDialog } from '@/components/admin-panel-dialog';
 import { initialTaxSettings } from '@/lib/tax-settings';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const [results, setResults] = useState<CalculationResults | null>(null);
@@ -55,6 +56,11 @@ export default function Home() {
           </div>
           <div className="flex items-center">
             <AdminPanelDialog settings={settings} onSettingsChange={handleSettingsChange} />
+            <Button variant="ghost" size="icon" asChild>
+              <a href="mailto:agotvisda00@gmail.com?subject=TaxWise Parañaque - Support Request" aria-label="Contact Support" title="Contact Support">
+                <Headset className="h-[1.2rem] w-[1.2rem]" />
+              </a>
+            </Button>
             <InstallPWAButton />
             <ThemeToggle />
           </div>
