@@ -1,0 +1,16 @@
+{
+  "name": "TaxWise Parañaque",
+  "short_name": "TaxWise",
+  "description": "A modern Real Property Tax Calculator for Parañaque City.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#228B22",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
