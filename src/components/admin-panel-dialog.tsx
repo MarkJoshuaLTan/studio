@@ -8,8 +8,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogFooter
+  DialogFooter,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,7 +59,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
           <Settings className="h-[1.2rem] w-[1.2rem]" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-7xl h-[90vh] flex flex-col">
+      <DialogContent showClose={false} className="max-w-7xl h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Admin Panel</DialogTitle>
             <DialogDescription>
@@ -219,15 +219,13 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange }: { settings
       
       let finalValue: string | number = value;
       if (field === 'unitValue2028' || field === 'unitValue2029') {
-        if (value === '') {
-            finalValue = '';
-        } else if (!/^\d*\.?\d*$/.test(value)) {
-            return newSettings; // invalid input
-        } else if (location[field] === 0 && value.length > 1 && !value.startsWith("0.")) {
-           finalValue = value.substring(1);
-        } else if (location[field].toString() === "0" && value.length > 1 && !value.startsWith("0.")) {
-           finalValue = value.substring(1);
-        }
+          if (value === '') {
+              finalValue = '';
+          } else if (!/^\d*\.?\d*$/.test(value)) {
+              return newSettings; // invalid input
+          } else if (location[field].toString() === "0" && value.length > 1 && !value.startsWith("0.")) {
+             finalValue = value.substring(1);
+          }
       }
       (location as any)[field] = finalValue;
       return newSettings;
