@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Loader2, ArrowLeft } from "lucide-react";
 import type { TaxSettings, LocationDetails, PropertyType } from "@/lib/definitions";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -50,6 +50,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem("admin-auth");
+    setOpen(false);
   };
   
   return (
@@ -175,7 +176,7 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange }: { onLogout
           </TabsList>
           <div className="flex items-center gap-2">
             <Button variant="ghost" onClick={onClose}><ArrowLeft className="mr-2 h-4 w-4"/> Back to App</Button>
-            <Button variant="outline" onClick={() => { onLogout(); onClose(); }}>Logout</Button>
+            <Button variant="outline" onClick={onLogout}>Logout</Button>
           </div>
         </div>
         <TabsContent value="dashboard" className="flex-1 overflow-y-auto mt-4 pr-4">
@@ -217,13 +218,14 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange }: { settings
       const newSettings = JSON.parse(JSON.stringify(prev));
       const location = newSettings.taxData[selectedBarangay][locationName];
       
-      let finalValue = value;
+      let finalValue: string | number = value;
       if (field === 'unitValue2028' || field === 'unitValue2029') {
-        if (finalValue !== '' && !/^\d*\.?\d*$/.test(finalValue)) {
+        if (value === '') {
+            finalValue = '';
+        } else if (!/^\d*\.?\d*$/.test(value)) {
             return newSettings; // invalid input
-        }
-        if (location[field].toString() === '0' && value.length > 1 && !value.startsWith("0.")) {
-            finalValue = value.substring(1);
+        } else if (location[field] === 0 && value.length > 1 && !value.startsWith("0.")) {
+           finalValue = value.substring(1);
         }
       }
       (location as any)[field] = finalValue;
@@ -368,13 +370,20 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange }: { setti
     const handleSettingChange = ( category: 'assessmentLevels' | 'taxRates', key: string, value: string) => {
         if (formValues === null) return;
         
-        let finalValue = value;
-        if (finalValue !== '' && !/^\d*\.?\d*$/.test(finalValue)) {
+        if (value === '') {
+            setFormValues((prev: any) => ({
+                ...prev,
+                [category]: { ...prev[category], [key]: '' },
+            }));
+            return;
+        }
+
+        if (!/^\d*\.?\d*$/.test(value)) {
             return;
         }
         
-        const currentVal = formValues[category][key];
-        if (currentVal === "0" && value.length > 1 && !value.startsWith("0.")) {
+        let finalValue = value;
+        if (formValues[category][key] === "0" && value.length > 1 && !value.startsWith("0.")) {
            finalValue = value.substring(1);
         }
         
