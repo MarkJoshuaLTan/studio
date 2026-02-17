@@ -88,9 +88,11 @@ export function AutocompleteInput({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[var(--radix-popover-trigger-width)] p-0"
+          side="bottom"
           align="start"
-          style={{maxHeight: 'var(--radix-popover-content-available-height)'}}
+          avoidCollisions={false}
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          style={{ maxHeight: "250px" }}
           disablePortal
         >
           <div className="flex items-center border-b px-3">
