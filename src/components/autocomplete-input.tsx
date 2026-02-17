@@ -92,7 +92,6 @@ export function AutocompleteInput({
           align="start"
           avoidCollisions={false}
           className="w-[var(--radix-popover-trigger-width)] p-0"
-          style={{ maxHeight: "250px" }}
           disablePortal
         >
           <div className="flex items-center border-b px-3">
@@ -104,7 +103,7 @@ export function AutocompleteInput({
             />
             {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
           </div>
-          <ScrollArea className="h-auto">
+          <ScrollArea className="h-auto" style={{ maxHeight: "240px" }}>
             <div className="p-1">
             {suggestions.length === 0 && !isLoading && inputValue.length > 0 && (
                 <div className="px-2 py-1.5 text-sm text-muted-foreground">No results found.</div>
