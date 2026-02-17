@@ -8,7 +8,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
   DialogTrigger
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -25,6 +24,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
   const [open, setOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+  const [hasUnappliedChanges, setHasUnappliedChanges] = useState(false);
 
   useEffect(() => {
     const auth = localStorage.getItem("admin-auth");
@@ -46,14 +46,34 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
     localStorage.setItem("admin-auth", "true");
   };
 
+  const handleSaveSuccess = () => {
+    setHasUnappliedChanges(true);
+  };
+
+  const handleClose = () => {
+    if (hasUnappliedChanges) {
+      window.location.reload();
+    } else {
+      setOpen(false);
+    }
+  };
+
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem("admin-auth");
-    setOpen(false); // This will close the dialog and return to the app
+    handleClose();
+  };
+
+  const onDialogClose = (isOpen: boolean) => {
+    if (!isOpen) {
+      handleClose();
+    } else {
+      setOpen(true);
+    }
   };
   
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onDialogClose}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon" aria-label="Admin Panel" title="Admin Panel">
           <Settings className="h-[1.2rem] w-[1.2rem]" />
@@ -71,9 +91,10 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
             onLoginSuccess={handleLoginSuccess}
             onLogout={handleLogout}
             isLoadingAuth={isLoadingAuth}
-            onClose={() => setOpen(false)}
+            onClose={handleClose}
             settings={settings}
             onSettingsChange={onSettingsChange}
+            onSaveSuccess={handleSaveSuccess}
           />
       </DialogContent>
     </Dialog>
@@ -81,7 +102,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
 }
 
 
-function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, onClose, settings, onSettingsChange }: { isAuthenticated: boolean; onLoginSuccess: () => void; onLogout: () => void; isLoadingAuth: boolean; onClose: () => void; settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void }) {
+function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, onClose, settings, onSettingsChange, onSaveSuccess }: { isAuthenticated: boolean; onLoginSuccess: () => void; onLogout: () => void; isLoadingAuth: boolean; onClose: () => void; settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }) {
   if (isLoadingAuth) {
      return <div className="flex-1 flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>
   }
@@ -89,7 +110,7 @@ function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, 
   return (
       <div className="flex-1 overflow-hidden pt-4">
         {isAuthenticated ? (
-            <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} />
+            <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
         ) : (
             <LoginForm onLoginSuccess={onLoginSuccess} />
         )}
@@ -164,7 +185,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
   )
 }
 
-function AdminTabs({ onLogout, onClose, settings, onSettingsChange }: { onLogout: () => void; onClose: () => void; settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void; }) {
+function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSuccess }: { onLogout: () => void; onClose: () => void; settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }) {
   return (
     <div className="h-full flex flex-col">
        <Tabs defaultValue="dashboard" className="flex-1 flex flex-col overflow-hidden">
@@ -179,10 +200,10 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange }: { onLogout
           </div>
         </div>
         <TabsContent value="dashboard" className="flex-1 overflow-y-auto mt-4 pr-4">
-            {settings && <AdminDashboard settings={settings} onSettingsChange={onSettingsChange} />}
+            {settings && <AdminDashboard settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
         </TabsContent>
         <TabsContent value="calibrate" className="flex-1 overflow-y-auto mt-4 pr-4">
-            {settings && <CalibrateSettings settings={settings} onSettingsChange={onSettingsChange} />}
+            {settings && <CalibrateSettings settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
         </TabsContent>
       </Tabs>
     </div>
@@ -190,7 +211,7 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange }: { onLogout
 }
 
 
-function AdminDashboard({ settings: settingsProp, onSettingsChange }: { settings: TaxSettings, onSettingsChange: (newSettings: TaxSettings) => void }) {
+function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSuccess }: { settings: TaxSettings, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }) {
   const { toast } = useToast();
   const [editedSettings, setEditedSettings] = useState<TaxSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -256,13 +277,12 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange }: { settings
       }
 
       onSettingsChange(settingsToSave);
-      toast({ title: 'Success!', description: 'Settings have been saved. Reloading...' });
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      onSaveSuccess();
+      toast({ title: 'Success!', description: 'Settings have been saved. They will be applied when you close the panel.' });
 
     } catch (error: any) {
        toast({ variant: "destructive", title: "Error", description: error.message || "Could not save settings." });
+    } finally {
        setIsSaving(false);
     }
   };
@@ -348,7 +368,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange }: { settings
   )
 }
 
-function CalibrateSettings({ settings: settingsProp, onSettingsChange }: { settings: TaxSettings, onSettingsChange: (newSettings: TaxSettings) => void }) {
+function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuccess }: { settings: TaxSettings, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }) {
     const { toast } = useToast();
     const [formValues, setFormValues] = useState<any>({ assessmentLevels: {}, taxRates: {} });
     const [isLoading, setIsLoading] = useState(true);
@@ -405,23 +425,22 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange }: { setti
 
             for (const key in formValues.assessmentLevels) {
                 let val = parseFloat(formValues.assessmentLevels[key]);
-                if (isNaN(val)) val = 0;
+                if (formValues.assessmentLevels[key] === '' || isNaN(val)) val = 0;
                 updatedSettings.assessmentLevels[key] = val / 100;
             }
             for (const key in formValues.taxRates) {
                 let val = parseFloat(formValues.taxRates[key]);
-                if (isNaN(val)) val = 0;
+                if (formValues.taxRates[key] === '' || isNaN(val)) val = 0;
                 updatedSettings.taxRates[key] = val / 100;
             }
 
             onSettingsChange(updatedSettings);
+            onSaveSuccess();
 
-            toast({ title: 'Success!', description: 'Settings have been saved. Reloading...' });
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
+            toast({ title: 'Success!', description: 'Settings have been saved. They will be applied when you close this panel.' });
         } catch (error: any) {
             toast({ variant: "destructive", title: "Error", description: error.message || "Could not save settings." });
+        } finally {
             setIsSaving(false);
         }
     };
