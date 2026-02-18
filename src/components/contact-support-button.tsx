@@ -12,7 +12,7 @@ import { Headset, Copy, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function ContactSupportButton() {
-  const email = "taxwise.dev@gmail.com";
+  const email = "assessor@paranaque.gov.ph";
   const [hasCopied, setHasCopied] = useState(false);
   const { toast } = useToast();
 
