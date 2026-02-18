@@ -8,7 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { Headset, Copy, Check } from "lucide-react";
+import { Headset, Copy, Check, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function ContactSupportButton() {
@@ -40,7 +40,7 @@ export function ContactSupportButton() {
           <Headset className="h-[1.2rem] w-[1.2rem]" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto">
+      <PopoverContent className="w-80">
         <div className="space-y-2">
           <h4 className="font-medium leading-none">Contact Support</h4>
           <p className="text-sm text-muted-foreground">
@@ -53,7 +53,7 @@ export function ContactSupportButton() {
             readOnly
             className="h-9 flex-1"
           />
-          <Button variant="outline" size="icon" className="h-9 px-3" onClick={onCopy}>
+          <Button variant="outline" size="icon" className="h-9 px-3" onClick={onCopy} title="Copy Email">
             <span className="sr-only">Copy</span>
             {hasCopied ? (
               <Check className="h-4 w-4" />
@@ -62,6 +62,16 @@ export function ContactSupportButton() {
             )}
           </Button>
         </div>
+        <Button className="w-full mt-4" asChild>
+          <a 
+            href={`https://mail.google.com/mail/u/0/?fs=1&to=${email}&tf=cm`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Mail className="mr-2 h-4 w-4" />
+            Compose Email
+          </a>
+        </Button>
       </PopoverContent>
     </Popover>
   );
