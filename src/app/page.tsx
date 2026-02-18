@@ -55,9 +55,7 @@ export default function Home() {
               TaxWise Parañaque
             </h1>
           </div>
-          <div className="flex items-center">
-            <AboutDialog />
-            <ContactSupportButton />
+          <div className="flex items-center gap-1">
             <AdminPanelDialog settings={settings} onSettingsChange={handleSettingsChange} />
             <InstallPWAButton />
             <ThemeToggle />
@@ -109,6 +107,15 @@ export default function Home() {
           )}
         </div>
       </main>
+
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+        <div className="flex flex-col gap-2 rounded-full border bg-background/95 p-2 shadow-xl backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <AboutDialog />
+          <ContactSupportButton />
+        </div>
+      </div>
+
       <footer className="border-t py-6 md:px-8 md:py-0">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
