@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export function ContactSupportButton() {
   const email = "assessor@paranaque.gov.ph";
+  const subject = encodeURIComponent("TaxWise Paranaque Concern");
   const [hasCopied, setHasCopied] = useState(false);
   const { toast } = useToast();
 
@@ -34,15 +35,15 @@ export function ContactSupportButton() {
         <Button
           variant="ghost"
           size="icon"
-          aria-label="Contact Support"
-          title="Contact Support"
+          aria-label="Customer Support"
+          title="Customer Support"
         >
           <Headset className="h-[1.2rem] w-[1.2rem]" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="space-y-2">
-          <h4 className="font-medium leading-none">Contact Support</h4>
+          <h4 className="font-medium leading-none">Customer Support</h4>
           <p className="text-sm text-muted-foreground">
             For any concerns or problems, please email us.
           </p>
@@ -64,7 +65,7 @@ export function ContactSupportButton() {
         </div>
         <Button className="w-full mt-4" asChild>
           <a 
-            href={`https://mail.google.com/mail/u/0/?fs=1&to=${email}&tf=cm`}
+            href={`https://mail.google.com/mail/u/0/?fs=1&to=${email}&su=${subject}&tf=cm`}
             target="_blank"
             rel="noopener noreferrer"
           >
