@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { AdminPanelDialog } from '@/components/admin-panel-dialog';
 import { initialTaxSettings } from '@/lib/tax-settings';
 import { ContactSupportButton } from '@/components/contact-support-button';
+import { AboutDialog } from '@/components/about-dialog';
 
 export default function Home() {
   const [results, setResults] = useState<CalculationResults | null>(null);
@@ -55,6 +56,7 @@ export default function Home() {
             </h1>
           </div>
           <div className="flex items-center">
+            <AboutDialog />
             <ContactSupportButton />
             <AdminPanelDialog settings={settings} onSettingsChange={handleSettingsChange} />
             <InstallPWAButton />
