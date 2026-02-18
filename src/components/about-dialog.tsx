@@ -23,6 +23,13 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 export function AboutDialog() {
+  const developers = [
+    { name: "Mark Joshua L. Tan", url: "https://www.facebook.com/markjoshua.l.tan" },
+    { name: "Reymart F. Baron", url: "https://www.facebook.com/reymart.baron.2024" },
+    { name: "Macrow Ponferada", url: "https://www.facebook.com/busygelo" },
+    { name: "Ralph Andrew G. Dawa", url: "https://www.facebook.com/ralph213" }
+  ];
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -157,22 +164,23 @@ export function AboutDialog() {
             <section className="space-y-3">
               <h3 className="text-lg font-semibold flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
-                The Developers
+                Developers
               </h3>
               <p className="text-sm text-muted-foreground">
                 Conceptualized and developed by a dedicated team committed to digital innovation in public administration.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {[
-                  "Mark Joshua L. Tan",
-                  "Ralph Andrew G. Dawa",
-                  "Macrow Ponferada",
-                  "Reymart F. Baron"
-                ].map((name) => (
-                  <div key={name} className="flex items-center gap-2 text-sm font-medium p-2 rounded-md bg-muted/50 border border-transparent hover:border-primary/20 transition-all">
+                {developers.map((dev) => (
+                  <a 
+                    key={dev.name} 
+                    href={dev.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm font-medium p-2 rounded-md bg-muted/50 border border-transparent hover:border-primary/20 hover:bg-muted transition-all"
+                  >
                     <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                    {name}
-                  </div>
+                    {dev.name}
+                  </a>
                 ))}
               </div>
             </section>
