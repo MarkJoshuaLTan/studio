@@ -15,7 +15,7 @@ export default function DevelopersPage() {
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center text-2xl">Meet the Developers</CardTitle>
+          <CardTitle className="text-center text-2xl">Team Contacts</CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="space-y-3">

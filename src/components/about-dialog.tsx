@@ -164,10 +164,10 @@ export function AboutDialog() {
             <section className="space-y-3">
               <h3 className="text-lg font-semibold flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
-                Developers
+                Team Contacts
               </h3>
               <p className="text-sm text-muted-foreground">
-                Conceptualized and developed by a dedicated team committed to digital innovation in public administration.
+                For inquiries or feedback regarding the application&apos;s development, you may connect with the project team:
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {developers.map((dev) => (
