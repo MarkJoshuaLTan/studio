@@ -20,7 +20,6 @@ import {
   Lightbulb,
   ArrowRight
 } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 
 export function AboutDialog() {
@@ -46,7 +45,9 @@ export function AboutDialog() {
             A comprehensive guide to your modern Real Property Tax estimation tool.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-1 p-6 pt-2">
+        
+        {/* Scrollable content area */}
+        <div className="flex-1 overflow-y-auto p-6 pt-2">
           <div className="space-y-8 pb-6">
             <section className="space-y-3">
               <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -183,7 +184,8 @@ export function AboutDialog() {
               </p>
             </section>
           </div>
-        </ScrollArea>
+        </div>
+        
         <div className="p-4 border-t bg-muted/20 flex flex-col items-center gap-1">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold text-primary">
             TaxWise Parañaque &bull; 2026 Edition
