@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Loader2, ArrowLeft, X } from "lucide-react";
+import { Settings, Loader2, ArrowLeft, X, Maximize2, Minimize2 } from "lucide-react";
 import type { TaxSettings, LocationDetails, PropertyType } from "@/lib/definitions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -27,6 +27,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [hasUnappliedChanges, setHasUnappliedChanges] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
     const auth = localStorage.getItem("admin-auth");
@@ -62,6 +63,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setIsMaximized(false);
     localStorage.removeItem("admin-auth");
     handleClose();
   };
@@ -69,6 +71,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
   const onDialogClose = (isOpen: boolean) => {
     if (!isOpen) {
       handleClose();
+      setIsMaximized(false);
     } else {
       setOpen(true);
     }
@@ -84,17 +87,30 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
       <DialogContent 
         showClose={false}
         className={cn(
-          "h-[85vh] p-0 border-none transition-all duration-500 ease-in-out overflow-hidden shadow-2xl rounded-2xl",
+          "p-0 border-none transition-all duration-300 ease-in-out overflow-hidden shadow-2xl",
           isAuthenticated 
-            ? "max-w-6xl bg-background" 
-            : "max-w-md bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-800 text-white"
+            ? isMaximized
+              ? "max-w-full w-full h-full max-h-full left-0 top-0 translate-x-0 translate-y-0 rounded-none bg-background" 
+              : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-2xl bg-background"
+            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-2xl bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-800 text-white"
         )}
       >
-          {!isAuthenticated && (
+          {!isAuthenticated ? (
             <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-green-500 z-50">
               <X className="h-5 w-5 text-neutral-400 hover:text-white" />
               <span className="sr-only">Close</span>
             </DialogClose>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-green-500 z-50 text-neutral-400 hover:text-foreground"
+              onClick={() => setIsMaximized(!isMaximized)}
+              title={isMaximized ? "Restore" : "Maximize"}
+            >
+              {isMaximized ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+              <span className="sr-only">{isMaximized ? "Restore" : "Maximize"}</span>
+            </Button>
           )}
 
           <div className={cn("flex flex-col h-full", !isAuthenticated && "p-8")}>
