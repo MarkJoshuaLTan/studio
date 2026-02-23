@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -19,6 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
 export function AdminPanelDialog({ settings, onSettingsChange }: { settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void }) {
   const [open, setOpen] = useState(false);
@@ -79,7 +81,13 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
           <Settings className="h-[1.2rem] w-[1.2rem]" />
         </Button>
       </DialogTrigger>
-      <DialogContent showClose={false} className="max-w-7xl h-[90vh] flex flex-col">
+      <DialogContent 
+        showClose={!isAuthenticated} 
+        className={cn(
+          "h-[85vh] flex flex-col transition-all duration-500 ease-in-out overflow-hidden",
+          isAuthenticated ? "max-w-6xl" : "max-w-md"
+        )}
+      >
           <DialogHeader>
             <DialogTitle>Admin Panel</DialogTitle>
             <DialogDescription>
@@ -144,15 +152,15 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
 
   return (
     <div className="flex h-full items-center justify-center">
-      <Card className="w-full max-w-sm">
+      <Card className="w-full border-none shadow-none">
         <form onSubmit={handleLogin}>
-          <CardHeader>
+          <CardHeader className="px-0">
             <CardTitle className="text-2xl">Login</CardTitle>
             <CardDescription>
               Enter your credentials to access the admin panel.
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-4">
+          <CardContent className="grid gap-4 px-0">
             <div className="grid gap-2">
               <Label htmlFor="username">Username</Label>
               <Input
@@ -174,7 +182,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
               />
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="px-0 pt-4">
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign in"}
             </Button>
@@ -298,7 +306,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-8">
         <Card>
           <CardHeader>
             <CardTitle>Unit Value Tax Data</CardTitle>
@@ -320,7 +328,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
                     <Input placeholder="Filter locations..." value={locationSearch} onChange={(e) => setLocationSearch(e.target.value)} disabled={!selectedBarangay} />
                 </div>
             </div>
-            <ScrollArea className="h-[45vh] rounded-md border p-4">
+            <ScrollArea className="h-[40vh] rounded-md border p-4">
                 <div className="space-y-4">
                     {filteredLocations.length > 0 ? filteredLocations.map(([locationName, details]) => (
                         <Card key={locationName}>
@@ -359,7 +367,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
             </ScrollArea>
           </CardContent>
         </Card>
-       <div className="sticky bottom-4 flex justify-end">
+       <div className="flex justify-end">
           <Button onClick={handleSaveUnitValues} disabled={isSaving}>
             {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : 'Save Unit Values'}
           </Button>
@@ -450,7 +458,7 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 pb-8">
             <div className="grid gap-8 md:grid-cols-2">
                 <Card>
                 <CardHeader>
@@ -481,7 +489,7 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
                 </CardContent>
                 </Card>
             </div>
-            <div className="sticky bottom-4 flex justify-end">
+            <div className="flex justify-end">
                 <Button onClick={handleSave} disabled={isSaving}>
                     {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : 'Save Calibrations'}
                 </Button>
