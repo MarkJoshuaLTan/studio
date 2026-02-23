@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,12 +8,13 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
+  DialogClose
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Loader2, ArrowLeft } from "lucide-react";
+import { Settings, Loader2, ArrowLeft, X } from "lucide-react";
 import type { TaxSettings, LocationDetails, PropertyType } from "@/lib/definitions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -82,28 +82,40 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
         </Button>
       </DialogTrigger>
       <DialogContent 
-        showClose={!isAuthenticated} 
+        showClose={false}
         className={cn(
-          "h-[85vh] flex flex-col transition-all duration-500 ease-in-out overflow-hidden",
-          isAuthenticated ? "max-w-6xl" : "max-w-md"
+          "h-[85vh] p-0 border-none transition-all duration-500 ease-in-out overflow-hidden shadow-2xl rounded-2xl",
+          isAuthenticated 
+            ? "max-w-6xl bg-background" 
+            : "max-w-md bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-800 text-white"
         )}
       >
-          <DialogHeader>
-            <DialogTitle>Admin Panel</DialogTitle>
-            <DialogDescription>
-              {isAuthenticated ? "Manage application settings." : "Please login to continue."}
-            </DialogDescription>
-          </DialogHeader>
-          <AdminPanel 
-            isAuthenticated={isAuthenticated}
-            onLoginSuccess={handleLoginSuccess}
-            onLogout={handleLogout}
-            isLoadingAuth={isLoadingAuth}
-            onClose={handleClose}
-            settings={settings}
-            onSettingsChange={onSettingsChange}
-            onSaveSuccess={handleSaveSuccess}
-          />
+          {!isAuthenticated && (
+            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-green-500 z-50">
+              <X className="h-5 w-5 text-neutral-400 hover:text-white" />
+              <span className="sr-only">Close</span>
+            </DialogClose>
+          )}
+
+          <div className={cn("flex flex-col h-full", !isAuthenticated && "p-8")}>
+            <div className={cn("flex flex-col space-y-1.5 text-center sm:text-left mb-6", isAuthenticated && "px-6 pt-6")}>
+              <h2 className="text-2xl font-bold tracking-tight">Admin Panel</h2>
+              <p className="text-sm text-neutral-400">
+                {isAuthenticated ? "Manage application settings." : "Please log in to continue."}
+              </p>
+            </div>
+
+            <AdminPanel 
+              isAuthenticated={isAuthenticated}
+              onLoginSuccess={handleLoginSuccess}
+              onLogout={handleLogout}
+              isLoadingAuth={isLoadingAuth}
+              onClose={handleClose}
+              settings={settings}
+              onSettingsChange={onSettingsChange}
+              onSaveSuccess={handleSaveSuccess}
+            />
+          </div>
       </DialogContent>
     </Dialog>
   );
@@ -112,11 +124,11 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
 
 function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, onClose, settings, onSettingsChange, onSaveSuccess }: { isAuthenticated: boolean; onLoginSuccess: () => void; onLogout: () => void; isLoadingAuth: boolean; onClose: () => void; settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }) {
   if (isLoadingAuth) {
-     return <div className="flex-1 flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>
+     return <div className="flex-1 flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-green-500" /></div>
   }
 
   return (
-      <div className="flex-1 overflow-hidden pt-4">
+      <div className="flex-1 overflow-hidden">
         {isAuthenticated ? (
             <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
         ) : (
@@ -152,39 +164,45 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
 
   return (
     <div className="flex h-full items-center justify-center">
-      <Card className="w-full border-none shadow-none">
+      <Card className="w-full bg-neutral-950/50 border-neutral-800 shadow-xl rounded-xl">
         <form onSubmit={handleLogin}>
-          <CardHeader className="px-0">
-            <CardTitle className="text-2xl">Login</CardTitle>
-            <CardDescription>
+          <CardHeader>
+            <CardTitle className="text-xl font-bold">Login</CardTitle>
+            <CardDescription className="text-neutral-400">
               Enter your credentials to access the admin panel.
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-4 px-0">
+          <CardContent className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username" className="text-neutral-300">Username</Label>
               <Input
                 id="username"
                 type="text"
                 required
+                className="bg-neutral-900 border-neutral-700 text-white focus-visible:ring-green-500 focus-visible:border-green-500 transition-all"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-neutral-300">Password</Label>
               <Input
                 id="password"
                 type="password"
                 required
+                className="bg-neutral-900 border-neutral-700 text-white focus-visible:ring-green-500 focus-visible:border-green-500 transition-all"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </CardContent>
-          <CardFooter className="px-0 pt-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+          <CardFooter className="pt-2">
+            <Button 
+              type="submit" 
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-bold transition-all rounded-md h-11" 
+              disabled={isLoading}
+            >
+              {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in...</> : "Sign in"}
             </Button>
           </CardFooter>
         </form>
@@ -195,7 +213,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
 
 function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSuccess }: { onLogout: () => void; onClose: () => void; settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }) {
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col px-6 pb-6">
        <Tabs defaultValue="dashboard" className="flex-1 flex flex-col overflow-hidden">
         <div className="flex justify-between items-center pr-4">
           <TabsList>
