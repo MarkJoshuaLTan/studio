@@ -99,10 +99,10 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
 
           <div className={cn("flex flex-col h-full", !isAuthenticated && "p-8")}>
             <div className={cn("flex flex-col space-y-1.5 text-center sm:text-left mb-6", isAuthenticated && "px-6 pt-6")}>
-              <h2 className="text-2xl font-bold tracking-tight">Admin Panel</h2>
-              <p className="text-sm text-neutral-400">
+              <DialogTitle className="text-2xl font-bold tracking-tight">Admin Panel</DialogTitle>
+              <DialogDescription className="text-sm text-neutral-400">
                 {isAuthenticated ? "Manage application settings." : "Please log in to continue."}
-              </p>
+              </DialogDescription>
             </div>
 
             <AdminPanel 
