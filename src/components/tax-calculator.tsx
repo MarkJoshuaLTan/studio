@@ -276,7 +276,7 @@ export default function TaxCalculator({
               <div className="space-y-2">
                 <Label className="text-foreground/90 font-medium">Property Type</Label>
                 <div className="flex h-10 items-center">
-                  <Badge variant="outline" className="text-sm font-semibold border-primary/30 bg-primary/10 px-4 py-1.5 text-primary-foreground dark:text-primary backdrop-blur-md">
+                  <Badge variant="outline" className="text-sm font-semibold border-primary/30 bg-primary/10 px-4 py-1.5 text-primary backdrop-blur-md">
                     {selectedLocation.propertyType}
                   </Badge>
                 </div>
