@@ -69,10 +69,7 @@ export default function Home() {
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : settings ? (
-            <Tabs defaultValue="land" className="w-full space-y-8" onValueChange={() => {
-              setResults(null);
-              setBuildingResults(null);
-            }}>
+            <Tabs defaultValue="land" className="w-full space-y-8">
               <div className="flex justify-center">
                 <TabsList className="grid w-full max-w-md grid-cols-2">
                   <TabsTrigger value="land" className="flex items-center gap-2">
@@ -86,7 +83,11 @@ export default function Home() {
                 </TabsList>
               </div>
 
-              <TabsContent value="land" className="m-0 focus-visible:ring-0">
+              <TabsContent 
+                value="land" 
+                forceMount
+                className="m-0 focus-visible:ring-0 data-[state=inactive]:hidden data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-2 duration-300 ease-in-out"
+              >
                 <div className={cn(
                   'grid grid-cols-1 items-start gap-8',
                   results ? 'lg:grid-cols-5' : 'lg:justify-items-center'
@@ -116,7 +117,11 @@ export default function Home() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="building" className="m-0 focus-visible:ring-0">
+              <TabsContent 
+                value="building" 
+                forceMount
+                className="m-0 focus-visible:ring-0 data-[state=inactive]:hidden data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-2 duration-300 ease-in-out"
+              >
                 <div className={cn(
                   'grid grid-cols-1 items-start gap-8',
                   buildingResults ? 'lg:grid-cols-5' : 'lg:justify-items-center'
