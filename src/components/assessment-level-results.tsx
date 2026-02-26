@@ -27,31 +27,34 @@ const ResultRow = ({
   value: number;
   isMain?: boolean;
 }) => {
-  const formattedValue = String(value);
+  // Estimate length: number + commas + ₱ + .00
+  const estimatedLength = value.toLocaleString().length + 4;
   let sizeClass;
 
   if (isMain) {
-    if (formattedValue.length > 13) {
+    if (estimatedLength > 18) {
+      sizeClass = "text-base";
+    } else if (estimatedLength > 15) {
       sizeClass = "text-lg";
-    } else if (formattedValue.length > 10) {
+    } else if (estimatedLength > 12) {
       sizeClass = "text-xl";
     } else {
       sizeClass = "text-2xl";
     }
   } else {
-    if (formattedValue.length > 14) {
-      sizeClass = "text-xs";
+    if (estimatedLength > 15) {
+      sizeClass = "text-[10px]";
     } else {
       sizeClass = "text-sm";
     }
   }
 
   return (
-    <div className="flex justify-between items-center py-2.5">
-      <dt className="text-muted-foreground/80 text-sm font-medium">{label}</dt>
+    <div className="flex justify-between items-center py-3">
+      <dt className="text-muted-foreground/80 text-sm font-medium mr-2">{label}</dt>
       <dd
         className={cn(
-          "font-bold text-right",
+          "font-bold text-right break-all",
           sizeClass,
           isMain ? "text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.2)]" : "text-foreground/90"
         )}
@@ -80,7 +83,7 @@ export function AssessmentLevelResults({
     <div className="mt-12">
        <div className="space-y-2 mb-8 px-0">
           <h3 className="text-2xl font-bold tracking-tight">Assessment Level Impact Analysis</h3>
-          <p className="text-muted-foreground/80 max-w-2xl">
+          <p className="text-muted-foreground/80 max-w-2xl text-sm">
             See how different proposed assessment levels affect your estimated tax for 2029 and beyond.
           </p>
       </div>
@@ -93,46 +96,44 @@ export function AssessmentLevelResults({
             <Card 
               key={level} 
               className={cn(
-                "flex flex-col glass-container border-0 shadow-xl animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
+                "flex flex-col glass-container border-white/10 shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
                 index === 0 ? "delay-0" : index === 1 ? "delay-150" : "delay-300"
               )}
             >
-              <CardHeader className="pb-6 pt-8">
+              <CardHeader className="pb-4 pt-8">
                 <div className="text-center">
                   <div className="text-5xl font-black text-primary mb-2 drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]">
                     {level * 100}%
                   </div>
-                  <CardDescription className="font-bold text-xs uppercase tracking-widest text-muted-foreground/70">
+                  <CardDescription className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground/70">
                     Proposed Assessment Level
                   </CardDescription>
                 </div>
               </CardHeader>
-              <CardContent className="flex-grow space-y-4 px-6 pb-8">
-                <div className="glass-card p-4 space-y-1 bg-white/5 border-white/5">
-                  <ResultRow
-                    label="Current Yearly Tax"
-                    value={currentTax}
-                  />
-                  <Separator className="my-2 bg-white/10" />
-                  <div className="text-center pb-1">
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-primary/80">
-                      RPVARA PROJECTIONS
-                    </span>
-                  </div>
-                   <ResultRow
-                    label={
-                      <span className="text-muted-foreground/80">
-                        2028 (6% Cap)
-                      </span>
-                    }
-                    value={yearlyTax2028Capped}
-                  />
-                  <ResultRow
-                    label={<span className="text-muted-foreground/80">2029 & 2030</span>}
-                    value={yearlyTaxRPVARA}
-                    isMain={true}
-                  />
+              <CardContent className="flex-grow space-y-1 px-6 pb-8">
+                <ResultRow
+                  label="Current Yearly Tax"
+                  value={currentTax}
+                />
+                <Separator className="my-2 bg-white/5" />
+                <div className="text-center pb-2">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-primary/60">
+                    RPVARA PROJECTIONS
+                  </span>
                 </div>
+                 <ResultRow
+                  label={
+                    <span className="text-muted-foreground/80">
+                      2028 (6% Cap)
+                    </span>
+                  }
+                  value={yearlyTax2028Capped}
+                />
+                <ResultRow
+                  label={<span className="text-muted-foreground/80">2029 & 2030</span>}
+                  value={yearlyTaxRPVARA}
+                  isMain={true}
+                />
               </CardContent>
             </Card>
           );
