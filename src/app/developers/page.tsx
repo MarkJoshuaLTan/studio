@@ -7,8 +7,9 @@ export default function DevelopersPage() {
   const developers = [
     { name: "Mark Joshua L. Tan", url: "https://www.facebook.com/markjoshua.l.tan" },
     { name: "Reymart F. Baron", url: "https://www.facebook.com/reymart.baron.2024" },
-    { name: "Macrow Ponferada", url: "https://www.facebook.com/busygelo" },
-    { name: "Ralph Andrew G. Dawa", url: "https://www.facebook.com/ralph213" }
+    { name: "Macrow B. Ponferrada", url: "https://www.facebook.com/busygelo" },
+    { name: "Ralph Andrew G. Dawa", url: "https://www.facebook.com/ralph213" },
+    { name: "John Reyche B. Balmedina", url: "https://www.facebook.com/deathdeale01" }
   ];
 
   return (
