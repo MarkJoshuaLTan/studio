@@ -69,21 +69,27 @@ const ResultRow = ({
   label: React.ReactNode;
   value: number;
 }) => {
-  const formattedValue = String(value);
+  // Anti-wrapping and scaling logic
+  const estimatedLength = Math.floor(value).toLocaleString().length + 4;
   let sizeClass;
 
-  if (formattedValue.length > 13) {
+  if (estimatedLength > 18) {
+    sizeClass = "text-lg";
+  } else if (estimatedLength > 15) {
     sizeClass = "text-xl";
-  } else if (formattedValue.length > 10) {
+  } else if (estimatedLength > 12) {
     sizeClass = "text-2xl";
   } else {
     sizeClass = "text-3xl";
   }
 
   return (
-    <div className="flex justify-between items-center py-4 border-b border-white/10 last:border-0">
-      <dt className="text-muted-foreground/90 text-lg font-medium">{label}</dt>
-      <dd className={cn("font-bold text-primary text-right tracking-tight drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]", sizeClass)}>
+    <div className="flex justify-between items-center py-4 border-b border-white/10 last:border-0 gap-4">
+      <dt className="text-muted-foreground/90 text-lg font-medium leading-tight">{label}</dt>
+      <dd className={cn(
+        "font-bold text-primary text-right tracking-tight drop-shadow-[0_0_15px_rgba(34,197,94,0.3)] whitespace-nowrap break-keep shrink-0", 
+        sizeClass
+      )}>
         <AnimatedCurrency value={value} />
       </dd>
     </div>
@@ -152,7 +158,7 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
                 <span>
                   Tax (2028)
                   <br />
-                  <span className="text-xs font-bold text-muted-foreground/60 uppercase">
+                  <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-tighter">
                     (Capped at 6%)
                   </span>
                 </span>

@@ -91,7 +91,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
           isAuthenticated 
             ? isMaximized
               ? "max-w-full w-full h-full max-h-full left-0 top-0 translate-x-0 translate-y-0 rounded-none bg-background" 
-              : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-2xl bg-background/95 backdrop-blur-2xl border border-white/10"
+              : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-2xl glass-container border-0"
             : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-2xl bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-800 text-white backdrop-blur-3xl border border-white/5"
         )}
       >
@@ -341,7 +341,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
 
   return (
     <div className="space-y-8 pb-8">
-        <Card className="glass-card border-white/5">
+        <Card className="glass-container border-0">
           <CardHeader>
             <CardTitle>Unit Value Tax Data</CardTitle>
             <CardDescription>Select a barangay and search for a location to edit its values.</CardDescription>
@@ -352,7 +352,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
                     <Label className="mb-1.5 block">Barangay</Label>
                     <Select onValueChange={(value) => { setSelectedBarangay(value); setLocationSearch(''); }} value={selectedBarangay}>
                         <SelectTrigger className="glass-input h-11"><SelectValue placeholder="Select a Barangay" /></SelectTrigger>
-                        <SelectContent className="glass-container">
+                        <SelectContent className="glass-container border-0">
                             {editedSettings && Object.keys(editedSettings.taxData).sort().map(b => <SelectItem key={b} value={b} className="focus:bg-primary/20">{b}</SelectItem>)}
                         </SelectContent>
                     </Select>
@@ -381,7 +381,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
                                         <Label htmlFor={`pt-${locationName}`}>Property Type</Label>
                                         <Select value={details.propertyType} onValueChange={(value: PropertyType) => handleLocationDataChange(locationName, 'propertyType', value)}>
                                             <SelectTrigger id={`pt-${locationName}`} className="glass-input"><SelectValue /></SelectTrigger>
-                                            <SelectContent className="glass-container">
+                                            <SelectContent className="glass-container border-0">
                                                 <SelectItem value="Residential" className="focus:bg-primary/20">Residential</SelectItem>
                                                 <SelectItem value="Commercial" className="focus:bg-primary/20">Commercial</SelectItem>
                                                 <SelectItem value="Industrial" className="focus:bg-primary/20">Industrial</SelectItem>
@@ -402,7 +402,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
           </CardContent>
         </Card>
        <div className="flex justify-end pt-4">
-          <Button onClick={handleSaveUnitValues} className="h-11 px-8 font-bold" disabled={isSaving}>
+          <Button onClick={handleSaveUnitValues} className="h-11 px-8 font-bold shadow-lg" disabled={isSaving}>
             {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : 'Save Unit Values'}
           </Button>
         </div>
@@ -479,7 +479,7 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
             onSettingsChange(updatedSettings);
             onSaveSuccess();
 
-            toast({ title: 'Success!', description: 'Settings have been saved. They will be applied when you close this panel.' });
+            toast({ title: 'Success!', description: 'Settings have been saved. They will be applied when you close the panel.' });
         } catch (error: any) {
             toast({ variant: "destructive", title: "Error", description: error.message || "Could not save settings." });
         } finally {
@@ -494,7 +494,7 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
     return (
         <div className="space-y-8 pb-8">
             <div className="grid gap-8 md:grid-cols-2">
-                <Card className="glass-card border-white/5">
+                <Card className="glass-container border-0">
                 <CardHeader>
                     <CardTitle>Assessment Levels</CardTitle>
                     <CardDescription>Set the assessment level percentage (e.g., 20 for 20%).</CardDescription>
@@ -508,7 +508,7 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
                     ))}
                 </CardContent>
                 </Card>
-                <Card className="glass-card border-white/5">
+                <Card className="glass-container border-0">
                 <CardHeader>
                     <CardTitle>Tax Rates</CardTitle>
                     <CardDescription>Set the tax rate percentage (e.g., 2 for 2%).</CardDescription>
@@ -524,7 +524,7 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
                 </Card>
             </div>
             <div className="flex justify-end pt-4">
-                <Button onClick={handleSave} className="h-11 px-8 font-bold" disabled={isSaving}>
+                <Button onClick={handleSave} className="h-11 px-8 font-bold shadow-lg" disabled={isSaving}>
                     {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : 'Save Calibrations'}
                 </Button>
             </div>

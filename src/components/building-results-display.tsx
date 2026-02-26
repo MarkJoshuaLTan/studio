@@ -54,23 +54,27 @@ const SummaryResultRow = ({
   label: React.ReactNode;
   value: number;
 }) => {
+  // Anti-wrapping and scaling logic
   const estimatedLength = Math.floor(value).toLocaleString().length + 4;
   let sizeClass;
 
   if (estimatedLength > 18) {
-    sizeClass = "text-xl";
+    sizeClass = "text-lg";
   } else if (estimatedLength > 15) {
-    sizeClass = "text-2xl";
+    sizeClass = "text-xl";
   } else if (estimatedLength > 12) {
-    sizeClass = "text-3xl";
+    sizeClass = "text-2xl";
   } else {
-    sizeClass = "text-4xl";
+    sizeClass = "text-3xl";
   }
 
   return (
-    <div className="flex justify-between items-center py-4">
-      <dt className="text-muted-foreground/90 text-lg font-medium">{label}</dt>
-      <dd className={cn("font-bold text-primary text-right tracking-tight drop-shadow-[0_0_15px_rgba(34,197,94,0.3)] whitespace-nowrap break-keep", sizeClass)}>
+    <div className="flex justify-between items-center py-4 gap-4">
+      <dt className="text-muted-foreground/90 text-lg font-medium leading-tight">{label}</dt>
+      <dd className={cn(
+        "font-bold text-primary text-right tracking-tight drop-shadow-[0_0_15px_rgba(34,197,94,0.3)] whitespace-nowrap break-keep shrink-0", 
+        sizeClass
+      )}>
         <AnimatedCurrency value={value} />
       </dd>
     </div>
@@ -80,44 +84,30 @@ const SummaryResultRow = ({
 const ImpactResultRow = ({
   label,
   value,
-  isMain = false,
 }: {
   label: React.ReactNode;
   value: number;
-  isMain?: boolean;
 }) => {
-  // Estimate length: number + commas + ₱ + .00
+  // Dynamic font sizing based on string length
   const estimatedLength = Math.floor(value).toLocaleString().length + 4;
   let sizeClass;
 
-  if (isMain) {
-    if (estimatedLength > 18) {
-      sizeClass = "text-base";
-    } else if (estimatedLength > 15) {
-      sizeClass = "text-lg";
-    } else if (estimatedLength > 12) {
-      sizeClass = "text-xl";
-    } else {
-      sizeClass = "text-2xl";
-    }
+  if (estimatedLength > 18) {
+    sizeClass = "text-[10px]";
+  } else if (estimatedLength > 15) {
+    sizeClass = "text-xs";
   } else {
-    if (estimatedLength > 18) {
-      sizeClass = "text-[10px]";
-    } else if (estimatedLength > 15) {
-      sizeClass = "text-xs";
-    } else {
-      sizeClass = "text-sm";
-    }
+    sizeClass = "text-sm";
   }
 
   return (
-    <div className="flex justify-between items-start py-2.5">
-      <dt className="text-muted-foreground/80 text-xs font-medium mr-2 pt-0.5 leading-tight">{label}</dt>
+    <div className="flex justify-between items-start py-2.5 gap-2">
+      <dt className="text-muted-foreground/80 text-xs font-medium pt-0.5 leading-tight">{label}</dt>
       <dd
         className={cn(
           "font-bold text-right whitespace-nowrap break-keep shrink-0",
           sizeClass,
-          isMain ? "text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.2)]" : "text-foreground/90"
+          "text-foreground/90"
         )}
       >
         <AnimatedCurrency value={value} />
@@ -220,7 +210,7 @@ function ProposalCard({ title, currentTax, proposalTax, proposalAL, proposalAV, 
 
   return (
     <Card className={cn(
-      "flex flex-col glass-container border-white/10 shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
+      "flex flex-col glass-container border-0 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
       delayClass
     )}>
       <CardHeader className="pb-4 pt-8">

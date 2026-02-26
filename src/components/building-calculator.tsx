@@ -166,7 +166,7 @@ export default function BuildingCalculator({
               </SelectTrigger>
               <SelectContent className="glass-container border-0">
                 {selectedBuilding?.qualityLevels.map((q) => (
-                  <SelectItem key={q.level} value={q.level} className="focus:bg-primary/20">
+                  <SelectItem key={q.level} value={q.level} className="focus:bg-primary/30 transition-all duration-200">
                     Level {q.level} — ₱{q.value.toLocaleString()}
                   </SelectItem>
                 ))}
