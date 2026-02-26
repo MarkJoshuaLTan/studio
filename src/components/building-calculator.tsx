@@ -151,17 +151,6 @@ export default function BuildingCalculator({
             />
           </div>
           <div className="space-y-2">
-            <Label className="text-foreground/90 font-medium">Property Classification</Label>
-            <div className="flex h-10 items-center">
-              <Badge variant="outline" className="text-sm font-semibold border-primary/30 bg-primary/10 px-4 py-1.5 text-primary-foreground dark:text-primary backdrop-blur-md">
-                {selectedBuilding?.classification || "Select building type first"}
-              </Badge>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="space-y-2">
             <Label htmlFor="quality-level" className="text-foreground/90 font-medium">Select Type (Quality Level)</Label>
             <Select 
               disabled={!selectedBuilding} 
@@ -184,6 +173,9 @@ export default function BuildingCalculator({
               </SelectContent>
             </Select>
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="floor-area" className="text-foreground/90 font-medium">Floor Area (sq. m)</Label>
             <Input
@@ -203,6 +195,14 @@ export default function BuildingCalculator({
                 }
               }}
             />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-foreground/90 font-medium">Property Classification</Label>
+            <div className="flex h-10 items-center">
+              <Badge variant="outline" className="text-sm font-semibold border-primary/30 bg-primary/10 px-4 py-1.5 text-primary-foreground dark:text-primary backdrop-blur-md">
+                {selectedBuilding?.classification || "Select building type first"}
+              </Badge>
+            </div>
           </div>
         </div>
       </CardContent>

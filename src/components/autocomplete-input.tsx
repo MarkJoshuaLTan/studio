@@ -89,9 +89,8 @@ export function AutocompleteInput({
         <PopoverContent
           side="bottom"
           align="start"
-          avoidCollisions={false}
-          className="w-[var(--radix-popover-trigger-width)] p-0"
-          disablePortal
+          avoidCollisions={true}
+          className="w-[var(--radix-popover-trigger-width)] p-0 z-[100]"
         >
           <div className="flex items-center border-b px-3">
             <Input
