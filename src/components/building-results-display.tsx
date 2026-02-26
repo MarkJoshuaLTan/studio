@@ -34,9 +34,9 @@ const InfoRow = ({
   }
 
   return (
-    <div className="flex justify-between py-2 text-sm">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className={cn("font-medium text-right", sizeClass)}>
+    <div className="flex justify-between py-2.5 text-sm border-b border-white/5 last:border-0">
+      <dt className="text-muted-foreground/80 font-medium">{label}</dt>
+      <dd className={cn("font-semibold text-right", sizeClass)}>
         {isCurrency && typeof value === 'number' ? (
           <AnimatedCurrency value={value} />
         ) : (
@@ -58,17 +58,17 @@ const SummaryResultRow = ({
   let sizeClass;
 
   if (formattedValue.length > 13) {
-    sizeClass = "text-base";
-  } else if (formattedValue.length > 10) {
-    sizeClass = "text-lg";
-  } else {
     sizeClass = "text-xl";
+  } else if (formattedValue.length > 10) {
+    sizeClass = "text-2xl";
+  } else {
+    sizeClass = "text-3xl";
   }
 
   return (
-    <div className="flex justify-between items-center py-2">
-      <dt className="text-muted-foreground text-base">{label}</dt>
-      <dd className={cn("font-bold text-primary text-right", sizeClass)}>
+    <div className="flex justify-between items-center py-4">
+      <dt className="text-muted-foreground/90 text-lg font-medium">{label}</dt>
+      <dd className={cn("font-bold text-primary text-right tracking-tight drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]", sizeClass)}>
         <AnimatedCurrency value={value} />
       </dd>
     </div>
@@ -89,11 +89,11 @@ const ImpactResultRow = ({
 
   if (isMain) {
     if (formattedValue.length > 13) {
-      sizeClass = "text-base";
-    } else if (formattedValue.length > 10) {
       sizeClass = "text-lg";
-    } else {
+    } else if (formattedValue.length > 10) {
       sizeClass = "text-xl";
+    } else {
+      sizeClass = "text-2xl";
     }
   } else {
     if (formattedValue.length > 14) {
@@ -104,13 +104,13 @@ const ImpactResultRow = ({
   }
 
   return (
-    <div className="flex justify-between items-center py-2">
-      <dt className="text-muted-foreground text-sm">{label}</dt>
+    <div className="flex justify-between items-center py-2.5">
+      <dt className="text-muted-foreground/80 text-sm font-medium">{label}</dt>
       <dd
         className={cn(
-          "font-semibold text-right",
+          "font-bold text-right",
           sizeClass,
-          isMain ? "text-primary" : ""
+          isMain ? "text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.2)]" : "text-foreground/90"
         )}
       >
         <AnimatedCurrency value={value} />
@@ -123,15 +123,15 @@ export function BuildingResultsDisplay({ results, mode = 'summary' }: BuildingRe
   if (mode === 'summary') {
     return (
       <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out">
-        <Card>
-          <CardHeader>
-            <CardTitle>Tax Calculation</CardTitle>
-            <CardDescription>
+        <Card className="glass-container border-0 overflow-hidden shadow-2xl">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-2xl">Tax Calculation</CardTitle>
+            <CardDescription className="text-muted-foreground/80">
               Estimated building & improvements tax breakdown.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <dl className="space-y-1">
+          <CardContent className="space-y-4">
+            <div className="glass-card p-4 space-y-1">
               <InfoRow label="Building Type" value={results.buildingType} />
               <InfoRow label="Type (Quality Level)" value={`Level ${results.qualityLevel}`} />
               <InfoRow label="Property Classification" value={results.classification} />
@@ -139,18 +139,17 @@ export function BuildingResultsDisplay({ results, mode = 'summary' }: BuildingRe
               <InfoRow label="Market Value" value={results.marketValue} isCurrency={true} />
               <InfoRow label="Assessed Value (Current)" value={results.currentAssessedValue} isCurrency={true} />
               <InfoRow label="Assessment Level (Current)" value={`${(results.currentAssessmentLevel * 100).toFixed(0)}%`} />
-            </dl>
-            <Separator className="my-4" />
-            <dl className="space-y-2">
+            </div>
+            <div className="pt-2">
               <SummaryResultRow
                 label="Current Yearly Tax"
                 value={results.currentYearlyTax}
               />
-            </dl>
+            </div>
           </CardContent>
-          <CardFooter>
-            <p className="text-center text-xs text-muted-foreground w-full">
-              This is an estimate for informational purposes only. Official tax computation may vary.
+          <CardFooter className="bg-white/5 dark:bg-white/5 py-4">
+            <p className="text-center text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60 w-full">
+              Official tax computation may vary
             </p>
           </CardFooter>
         </Card>
@@ -159,14 +158,14 @@ export function BuildingResultsDisplay({ results, mode = 'summary' }: BuildingRe
   }
 
   return (
-    <div className="mt-8">
-      <CardHeader className="px-0 pt-0">
-        <CardTitle>Assessment Level Impact Analysis</CardTitle>
-        <CardDescription>
+    <div className="mt-12">
+      <div className="space-y-2 mb-8">
+        <h3 className="text-2xl font-bold tracking-tight">Assessment Level Impact Analysis</h3>
+        <p className="text-muted-foreground/80 max-w-2xl">
           See how different proposed assessment levels affect your estimated tax for buildings and improvements.
-        </CardDescription>
-      </CardHeader>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+        </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <ProposalCard 
           title="Proposal 1" 
           currentTax={results.currentYearlyTax}
@@ -206,39 +205,41 @@ function ProposalCard({ title, currentTax, proposalTax, proposalAL, proposalAV, 
 }) {
   return (
     <Card className={cn(
-      "flex flex-col animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
+      "flex flex-col glass-container border-0 shadow-xl animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
       delayClass
     )}>
-      <CardHeader className="pb-4">
-        <CardTitle className="text-center text-5xl font-bold text-accent">
-          {(proposalAL * 100).toFixed(0)}%
-        </CardTitle>
-        <CardDescription className="text-center">
-          Proposed Assessment Level
-        </CardDescription>
+      <CardHeader className="pb-6 pt-8">
+        <div className="text-center">
+          <div className="text-5xl font-black text-primary mb-2 drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]">
+            {(proposalAL * 100).toFixed(0)}%
+          </div>
+          <CardDescription className="font-bold text-xs uppercase tracking-widest text-muted-foreground/70">
+            Proposed Assessment Level
+          </CardDescription>
+        </div>
       </CardHeader>
-      <CardContent className="flex-grow">
-        <dl>
+      <CardContent className="flex-grow space-y-4 px-6 pb-8">
+        <div className="glass-card p-4 space-y-1 bg-white/5 border-white/5">
           <ImpactResultRow
             label="Current Yearly Tax"
             value={currentTax}
           />
-          <Separator className="my-2" />
-          <div className="text-center font-semibold text-primary mb-1 leading-tight">
-            {title.toUpperCase()}
-            <br />
-            <span className="font-normal text-xs text-muted-foreground">(Est. Yearly Tax)</span>
+          <Separator className="bg-white/10" />
+          <div className="text-center pt-2 pb-1">
+            <span className="text-[10px] font-black uppercase tracking-tighter text-primary/80">
+              {title} ESTIMATE
+            </span>
           </div>
           <ImpactResultRow
-            label={<span className="text-muted-foreground">Assessed Value</span>}
+            label="Assessed Value"
             value={proposalAV}
           />
           <ImpactResultRow
-            label={<span className="text-muted-foreground">Estimated Yearly Tax</span>}
+            label="Estimated Tax"
             value={proposalTax}
             isMain={true}
           />
-        </dl>
+        </div>
       </CardContent>
     </Card>
   );

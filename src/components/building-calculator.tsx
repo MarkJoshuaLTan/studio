@@ -19,6 +19,7 @@ import { BUILDING_TYPES, BuildingType, QualityLevel, BuildingPropertyClassificat
 import { SuggestedItem } from "@/lib/definitions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getBuildingAssessmentLevel } from "@/lib/building-logic";
+import { cn } from "@/lib/utils";
 
 export type BuildingCalculationResults = {
   buildingType: string;
@@ -56,7 +57,7 @@ export default function BuildingCalculator({
 
   const buildingSuggestions: SuggestedItem[] = BUILDING_TYPES.map(b => ({
     name: b.name,
-    type: 'location' // Reusing the type from land calculator for Autocomplete compatibility
+    type: 'location'
   }));
 
   const handleSelectBuilding = (item: SuggestedItem | null) => {
@@ -129,17 +130,17 @@ export default function BuildingCalculator({
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Building & Improvements Details</CardTitle>
-        <CardDescription>
+    <Card className="w-full glass-container border-0 overflow-hidden">
+      <CardHeader className="relative z-10">
+        <CardTitle className="text-2xl">Building & Improvements Details</CardTitle>
+        <CardDescription className="text-muted-foreground/80">
           Enter details to estimate the valuation of buildings and improvements.
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-6">
+      <CardContent className="grid gap-6 relative z-10">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="building-type">Select Building Type</Label>
+            <Label htmlFor="building-type" className="text-foreground/90 font-medium">Select Building Type</Label>
             <AutocompleteInput
               placeholder="Search for a building type..."
               suggestions={buildingSuggestions.filter(s => s.name.toLowerCase().includes(buildingSearch.toLowerCase()))}
@@ -150,9 +151,9 @@ export default function BuildingCalculator({
             />
           </div>
           <div className="space-y-2">
-            <Label>Property Classification</Label>
+            <Label className="text-foreground/90 font-medium">Property Classification</Label>
             <div className="flex h-10 items-center">
-              <Badge variant="outline" className="text-sm font-medium border-primary/20 bg-primary/5 px-3 py-1">
+              <Badge variant="outline" className="text-sm font-semibold border-primary/30 bg-primary/10 px-4 py-1.5 text-primary-foreground dark:text-primary backdrop-blur-md">
                 {selectedBuilding?.classification || "Select building type first"}
               </Badge>
             </div>
@@ -161,7 +162,7 @@ export default function BuildingCalculator({
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="quality-level">Select Type (Quality Level)</Label>
+            <Label htmlFor="quality-level" className="text-foreground/90 font-medium">Select Type (Quality Level)</Label>
             <Select 
               disabled={!selectedBuilding} 
               onValueChange={(val) => {
@@ -171,12 +172,12 @@ export default function BuildingCalculator({
               }}
               value={selectedQuality?.level || ""}
             >
-              <SelectTrigger id="quality-level">
+              <SelectTrigger id="quality-level" className="glass-input h-11">
                 <SelectValue placeholder={selectedBuilding ? "Select level..." : "Select building type first"} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="glass-container border-0">
                 {selectedBuilding?.qualityLevels.map((q) => (
-                  <SelectItem key={q.level} value={q.level}>
+                  <SelectItem key={q.level} value={q.level} className="focus:bg-primary/20">
                     Level {q.level} — ₱{q.value.toLocaleString()}
                   </SelectItem>
                 ))}
@@ -184,11 +185,12 @@ export default function BuildingCalculator({
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="floor-area">Floor Area (sq. m)</Label>
+            <Label htmlFor="floor-area" className="text-foreground/90 font-medium">Floor Area (sq. m)</Label>
             <Input
               id="floor-area"
               type="number"
               placeholder="e.g., 150"
+              className="glass-input h-11"
               value={floorArea}
               onChange={(e) => {
                 setFloorArea(e.target.value);
@@ -204,18 +206,18 @@ export default function BuildingCalculator({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-col sm:flex-row gap-3">
+      <CardFooter className="flex flex-col sm:flex-row gap-3 relative z-10 pt-2 pb-8">
         <Button
           onClick={handleCalculate}
           disabled={isCalculating}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto h-11 px-8 font-bold shadow-lg shadow-primary/20"
         >
           {isCalculating ? "Calculating..." : "Calculate Valuation"}
         </Button>
         <Button
           variant="outline"
           onClick={handleClear}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto h-11 px-8 glass-card border-white/10 hover:bg-white/10"
         >
           Clear
         </Button>

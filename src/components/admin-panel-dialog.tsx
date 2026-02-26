@@ -91,8 +91,8 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
           isAuthenticated 
             ? isMaximized
               ? "max-w-full w-full h-full max-h-full left-0 top-0 translate-x-0 translate-y-0 rounded-none bg-background" 
-              : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-2xl bg-background"
-            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-2xl bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-800 text-white"
+              : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-2xl bg-background/95 backdrop-blur-2xl border border-white/10"
+            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-2xl bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-800 text-white backdrop-blur-3xl border border-white/5"
         )}
       >
           {!isAuthenticated ? (
@@ -180,7 +180,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
 
   return (
     <div className="flex h-full items-center justify-center">
-      <Card className="w-full bg-neutral-950/50 border-neutral-800 shadow-xl rounded-xl">
+      <Card className="w-full bg-black/40 border-white/10 shadow-2xl rounded-2xl backdrop-blur-xl">
         <form onSubmit={handleLogin}>
           <CardHeader>
             <CardTitle className="text-xl font-bold">Login</CardTitle>
@@ -195,7 +195,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
                 id="username"
                 type="text"
                 required
-                className="bg-neutral-900 border-neutral-700 text-white focus-visible:ring-green-500 focus-visible:border-green-500 transition-all"
+                className="bg-neutral-900/50 border-neutral-700 text-white focus-visible:ring-green-500 transition-all h-11"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -206,16 +206,16 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
                 id="password"
                 type="password"
                 required
-                className="bg-neutral-900 border-neutral-700 text-white focus-visible:ring-green-500 focus-visible:border-green-500 transition-all"
+                className="bg-neutral-900/50 border-neutral-700 text-white focus-visible:ring-green-500 transition-all h-11"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </CardContent>
-          <CardFooter className="pt-2">
+          <CardFooter className="pt-2 pb-8">
             <Button 
               type="submit" 
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-bold transition-all rounded-md h-11" 
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-bold transition-all rounded-xl h-12 shadow-lg shadow-green-900/20" 
               disabled={isLoading}
             >
               {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in...</> : "Sign in"}
@@ -231,20 +231,20 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
   return (
     <div className="h-full flex flex-col px-6 pb-6">
        <Tabs defaultValue="dashboard" className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex justify-between items-center pr-4">
-          <TabsList>
+        <div className="flex justify-between items-center mb-4">
+          <TabsList className="h-11">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="calibrate">Calibrate</TabsTrigger>
           </TabsList>
           <div className="flex items-center gap-2">
             <Button variant="ghost" onClick={onClose}><ArrowLeft className="mr-2 h-4 w-4"/> Back to App</Button>
-            <Button variant="outline" onClick={onLogout}>Logout</Button>
+            <Button variant="outline" className="glass-card" onClick={onLogout}>Logout</Button>
           </div>
         </div>
-        <TabsContent value="dashboard" className="flex-1 overflow-y-auto mt-4 pr-4">
+        <TabsContent value="dashboard" className="flex-1 overflow-y-auto pr-2">
             {settings && <AdminDashboard settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
         </TabsContent>
-        <TabsContent value="calibrate" className="flex-1 overflow-y-auto mt-4 pr-4">
+        <TabsContent value="calibrate" className="flex-1 overflow-y-auto pr-2">
             {settings && <CalibrateSettings settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
         </TabsContent>
       </Tabs>
@@ -264,7 +264,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
   useEffect(() => {
     if (settingsProp) {
         setIsLoading(true);
-        setEditedSettings(JSON.parse(JSON.stringify(settingsProp))); // Deep copy
+        setEditedSettings(JSON.parse(JSON.stringify(settingsProp))); 
         if (!selectedBarangay) {
             setSelectedBarangay(Object.keys(settingsProp.taxData)[0] || '');
         }
@@ -285,7 +285,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
           if (value === '') {
               finalValue = '';
           } else if (!/^\d*\.?\d*$/.test(value)) {
-              return newSettings; // invalid input
+              return newSettings; 
           } else if (location[field].toString() === "0" && value.length > 1 && !value.startsWith("0.")) {
              finalValue = value.substring(1);
           }
@@ -341,7 +341,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
 
   return (
     <div className="space-y-8 pb-8">
-        <Card>
+        <Card className="glass-card border-white/5">
           <CardHeader>
             <CardTitle>Unit Value Tax Data</CardTitle>
             <CardDescription>Select a barangay and search for a location to edit its values.</CardDescription>
@@ -349,43 +349,43 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
           <CardContent>
             <div className="flex flex-col md:flex-row gap-4 mb-6">
                 <div className="w-full md:w-1/2">
-                    <Label>Barangay</Label>
+                    <Label className="mb-1.5 block">Barangay</Label>
                     <Select onValueChange={(value) => { setSelectedBarangay(value); setLocationSearch(''); }} value={selectedBarangay}>
-                        <SelectTrigger><SelectValue placeholder="Select a Barangay" /></SelectTrigger>
-                        <SelectContent>
-                            {editedSettings && Object.keys(editedSettings.taxData).sort().map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                        <SelectTrigger className="glass-input h-11"><SelectValue placeholder="Select a Barangay" /></SelectTrigger>
+                        <SelectContent className="glass-container">
+                            {editedSettings && Object.keys(editedSettings.taxData).sort().map(b => <SelectItem key={b} value={b} className="focus:bg-primary/20">{b}</SelectItem>)}
                         </SelectContent>
                     </Select>
                 </div>
                 <div className="w-full md:w-1/2">
-                    <Label>Search Location</Label>
-                    <Input placeholder="Filter locations..." value={locationSearch} onChange={(e) => setLocationSearch(e.target.value)} disabled={!selectedBarangay} />
+                    <Label className="mb-1.5 block">Search Location</Label>
+                    <Input placeholder="Filter locations..." className="glass-input h-11" value={locationSearch} onChange={(e) => setLocationSearch(e.target.value)} disabled={!selectedBarangay} />
                 </div>
             </div>
-            <ScrollArea className="h-[40vh] rounded-md border p-4">
+            <ScrollArea className="h-[40vh] rounded-xl border border-white/5 bg-black/20 p-4">
                 <div className="space-y-4">
                     {filteredLocations.length > 0 ? filteredLocations.map(([locationName, details]) => (
-                        <Card key={locationName}>
+                        <Card key={locationName} className="glass-card border-white/5 bg-white/5">
                             <CardHeader className="pb-2"><CardTitle className="text-lg">{locationName}</CardTitle></CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
                                     <div className="space-y-2">
                                         <Label htmlFor={`uv2028-${locationName}`}>Unit Value (Current)</Label>
-                                        <Input id={`uv2028-${locationName}`} type="text" inputMode="decimal" value={details.unitValue2028} onChange={e => handleLocationDataChange(locationName, 'unitValue2028', e.target.value)} />
+                                        <Input id={`uv2028-${locationName}`} type="text" inputMode="decimal" className="glass-input" value={details.unitValue2028} onChange={e => handleLocationDataChange(locationName, 'unitValue2028', e.target.value)} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor={`uv2029-${locationName}`}>Unit Value (RPVARA)</Label>
-                                        <Input id={`uv2029-${locationName}`} type="text" inputMode="decimal" value={details.unitValue2029} onChange={e => handleLocationDataChange(locationName, 'unitValue2029', e.target.value)} />
+                                        <Input id={`uv2029-${locationName}`} type="text" inputMode="decimal" className="glass-input" value={details.unitValue2029} onChange={e => handleLocationDataChange(locationName, 'unitValue2029', e.target.value)} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor={`pt-${locationName}`}>Property Type</Label>
                                         <Select value={details.propertyType} onValueChange={(value: PropertyType) => handleLocationDataChange(locationName, 'propertyType', value)}>
-                                            <SelectTrigger id={`pt-${locationName}`}><SelectValue /></SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="Residential">Residential</SelectItem>
-                                                <SelectItem value="Commercial">Commercial</SelectItem>
-                                                <SelectItem value="Industrial">Industrial</SelectItem>
-                                                <SelectItem value="Commercial / Industrial">Commercial / Industrial</SelectItem>
+                                            <SelectTrigger id={`pt-${locationName}`} className="glass-input"><SelectValue /></SelectTrigger>
+                                            <SelectContent className="glass-container">
+                                                <SelectItem value="Residential" className="focus:bg-primary/20">Residential</SelectItem>
+                                                <SelectItem value="Commercial" className="focus:bg-primary/20">Commercial</SelectItem>
+                                                <SelectItem value="Industrial" className="focus:bg-primary/20">Industrial</SelectItem>
+                                                <SelectItem value="Commercial / Industrial" className="focus:bg-primary/20">Commercial / Industrial</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -401,8 +401,8 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
             </ScrollArea>
           </CardContent>
         </Card>
-       <div className="flex justify-end">
-          <Button onClick={handleSaveUnitValues} disabled={isSaving}>
+       <div className="flex justify-end pt-4">
+          <Button onClick={handleSaveUnitValues} className="h-11 px-8 font-bold" disabled={isSaving}>
             {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : 'Save Unit Values'}
           </Button>
         </div>
@@ -494,7 +494,7 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
     return (
         <div className="space-y-8 pb-8">
             <div className="grid gap-8 md:grid-cols-2">
-                <Card>
+                <Card className="glass-card border-white/5">
                 <CardHeader>
                     <CardTitle>Assessment Levels</CardTitle>
                     <CardDescription>Set the assessment level percentage (e.g., 20 for 20%).</CardDescription>
@@ -502,13 +502,13 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
                 <CardContent className="space-y-4">
                     {formValues && Object.entries(formValues.assessmentLevels).map(([key, value]) => (
                         <div key={key} className="flex items-center justify-between space-x-4">
-                            <Label htmlFor={`assessment-${key}`}>{key}</Label>
-                            <Input id={`assessment-${key}`} type="text" inputMode="decimal" step="1" className="w-32 text-right" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
+                            <Label htmlFor={`assessment-${key}`} className="font-medium">{key}</Label>
+                            <Input id={`assessment-${key}`} type="text" inputMode="decimal" className="w-32 text-right glass-input h-10" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
                         </div>
                     ))}
                 </CardContent>
                 </Card>
-                <Card>
+                <Card className="glass-card border-white/5">
                 <CardHeader>
                     <CardTitle>Tax Rates</CardTitle>
                     <CardDescription>Set the tax rate percentage (e.g., 2 for 2%).</CardDescription>
@@ -516,15 +516,15 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
                 <CardContent className="space-y-4">
                     {formValues && Object.entries(formValues.taxRates).map(([key, value]) => (
                         <div key={key} className="flex items-center justify-between space-x-4">
-                            <Label htmlFor={`taxrate-${key}`}>{key}</Label>
-                            <Input id={`taxrate-${key}`} type="text" inputMode="decimal" step="0.1" className="w-32 text-right" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
+                            <Label htmlFor={`taxrate-${key}`} className="font-medium">{key}</Label>
+                            <Input id={`taxrate-${key}`} type="text" inputMode="decimal" className="w-32 text-right glass-input h-10" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
                         </div>
                     ))}
                 </CardContent>
                 </Card>
             </div>
-            <div className="flex justify-end">
-                <Button onClick={handleSave} disabled={isSaving}>
+            <div className="flex justify-end pt-4">
+                <Button onClick={handleSave} className="h-11 px-8 font-bold" disabled={isSaving}>
                     {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : 'Save Calibrations'}
                 </Button>
             </div>

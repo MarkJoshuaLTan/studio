@@ -17,6 +17,7 @@ import type { SuggestedItem, TaxSettings } from "@/lib/definitions";
 import { useToast } from "@/hooks/use-toast";
 import type { CalculationResults } from "./results-display";
 import { Badge } from "./ui/badge";
+import { cn } from "@/lib/utils";
 
 export default function TaxCalculator({
   setResults,
@@ -206,17 +207,17 @@ export default function TaxCalculator({
   };
 
   return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Property Details</CardTitle>
-          <CardDescription>
+      <Card className="w-full glass-container border-0 overflow-hidden">
+        <CardHeader className="relative z-10">
+          <CardTitle className="text-2xl">Property Details</CardTitle>
+          <CardDescription className="text-muted-foreground/80">
             Enter your property details to estimate your real property tax.
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-6">
+        <CardContent className="grid gap-6 relative z-10">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="barangay">Barangay</Label>
+              <Label htmlFor="barangay" className="text-foreground/90 font-medium">Barangay</Label>
               <AutocompleteInput
                 placeholder="Search for a barangay..."
                 suggestions={barangaySuggestions}
@@ -232,7 +233,7 @@ export default function TaxCalculator({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="location">Location / Subdivision</Label>
+              <Label htmlFor="location" className="text-foreground/90 font-medium">Location / Subdivision</Label>
               <AutocompleteInput
                 placeholder="Search for a location..."
                 suggestions={locationSuggestions}
@@ -252,11 +253,12 @@ export default function TaxCalculator({
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="lot-area">Lot Area (in sq. m)</Label>
+              <Label htmlFor="lot-area" className="text-foreground/90 font-medium">Lot Area (in sq. m)</Label>
               <Input
                 id="lot-area"
                 type="number"
                 placeholder="e.g., 150"
+                className="glass-input h-11"
                 value={lotArea}
                 onChange={(e) => {
                   setLotArea(e.target.value)
@@ -272,9 +274,9 @@ export default function TaxCalculator({
             </div>
             {selectedLocation?.propertyType && (
               <div className="space-y-2">
-                <Label>Property Type</Label>
+                <Label className="text-foreground/90 font-medium">Property Type</Label>
                 <div className="flex h-10 items-center">
-                  <Badge variant="secondary" className="text-base">
+                  <Badge variant="outline" className="text-sm font-semibold border-primary/30 bg-primary/10 px-4 py-1.5 text-primary-foreground dark:text-primary backdrop-blur-md">
                     {selectedLocation.propertyType}
                   </Badge>
                 </div>
@@ -282,18 +284,18 @@ export default function TaxCalculator({
             )}
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col sm:flex-row gap-3">
+        <CardFooter className="flex flex-col sm:flex-row gap-3 relative z-10 pt-2 pb-8">
           <Button
             onClick={handleCalculate}
             disabled={isCalculating}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto h-11 px-8 font-bold shadow-lg shadow-primary/20"
           >
             {isCalculating ? "Calculating..." : "Calculate Tax"}
           </Button>
           <Button
             variant="outline"
             onClick={handleClear}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto h-11 px-8 glass-card border-white/10 hover:bg-white/10"
           >
             Clear
           </Button>

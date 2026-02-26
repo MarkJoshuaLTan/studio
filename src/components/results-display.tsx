@@ -49,9 +49,9 @@ const InfoRow = ({
   }
 
   return (
-    <div className="flex justify-between py-2 text-sm">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className={cn("font-medium text-right", sizeClass)}>
+    <div className="flex justify-between py-2.5 text-sm border-b border-white/5 last:border-0">
+      <dt className="text-muted-foreground/80 font-medium">{label}</dt>
+      <dd className={cn("font-semibold text-right", sizeClass)}>
         {isCurrency && typeof value === 'number' ? (
           <AnimatedCurrency value={value} />
         ) : (
@@ -73,17 +73,17 @@ const ResultRow = ({
   let sizeClass;
 
   if (formattedValue.length > 13) {
-    sizeClass = "text-base";
-  } else if (formattedValue.length > 10) {
-    sizeClass = "text-lg";
-  } else {
     sizeClass = "text-xl";
+  } else if (formattedValue.length > 10) {
+    sizeClass = "text-2xl";
+  } else {
+    sizeClass = "text-3xl";
   }
 
   return (
-    <div className="flex justify-between items-center py-2">
-      <dt className="text-muted-foreground text-base">{label}</dt>
-      <dd className={cn("font-bold text-primary text-right", sizeClass)}>
+    <div className="flex justify-between items-center py-4 border-b border-white/10 last:border-0">
+      <dt className="text-muted-foreground/90 text-lg font-medium">{label}</dt>
+      <dd className={cn("font-bold text-primary text-right tracking-tight drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]", sizeClass)}>
         <AnimatedCurrency value={value} />
       </dd>
     </div>
@@ -93,15 +93,15 @@ const ResultRow = ({
 export function ResultsDisplay({ results }: ResultsDisplayProps) {
   return (
     <div className="mt-0 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out">
-      <Card>
-        <CardHeader>
-          <CardTitle>Tax Calculation</CardTitle>
-          <CardDescription>
+      <Card className="glass-container border-0 overflow-hidden shadow-2xl">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-2xl">Tax Calculation</CardTitle>
+          <CardDescription className="text-muted-foreground/80">
             Your estimated property tax breakdown.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <dl className="space-y-1">
+        <CardContent className="space-y-4">
+          <div className="glass-card p-4 space-y-1">
             <InfoRow label="Barangay" value={results.barangay} />
             <InfoRow label="Location" value={results.location} />
             <InfoRow label="Property Type" value={results.propertyType} />
@@ -116,9 +116,9 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
               value={results.unitValue2028}
               isCurrency={true}
             />
-          </dl>
-          <Separator className="my-4" />
-          <dl className="space-y-1">
+          </div>
+          
+          <div className="glass-card p-4 space-y-1 bg-white/5 border-white/5">
             <InfoRow
               label="Market Value (RPVARA)"
               value={results.marketValue2029}
@@ -129,9 +129,7 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
               value={results.assessedValue2029}
               isCurrency={true}
             />
-          </dl>
-          <Separator className="my-4" />
-          <dl className="space-y-1">
+            <Separator className="my-2 bg-white/10" />
             <InfoRow
               label="Market Value (Current)"
               value={results.marketValue2028}
@@ -142,9 +140,9 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
               value={results.assessedValue2028}
               isCurrency={true}
             />
-          </dl>
-          <Separator className="my-4" />
-          <dl className="space-y-2">
+          </div>
+
+          <div className="pt-2">
             <ResultRow
               label="Current Tax"
               value={results.currentTax}
@@ -152,9 +150,9 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
             <ResultRow
               label={
                 <span>
-                  Est. Yearly Tax (2028)
+                  Tax (2028)
                   <br />
-                  <span className="text-sm font-normal text-muted-foreground">
+                  <span className="text-xs font-bold text-muted-foreground/60 uppercase">
                     (Capped at 6%)
                   </span>
                 </span>
@@ -162,15 +160,14 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
               value={results.realYearlyTax2028}
             />
             <ResultRow
-              label="Est. Yearly Tax (2029)"
+              label="Tax (2029)"
               value={results.yearlyTax2029}
             />
-          </dl>
+          </div>
         </CardContent>
-        <CardFooter className="flex-col items-stretch gap-4 pt-4">
-            <p className="text-center text-xs text-muted-foreground">
-                This is an estimate for informational purposes only. Official tax
-                computation may vary.
+        <CardFooter className="bg-white/5 dark:bg-white/5 py-4">
+            <p className="text-center text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60 w-full">
+                Estimate for informational purposes only
             </p>
         </CardFooter>
       </Card>

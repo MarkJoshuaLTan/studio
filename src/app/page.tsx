@@ -47,11 +47,13 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-background/60 backdrop-blur-xl">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <Building2 className="h-7 w-7 text-primary" />
-            <h1 className="text-xl font-bold tracking-tight md:text-2xl">
+            <div className="p-2 bg-primary/10 rounded-lg backdrop-blur-md border border-primary/20">
+              <Building2 className="h-6 w-6 text-primary" />
+            </div>
+            <h1 className="text-xl font-extrabold tracking-tighter md:text-2xl text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]">
               TaxWise Parañaque
             </h1>
           </div>
@@ -69,7 +71,7 @@ export default function Home() {
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : settings ? (
-            <Tabs defaultValue="land" className="w-full space-y-8">
+            <Tabs defaultValue="land" className="w-full space-y-12">
               <div className="flex justify-center">
                 <TabsList className="grid w-full max-w-md grid-cols-2">
                   <TabsTrigger value="land" className="flex items-center gap-2">
@@ -86,19 +88,19 @@ export default function Home() {
               <TabsContent 
                 value="land" 
                 forceMount
-                className="m-0 focus-visible:ring-0 data-[state=inactive]:hidden data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-4 duration-500 ease-in-out"
+                className="m-0 focus-visible:ring-0 data-[state=inactive]:hidden data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-8 duration-600 ease-in-out"
               >
                 <div className={cn(
                   'grid grid-cols-1 items-start gap-8',
                   results ? 'lg:grid-cols-5' : 'lg:justify-items-center'
                 )}>
                   <div className={cn(
-                    'w-full space-y-8',
+                    'w-full space-y-12',
                     results ? 'lg:col-span-3' : 'max-w-3xl'
                   )}>
                     <TaxCalculator setResults={setResults} settings={settings} />
                     {results && (
-                      <div className="space-y-8">
+                      <div className="space-y-12">
                         <div className="lg:hidden">
                           <ResultsDisplay results={results} />
                         </div>
@@ -120,19 +122,19 @@ export default function Home() {
               <TabsContent 
                 value="building" 
                 forceMount
-                className="m-0 focus-visible:ring-0 data-[state=inactive]:hidden data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-4 duration-500 ease-in-out"
+                className="m-0 focus-visible:ring-0 data-[state=inactive]:hidden data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-8 duration-600 ease-in-out"
               >
                 <div className={cn(
                   'grid grid-cols-1 items-start gap-8',
                   buildingResults ? 'lg:grid-cols-5' : 'lg:justify-items-center'
                 )}>
                   <div className={cn(
-                    'w-full space-y-8',
+                    'w-full space-y-12',
                     buildingResults ? 'lg:col-span-3' : 'max-w-3xl'
                   )}>
                     <BuildingCalculator setResults={setBuildingResults} />
                     {buildingResults && (
-                      <div className="space-y-8">
+                      <div className="space-y-12">
                         <div className="lg:hidden">
                           <BuildingResultsDisplay results={buildingResults} mode="summary" />
                         </div>
@@ -149,7 +151,7 @@ export default function Home() {
               </TabsContent>
             </Tabs>
           ) : (
-            <div className="text-center text-destructive">
+            <div className="text-center text-destructive glass-container p-12">
               Failed to load application settings. Please try again later.
             </div>
           )}
@@ -157,15 +159,15 @@ export default function Home() {
       </main>
 
       <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
-        <div className="flex flex-col gap-2 rounded-full border bg-background/95 p-2 shadow-xl backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex flex-col gap-2 rounded-full border border-white/10 bg-background/60 p-2 shadow-2xl backdrop-blur-xl">
           <AboutDialog />
           <ContactSupportButton />
         </div>
       </div>
 
-      <footer className="border-t py-6 md:px-8 md:py-0">
+      <footer className="border-t border-white/5 py-6 md:px-8">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-          <p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left"></p>
+          <p className="text-balance text-center text-sm leading-loose text-muted-foreground/60 md:text-left"></p>
         </div>
       </footer>
     </div>
