@@ -86,6 +86,7 @@ const ImpactResultRow = ({
   value: number;
   isMain?: boolean;
 }) => {
+  // Estimate length: number + commas + ₱ + .00
   const estimatedLength = Math.floor(value).toLocaleString().length + 4;
   let sizeClass;
 
@@ -209,6 +210,14 @@ function ProposalCard({ title, currentTax, proposalTax, proposalAL, proposalAV, 
   proposalAV: number;
   delayClass: string;
 }) {
+  // Font scaling for the main centered value
+  const estimatedLength = Math.floor(proposalTax).toLocaleString().length + 4;
+  let displaySize;
+  if (estimatedLength > 18) displaySize = "text-lg";
+  else if (estimatedLength > 15) displaySize = "text-xl";
+  else if (estimatedLength > 12) displaySize = "text-2xl";
+  else displaySize = "text-3xl";
+
   return (
     <Card className={cn(
       "flex flex-col glass-container border-white/10 shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
@@ -229,6 +238,10 @@ function ProposalCard({ title, currentTax, proposalTax, proposalAL, proposalAV, 
           label="Current Yearly Tax"
           value={currentTax}
         />
+        <ImpactResultRow
+          label="Assessed Value"
+          value={proposalAV}
+        />
         
         <Separator className="my-4 bg-white/5" />
         
@@ -241,15 +254,16 @@ function ProposalCard({ title, currentTax, proposalTax, proposalAL, proposalAV, 
           </div>
         </div>
 
-        <ImpactResultRow
-          label="Assessed Value"
-          value={proposalAV}
-        />
-        <ImpactResultRow
-          label="Estimated Yearly Tax"
-          value={proposalTax}
-          isMain={true}
-        />
+        <div className="text-center pt-2">
+          <div
+            className={cn(
+              "font-bold text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.2)] whitespace-nowrap break-keep",
+              displaySize
+            )}
+          >
+            <AnimatedCurrency value={proposalTax} />
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
