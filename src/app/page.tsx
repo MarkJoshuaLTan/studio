@@ -119,17 +119,27 @@ export default function Home() {
               <TabsContent value="building" className="m-0 focus-visible:ring-0">
                 <div className={cn(
                   'grid grid-cols-1 items-start gap-8',
-                  buildingResults ? 'lg:grid-cols-1' : 'lg:justify-items-center'
+                  buildingResults ? 'lg:grid-cols-5' : 'lg:justify-items-center'
                 )}>
                   <div className={cn(
                     'w-full space-y-8',
-                    !buildingResults && 'max-w-3xl'
+                    buildingResults ? 'lg:col-span-3' : 'max-w-3xl'
                   )}>
                     <BuildingCalculator setResults={setBuildingResults} />
                     {buildingResults && (
-                      <BuildingResultsDisplay results={buildingResults} />
+                      <>
+                        <div className="lg:hidden">
+                          <BuildingResultsDisplay results={buildingResults} mode="summary" />
+                        </div>
+                        <BuildingResultsDisplay results={buildingResults} mode="impact" />
+                      </>
                     )}
                   </div>
+                  {buildingResults && (
+                    <div className="hidden lg:block lg:col-span-2 lg:sticky lg:top-24">
+                      <BuildingResultsDisplay results={buildingResults} mode="summary" />
+                    </div>
+                  )}
                 </div>
               </TabsContent>
             </Tabs>
