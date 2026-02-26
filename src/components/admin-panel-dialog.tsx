@@ -92,12 +92,12 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
             ? isMaximized
               ? "max-w-full w-full h-full max-h-full left-0 top-0 translate-x-0 translate-y-0 rounded-none bg-background" 
               : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-2xl glass-container border-0"
-            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-2xl bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-800 text-white backdrop-blur-3xl border border-white/5"
+            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2rem] glass-container bg-black/90 backdrop-blur-3xl border border-white/10"
         )}
       >
           {!isAuthenticated ? (
-            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-green-500 z-50">
-              <X className="h-5 w-5 text-neutral-400 hover:text-white" />
+            <DialogClose className="absolute right-6 top-6 rounded-full border border-primary/50 p-1.5 opacity-70 transition-all hover:opacity-100 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary z-50">
+              <X className="h-5 w-5 text-primary" />
               <span className="sr-only">Close</span>
             </DialogClose>
           ) : (
@@ -113,13 +113,15 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
             </Button>
           )}
 
-          <div className={cn("flex flex-col h-full", !isAuthenticated && "p-8")}>
-            <div className={cn("flex flex-col space-y-1.5 text-center sm:text-left mb-6", isAuthenticated && "px-6 pt-6")}>
-              <DialogTitle className="text-2xl font-bold tracking-tight">Admin Panel</DialogTitle>
-              <DialogDescription className="text-sm text-neutral-400">
-                {isAuthenticated ? "Manage application settings." : "Please log in to continue."}
-              </DialogDescription>
-            </div>
+          <div className={cn("flex flex-col h-full", !isAuthenticated ? "p-10" : "p-0")}>
+            {!isAuthenticated && (
+              <div className="mb-10 space-y-1">
+                <DialogTitle className="text-4xl font-extrabold tracking-tight text-white">Admin Panel</DialogTitle>
+                <DialogDescription className="text-neutral-400 font-medium text-base">
+                  Please log in to continue.
+                </DialogDescription>
+              </div>
+            )}
 
             <AdminPanel 
               isAuthenticated={isAuthenticated}
@@ -146,7 +148,15 @@ function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, 
   return (
       <div className="flex-1 overflow-hidden">
         {isAuthenticated ? (
-            <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
+            <div className="h-full flex flex-col">
+              <div className="flex flex-col space-y-1.5 text-center sm:text-left mb-6 px-6 pt-6">
+                <DialogTitle className="text-2xl font-bold tracking-tight">Admin Dashboard</DialogTitle>
+                <DialogDescription className="text-sm text-neutral-400">
+                  Manage application settings and data.
+                </DialogDescription>
+              </div>
+              <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
+            </div>
         ) : (
             <LoginForm onLoginSuccess={onLoginSuccess} />
         )}
@@ -179,50 +189,48 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
   };
 
   return (
-    <div className="flex h-full items-center justify-center">
-      <Card className="w-full bg-black/40 border-white/10 shadow-2xl rounded-2xl backdrop-blur-xl">
-        <form onSubmit={handleLogin}>
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">Login</CardTitle>
-            <CardDescription className="text-neutral-400">
-              Enter your credentials to access the admin panel.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="username" className="text-neutral-300">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                required
-                className="bg-neutral-900/50 border-neutral-700 text-white focus-visible:ring-green-500 transition-all h-11"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password" className="text-neutral-300">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                required
-                className="bg-neutral-900/50 border-neutral-700 text-white focus-visible:ring-green-500 transition-all h-11"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="pt-2 pb-8">
-            <Button 
-              type="submit" 
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-bold transition-all rounded-xl h-12 shadow-lg shadow-green-900/20" 
-              disabled={isLoading}
-            >
-              {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in...</> : "Sign in"}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
+    <div className="w-full glass-card p-8 rounded-[2.5rem] border-white/10 bg-white/[0.03] shadow-2xl">
+      <form onSubmit={handleLogin} className="space-y-8">
+        <div className="space-y-2">
+          <h3 className="text-3xl font-bold text-white tracking-tight">Login</h3>
+          <p className="text-xs text-neutral-500 font-bold uppercase tracking-[0.2em]">
+            Enter your credentials to access the admin panel.
+          </p>
+        </div>
+        
+        <div className="space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="username" className="text-neutral-300 text-sm font-semibold ml-1">Username</Label>
+            <Input
+              id="username"
+              type="text"
+              required
+              className="glass-input h-14 rounded-2xl text-white border-white/10 bg-black/40 focus:ring-primary/50 text-base"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-neutral-300 text-sm font-semibold ml-1">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              required
+              className="glass-input h-14 rounded-2xl text-white border-white/10 bg-black/40 focus:ring-primary/50 text-base"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <Button 
+          type="submit" 
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-extrabold transition-all rounded-[1.25rem] h-16 shadow-lg shadow-primary/20 text-lg tracking-wide" 
+          disabled={isLoading}
+        >
+          {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : "Sign in"}
+        </Button>
+      </form>
     </div>
   )
 }
