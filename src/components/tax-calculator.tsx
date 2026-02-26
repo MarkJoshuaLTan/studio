@@ -119,6 +119,15 @@ export default function TaxCalculator({
     }
   };
 
+  const handleClear = () => {
+    setSelectedBarangay(null);
+    setSelectedLocation(null);
+    setLotArea("");
+    setBarangaySearch("");
+    setLocationSearch("");
+    setResults(null);
+  };
+
   const handleCalculate = () => {
     if (!selectedBarangay) {
       toast({
@@ -273,13 +282,20 @@ export default function TaxCalculator({
             )}
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={handleCalculate}
             disabled={isCalculating}
-            className="w-full md:w-auto"
+            className="w-full sm:w-auto"
           >
             {isCalculating ? "Calculating..." : "Calculate Tax"}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleClear}
+            className="w-full sm:w-auto"
+          >
+            Clear
           </Button>
         </CardFooter>
       </Card>
