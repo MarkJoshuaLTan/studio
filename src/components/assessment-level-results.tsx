@@ -51,11 +51,11 @@ const ResultRow = ({
   }
 
   return (
-    <div className="flex justify-between items-center py-2.5">
-      <dt className="text-muted-foreground/80 text-xs font-medium mr-2 shrink-0">{label}</dt>
+    <div className="flex justify-between items-start py-2.5">
+      <dt className="text-muted-foreground/80 text-xs font-medium mr-2 pt-0.5 leading-tight">{label}</dt>
       <dd
         className={cn(
-          "font-bold text-right whitespace-nowrap break-keep",
+          "font-bold text-right whitespace-nowrap break-keep shrink-0",
           sizeClass,
           isMain ? "text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.2)]" : "text-foreground/90"
         )}
@@ -129,15 +129,11 @@ export function AssessmentLevelResults({
                 </div>
 
                  <ResultRow
-                  label={
-                    <span className="text-muted-foreground/80">
-                      2028 (Capped at 6%)
-                    </span>
-                  }
+                  label="2028 (Capped at 6%)"
                   value={yearlyTax2028Capped}
                 />
                 <ResultRow
-                  label={<span className="text-muted-foreground/80">2029 & 2030</span>}
+                  label="2029 & 2030"
                   value={yearlyTaxRPVARA}
                   isMain={true}
                 />
