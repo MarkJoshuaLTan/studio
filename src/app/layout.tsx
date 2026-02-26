@@ -33,11 +33,19 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} font-body antialiased min-h-screen relative overflow-x-hidden`}>
-        <div className="fixed inset-0 -z-10 bg-background">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/10" />
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
+        {/* Modern atmospheric background for depth */}
+        <div className="fixed inset-0 -z-10 bg-background overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-background via-background/80 to-primary/5" />
+          
+          {/* Animated pulsing glow orbs */}
+          <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[120px] animate-[pulse_8s_infinite_ease-in-out]" />
+          <div className="absolute bottom-[-15%] right-[-5%] w-[50%] h-[50%] bg-green-500/5 rounded-full blur-[100px] animate-[pulse_12s_infinite_ease-in-out_2s]" />
+          <div className="absolute top-[20%] right-[-10%] w-[30%] h-[30%] bg-blue-500/5 rounded-full blur-[80px] animate-[pulse_10s_infinite_ease-in-out_1s]" />
+          
+          {/* Subtle noise texture for analog feel */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
         </div>
+
         <ThemeProvider>
           <IntroAnimation />
           <PWAInstaller />
