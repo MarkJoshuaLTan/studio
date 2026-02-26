@@ -86,7 +86,7 @@ export default function Home() {
               <TabsContent 
                 value="land" 
                 forceMount
-                className="m-0 focus-visible:ring-0 data-[state=inactive]:hidden data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-2 duration-300 ease-in-out"
+                className="m-0 focus-visible:ring-0 data-[state=inactive]:hidden data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-4 duration-500 ease-in-out"
               >
                 <div className={cn(
                   'grid grid-cols-1 items-start gap-8',
@@ -98,7 +98,7 @@ export default function Home() {
                   )}>
                     <TaxCalculator setResults={setResults} settings={settings} />
                     {results && (
-                      <>
+                      <div className="space-y-8">
                         <div className="lg:hidden">
                           <ResultsDisplay results={results} />
                         </div>
@@ -106,7 +106,7 @@ export default function Home() {
                           results={results}
                           settings={settings}
                         />
-                      </>
+                      </div>
                     )}
                   </div>
                   {results && (
@@ -120,7 +120,7 @@ export default function Home() {
               <TabsContent 
                 value="building" 
                 forceMount
-                className="m-0 focus-visible:ring-0 data-[state=inactive]:hidden data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-2 duration-300 ease-in-out"
+                className="m-0 focus-visible:ring-0 data-[state=inactive]:hidden data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-4 duration-500 ease-in-out"
               >
                 <div className={cn(
                   'grid grid-cols-1 items-start gap-8',
@@ -132,12 +132,12 @@ export default function Home() {
                   )}>
                     <BuildingCalculator setResults={setBuildingResults} />
                     {buildingResults && (
-                      <>
+                      <div className="space-y-8">
                         <div className="lg:hidden">
                           <BuildingResultsDisplay results={buildingResults} mode="summary" />
                         </div>
                         <BuildingResultsDisplay results={buildingResults} mode="impact" />
-                      </>
+                      </div>
                     )}
                   </div>
                   {buildingResults && (

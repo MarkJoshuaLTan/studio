@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -9,9 +8,10 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatCurrency, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import type { CalculationResults } from "./results-display";
 import type { TaxSettings } from "@/lib/definitions";
+import { AnimatedCurrency } from "./animated-currency";
 
 interface AssessmentLevelResultsProps {
   results: CalculationResults;
@@ -24,22 +24,22 @@ const ResultRow = ({
   isMain = false,
 }: {
   label: React.ReactNode;
-  value: string;
+  value: number;
   isMain?: boolean;
 }) => {
-  const valueLength = value.length;
+  const formattedValue = String(value);
   let sizeClass;
 
   if (isMain) {
-    if (valueLength > 13) {
+    if (formattedValue.length > 13) {
       sizeClass = "text-base";
-    } else if (valueLength > 10) {
+    } else if (formattedValue.length > 10) {
       sizeClass = "text-lg";
     } else {
       sizeClass = "text-xl";
     }
   } else {
-    if (valueLength > 14) {
+    if (formattedValue.length > 14) {
       sizeClass = "text-xs";
     } else {
       sizeClass = "text-sm";
@@ -56,7 +56,7 @@ const ResultRow = ({
           isMain ? "text-primary" : ""
         )}
       >
-        {value}
+        <AnimatedCurrency value={value} />
       </dd>
     </div>
   );
@@ -87,13 +87,19 @@ export function AssessmentLevelResults({
           </CardDescription>
       </CardHeader>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
-        {assessmentLevels.map((level) => {
+        {assessmentLevels.map((level, index) => {
           // This value changes based on the assessment level for demonstration
           const assessedValueRPVARA = results.marketValue2029 * level;
           const yearlyTaxRPVARA = assessedValueRPVARA * taxRate;
 
           return (
-            <Card key={level} className="flex flex-col">
+            <Card 
+              key={level} 
+              className={cn(
+                "flex flex-col animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
+                index === 0 ? "delay-0" : index === 1 ? "delay-150" : "delay-300"
+              )}
+            >
               <CardHeader className="pb-4">
                 <CardTitle className="text-center text-5xl font-bold text-accent">
                   {level * 100}%
@@ -106,7 +112,7 @@ export function AssessmentLevelResults({
                 <dl>
                   <ResultRow
                     label="Current Yearly Tax"
-                    value={formatCurrency(currentTax)}
+                    value={currentTax}
                   />
                   <Separator className="my-2" />
                   <div className="text-center font-semibold text-primary mb-1 leading-tight">
@@ -122,11 +128,11 @@ export function AssessmentLevelResults({
                         <span className="font-normal text-xs">(Capped at 6%)</span>
                       </span>
                     }
-                    value={formatCurrency(yearlyTax2028Capped)}
+                    value={yearlyTax2028Capped}
                   />
                   <ResultRow
                     label={<span className="text-muted-foreground">2029 & 2030</span>}
-                    value={formatCurrency(yearlyTaxRPVARA)}
+                    value={yearlyTaxRPVARA}
                     isMain={true}
                   />
                 </dl>

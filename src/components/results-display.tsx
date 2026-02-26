@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -10,7 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatCurrency, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { AnimatedCurrency } from "./animated-currency";
 
 export type CalculationResults = {
   barangay: string;
@@ -36,12 +36,14 @@ interface ResultsDisplayProps {
 const InfoRow = ({
   label,
   value,
+  isCurrency = false,
 }: {
   label: string;
   value: string | number;
+  isCurrency?: boolean;
 }) => {
   const valueStr = String(value);
-  let sizeClass = ""; // inherit text-sm from parent
+  let sizeClass = "";
   if (valueStr.length > 15) {
     sizeClass = "text-xs";
   }
@@ -49,7 +51,13 @@ const InfoRow = ({
   return (
     <div className="flex justify-between py-2 text-sm">
       <dt className="text-muted-foreground">{label}</dt>
-      <dd className={cn("font-medium text-right", sizeClass)}>{value}</dd>
+      <dd className={cn("font-medium text-right", sizeClass)}>
+        {isCurrency && typeof value === 'number' ? (
+          <AnimatedCurrency value={value} />
+        ) : (
+          value
+        )}
+      </dd>
     </div>
   );
 };
@@ -59,14 +67,14 @@ const ResultRow = ({
   value,
 }: {
   label: React.ReactNode;
-  value: string;
+  value: number;
 }) => {
-  const valueLength = value.length;
+  const formattedValue = String(value);
   let sizeClass;
 
-  if (valueLength > 13) {
+  if (formattedValue.length > 13) {
     sizeClass = "text-base";
-  } else if (valueLength > 10) {
+  } else if (formattedValue.length > 10) {
     sizeClass = "text-lg";
   } else {
     sizeClass = "text-xl";
@@ -76,16 +84,15 @@ const ResultRow = ({
     <div className="flex justify-between items-center py-2">
       <dt className="text-muted-foreground text-base">{label}</dt>
       <dd className={cn("font-bold text-primary text-right", sizeClass)}>
-        {value}
+        <AnimatedCurrency value={value} />
       </dd>
     </div>
   );
 };
 
 export function ResultsDisplay({ results }: ResultsDisplayProps) {
-
   return (
-    <div className="mt-0">
+    <div className="mt-0 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out">
       <Card>
         <CardHeader>
           <CardTitle>Tax Calculation</CardTitle>
@@ -101,40 +108,46 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
             <InfoRow label="Lot Area" value={`${results.lotArea} sq.m`} />
             <InfoRow
               label="Unit Value (RPVARA)"
-              value={formatCurrency(results.unitValue2029)}
+              value={results.unitValue2029}
+              isCurrency={true}
             />
             <InfoRow
               label="Unit Value (Current)"
-              value={formatCurrency(results.unitValue2028)}
+              value={results.unitValue2028}
+              isCurrency={true}
             />
           </dl>
           <Separator className="my-4" />
           <dl className="space-y-1">
             <InfoRow
               label="Market Value (RPVARA)"
-              value={formatCurrency(results.marketValue2029)}
+              value={results.marketValue2029}
+              isCurrency={true}
             />
             <InfoRow
               label="Assessed Value (RPVARA)"
-              value={formatCurrency(results.assessedValue2029)}
+              value={results.assessedValue2029}
+              isCurrency={true}
             />
           </dl>
           <Separator className="my-4" />
           <dl className="space-y-1">
             <InfoRow
               label="Market Value (Current)"
-              value={formatCurrency(results.marketValue2028)}
+              value={results.marketValue2028}
+              isCurrency={true}
             />
             <InfoRow
               label="Assessed Value (Current)"
-              value={formatCurrency(results.assessedValue2028)}
+              value={results.assessedValue2028}
+              isCurrency={true}
             />
           </dl>
           <Separator className="my-4" />
           <dl className="space-y-2">
             <ResultRow
               label="Current Tax"
-              value={formatCurrency(results.currentTax)}
+              value={results.currentTax}
             />
             <ResultRow
               label={
@@ -146,11 +159,11 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
                   </span>
                 </span>
               }
-              value={formatCurrency(results.realYearlyTax2028)}
+              value={results.realYearlyTax2028}
             />
             <ResultRow
               label="Est. Yearly Tax (2029)"
-              value={formatCurrency(results.yearlyTax2029)}
+              value={results.yearlyTax2029}
             />
           </dl>
         </CardContent>
