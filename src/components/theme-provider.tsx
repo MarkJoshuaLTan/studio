@@ -14,15 +14,16 @@ const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
 );
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
+  // Set dark as the initial state
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") as Theme | null;
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (storedTheme) {
       setTheme(storedTheme);
     } else {
-      setTheme(prefersDark ? 'dark' : 'light');
+      // Default to dark for new users if no preference is stored
+      setTheme('dark');
     }
   }, []);
 
