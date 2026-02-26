@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
   CardDescription,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -28,7 +27,7 @@ const ResultRow = ({
   isMain?: boolean;
 }) => {
   // Estimate length: number + commas + ₱ + .00
-  const estimatedLength = value.toLocaleString().length + 4;
+  const estimatedLength = Math.floor(value).toLocaleString().length + 4;
   let sizeClass;
 
   if (isMain) {
@@ -42,19 +41,21 @@ const ResultRow = ({
       sizeClass = "text-2xl";
     }
   } else {
-    if (estimatedLength > 15) {
+    if (estimatedLength > 18) {
       sizeClass = "text-[10px]";
+    } else if (estimatedLength > 15) {
+      sizeClass = "text-xs";
     } else {
       sizeClass = "text-sm";
     }
   }
 
   return (
-    <div className="flex justify-between items-center py-3">
-      <dt className="text-muted-foreground/80 text-sm font-medium mr-2">{label}</dt>
+    <div className="flex justify-between items-center py-2.5">
+      <dt className="text-muted-foreground/80 text-xs font-medium mr-2 shrink-0">{label}</dt>
       <dd
         className={cn(
-          "font-bold text-right break-all",
+          "font-bold text-right whitespace-nowrap break-keep",
           sizeClass,
           isMain ? "text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.2)]" : "text-foreground/90"
         )}
@@ -102,7 +103,7 @@ export function AssessmentLevelResults({
             >
               <CardHeader className="pb-4 pt-8">
                 <div className="text-center">
-                  <div className="text-5xl font-black text-primary mb-2 drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]">
+                  <div className="text-5xl font-black text-primary mb-1 drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]">
                     {level * 100}%
                   </div>
                   <CardDescription className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground/70">
@@ -115,16 +116,22 @@ export function AssessmentLevelResults({
                   label="Current Yearly Tax"
                   value={currentTax}
                 />
-                <Separator className="my-2 bg-white/5" />
-                <div className="text-center pb-2">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-primary/60">
-                    RPVARA PROJECTIONS
-                  </span>
+                
+                <Separator className="my-4 bg-white/5" />
+                
+                <div className="text-center pb-3">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-primary/80">
+                    RPVARA
+                  </div>
+                  <div className="text-[9px] font-bold uppercase tracking-tight text-muted-foreground/60">
+                    (Est. Yearly Tax)
+                  </div>
                 </div>
+
                  <ResultRow
                   label={
                     <span className="text-muted-foreground/80">
-                      2028 (6% Cap)
+                      2028 (Capped at 6%)
                     </span>
                   }
                   value={yearlyTax2028Capped}
