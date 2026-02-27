@@ -91,9 +91,9 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
             : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2.5rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] shadow-primary/20"
         )}
       >
-          {/* Mesh Gradient Background for Authenticated State */}
+          {/* Mesh Gradient Background for Authenticated State - Subtle iOS Style */}
           {isAuthenticated && (
-            <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden opacity-30 dark:opacity-100">
+            <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden opacity-30 dark:opacity-20 transition-opacity duration-1000">
               <div className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-primary/5 rounded-full blur-[150px] animate-pulse" />
               <div className="absolute bottom-[-20%] right-[-5%] w-[60%] h-[60%] bg-emerald-500/2 rounded-full blur-[120px] animate-[pulse_10s_infinite]" />
             </div>
@@ -148,7 +148,9 @@ function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, 
   return (
       <div className="flex-1 overflow-hidden">
         {isAuthenticated ? (
-            <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
+            <div className="admin-dashboard-wrapper h-full overflow-y-auto overflow-x-hidden scroll-smooth premium-scrollbar">
+              <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
+            </div>
         ) : (
             <LoginForm onLoginSuccess={onLoginSuccess} />
         )}
@@ -247,8 +249,8 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
   };
 
   return (
-    <div className="h-full flex flex-col px-4 md:px-12 pt-8 md:pt-12 pb-10">
-       <Tabs defaultValue="dashboard" onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+    <div className="px-4 md:px-12 pt-8 md:pt-12 pb-10">
+       <Tabs defaultValue="dashboard" onValueChange={setActiveTab} className="flex flex-col">
         <div className="flex flex-col lg:flex-row justify-between items-start gap-8 mb-10">
           <div className="space-y-6 flex-1 w-full lg:w-auto">
             <div className="space-y-1">
@@ -295,10 +297,10 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
           </div>
         </div>
 
-        <TabsContent value="dashboard" className="flex-1 overflow-y-auto pr-2 m-0 focus-visible:ring-0">
+        <TabsContent value="dashboard" className="m-0 focus-visible:ring-0">
             {settings && <AdminDashboard ref={dashboardRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
         </TabsContent>
-        <TabsContent value="calibrate" className="flex-1 overflow-y-auto pr-2 m-0 focus-visible:ring-0">
+        <TabsContent value="calibrate" className="m-0 focus-visible:ring-0">
             {settings && <CalibrateSettings ref={calibrateRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
         </TabsContent>
       </Tabs>
