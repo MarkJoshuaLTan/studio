@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Loader2, ArrowLeft, X, Maximize2, Minimize2, Save } from "lucide-react";
+import { Settings, Loader2, ArrowLeft, X, Maximize2, Minimize2, Save, LogOut } from "lucide-react";
 import type { TaxSettings, LocationDetails, PropertyType, SuggestedItem } from "@/lib/definitions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,7 +28,6 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [hasUnappliedChanges, setHasUnappliedChanges] = useState(false);
-  const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
     const auth = localStorage.getItem("admin-auth");
@@ -64,7 +63,6 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setIsMaximized(false);
     localStorage.removeItem("admin-auth");
     handleClose();
   };
@@ -72,7 +70,6 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
   const onDialogChange = (isOpen: boolean) => {
     if (!isOpen) {
       handleClose();
-      setIsMaximized(false);
     } else {
       setOpen(true);
     }
@@ -90,37 +87,23 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
         className={cn(
           "p-0 border-none transition-all duration-500 ease-in-out overflow-hidden shadow-none",
           isAuthenticated 
-            ? isMaximized
-              ? "max-w-full w-full h-full max-h-full left-0 top-0 translate-x-0 translate-y-0 rounded-none bg-background" 
-              : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-3xl bg-white/95 dark:bg-black/90 backdrop-blur-3xl border border-white/20 dark:border-white/5 shadow-2xl shadow-primary/20"
+            ? "max-w-[98vw] w-[98vw] h-[96vh] rounded-[2rem] bg-[#141E19]/65 backdrop-blur-[30px] border border-primary/15 shadow-[0_0_50px_rgba(34,197,94,0.1)]"
             : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2.5rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] shadow-primary/20"
         )}
       >
           {/* Mesh Gradient Background for Authenticated State */}
           {isAuthenticated && (
-            <div className="mesh-gradient-overlay" />
+            <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
+              <div className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-primary/10 rounded-full blur-[150px] animate-pulse" />
+              <div className="absolute bottom-[-20%] right-[-5%] w-[60%] h-[60%] bg-emerald-500/5 rounded-full blur-[120px] animate-[pulse_10s_infinite]" />
+            </div>
           )}
 
-          {!isAuthenticated ? (
+          {!isAuthenticated && (
             <DialogClose className="absolute right-6 top-6 rounded-full border border-primary/50 p-1.5 opacity-70 transition-all hover:opacity-100 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary z-50">
               <X className="h-5 w-5 text-primary" />
               <span className="sr-only">Close</span>
             </DialogClose>
-          ) : (
-            <div className="absolute right-4 top-4 flex items-center gap-2 z-50">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full opacity-70 transition-all hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-green-500 text-neutral-400 hover:text-foreground hover:bg-white/10 dark:hover:bg-white/5"
-                onClick={() => setIsMaximized(!isMaximized)}
-                title={isMaximized ? "Restore" : "Maximize"}
-              >
-                {isMaximized ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
-              </Button>
-              <DialogClose className="rounded-full border border-white/20 p-1.5 opacity-70 transition-all hover:opacity-100 hover:bg-white/10 dark:hover:bg-white/5">
-                <X className="h-5 w-5" />
-              </DialogClose>
-            </div>
           )}
 
           <div className={cn("flex flex-col h-full relative z-10", !isAuthenticated ? "p-10" : "p-0")}>
@@ -158,15 +141,7 @@ function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, 
   return (
       <div className="flex-1 overflow-hidden">
         {isAuthenticated ? (
-            <div className="h-full flex flex-col">
-              <div className="flex flex-col space-y-1.5 text-center sm:text-left mb-6 px-8 pt-8">
-                <DialogTitle className="text-3xl font-black tracking-tight text-foreground">Admin Dashboard</DialogTitle>
-                <DialogDescription className="text-sm font-medium text-muted-foreground opacity-70">
-                  Manage application settings and valuation data.
-                </DialogDescription>
-              </div>
-              <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
-            </div>
+            <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
         ) : (
             <LoginForm onLoginSuccess={onLoginSuccess} />
         )}
@@ -265,28 +240,54 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
   };
 
   return (
-    <div className="h-full flex flex-col px-8 pb-8">
+    <div className="h-full flex flex-col px-12 pt-12 pb-10">
        <Tabs defaultValue="dashboard" onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <TabsList className="h-12 bg-black/10 dark:bg-white/10 p-1.5 rounded-2xl backdrop-blur-md border border-white/10">
-            <TabsTrigger value="dashboard" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-white/20 data-[state=active]:shadow-sm px-6 transition-all duration-300">Dashboard</TabsTrigger>
-            <TabsTrigger value="calibrate" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-white/20 data-[state=active]:shadow-sm px-6 transition-all duration-300">Calibrate</TabsTrigger>
-          </TabsList>
-          <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-10">
+          <div className="space-y-6 flex-1">
+            <div className="space-y-1">
+              <h1 className="text-5xl font-black tracking-tighter text-foreground">Admin Dashboard</h1>
+              <p className="text-lg font-medium text-muted-foreground/70">Manage application settings and data.</p>
+            </div>
+            <TabsList className="h-14 bg-black/40 dark:bg-black/60 p-1.5 rounded-2xl border border-white/5 shadow-inner">
+              <TabsTrigger 
+                value="dashboard" 
+                className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg px-8 py-2.5 font-bold transition-all duration-300"
+              >
+                Dashboard
+              </TabsTrigger>
+              <TabsTrigger 
+                value="calibrate" 
+                className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg px-8 py-2.5 font-bold transition-all duration-300"
+              >
+                Calibrate
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          <div className="flex items-center gap-3 p-2 bg-black/20 rounded-[2rem] border border-white/5 backdrop-blur-md">
             <Button 
               onClick={handleGlobalSave} 
               disabled={isSaving}
-              className="flex-1 md:flex-none btn-ios-green h-11 px-6 active:scale-95 transition-transform"
+              className="btn-ios-green h-12 px-8 rounded-2xl active:scale-95 transition-transform"
             >
               {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
               Save Changes
             </Button>
-            <Button variant="ghost" onClick={onClose} className="hidden sm:flex h-11 rounded-xl hover:bg-white/10 dark:hover:bg-white/5 transition-all">
+            <Button variant="ghost" onClick={onClose} className="h-12 px-6 rounded-2xl hover:bg-white/5 text-foreground/80 transition-all font-semibold">
               <ArrowLeft className="mr-2 h-4 w-4"/> Back to App
             </Button>
-            <Button variant="outline" className="h-11 rounded-xl glass-card border-white/20 hover:bg-white/10 dark:hover:bg-white/5 active:scale-95 transition-all" onClick={onLogout}>Logout</Button>
+            <div className="w-px h-8 bg-white/10 mx-1" />
+            <Button 
+              variant="outline" 
+              className="h-12 px-6 rounded-2xl border-white/10 bg-white/5 hover:bg-destructive/20 hover:border-destructive/30 hover:text-destructive-foreground transition-all active:scale-95 font-bold" 
+              onClick={onLogout}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
           </div>
         </div>
+
         <TabsContent value="dashboard" className="flex-1 overflow-y-auto pr-2 m-0 focus-visible:ring-0">
             {settings && <AdminDashboard ref={dashboardRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
         </TabsContent>
@@ -309,7 +310,6 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
 
   useEffect(() => {
     if (settingsProp) {
-        // Initialize settings without triggering global isLoading on every selection
         if (!editedSettings) {
           setIsLoading(true);
         }
@@ -319,7 +319,7 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
         }
         setIsLoading(false);
     }
-  }, [settingsProp]); // Removed selectedBarangay to prevent selection-flicker
+  }, [settingsProp]);
 
   const handleLocationDataChange = (locationName: string, field: keyof LocationDetails, value: string) => {
     if (!editedSettings || !selectedBarangay) return;
@@ -399,80 +399,90 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
   }
 
   return (
-    <div className="space-y-8 pb-8">
-        <Card className="glass-card border-white/10 dark:border-white/[0.05] bg-white/20 dark:bg-white/[0.02] shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">Unit Value Tax Data</CardTitle>
-            <CardDescription className="text-sm opacity-70">Manage specific valuation units across barangays.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col md:flex-row gap-6 mb-8">
-                <div className="w-full md:w-1/2 space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 ml-1">Barangay</Label>
-                    <AutocompleteInput
-                        placeholder="Select a Barangay"
-                        suggestions={filteredBarangaySuggestions}
-                        onInputChange={setBarangaySearch}
-                        onSelect={(item) => {
-                            if (item) setSelectedBarangay(item.name);
-                        }}
-                        value={selectedBarangay ? { name: selectedBarangay, type: 'barangay' } : null}
-                        onOpen={() => setBarangaySearch("")}
-                        disablePortal={true}
-                    />
-                </div>
-                <div className="w-full md:w-1/2 space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 ml-1">Search Location</Label>
-                    <Input 
-                      placeholder="Filter locations..." 
-                      className="glass-input h-12 rounded-[14px] border-white/20 focus:ring-primary/30" 
-                      value={locationSearch} 
-                      onChange={(e) => setLocationSearch(e.target.value)} 
-                      disabled={!selectedBarangay} 
-                    />
+    <div className="space-y-10 pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+            <div className="space-y-3">
+                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary ml-1">Select Barangay</Label>
+                <AutocompleteInput
+                    placeholder="Search for a barangay..."
+                    suggestions={filteredBarangaySuggestions}
+                    onInputChange={setBarangaySearch}
+                    onSelect={(item) => {
+                        if (item) setSelectedBarangay(item.name);
+                    }}
+                    value={selectedBarangay ? { name: selectedBarangay, type: 'barangay' } : null}
+                    onOpen={() => setBarangaySearch("")}
+                    disablePortal={true}
+                />
+            </div>
+            <div className="space-y-3">
+                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary ml-1">Search Location</Label>
+                <div className="relative">
+                  <Input 
+                    placeholder="Filter locations by name..." 
+                    className="glass-input h-14 rounded-[18px] border-white/10 bg-black/40 px-6 focus:ring-primary/30" 
+                    value={locationSearch} 
+                    onChange={(e) => setLocationSearch(e.target.value)} 
+                    disabled={!selectedBarangay} 
+                  />
                 </div>
             </div>
-            <ScrollArea className="h-[45vh] rounded-[2rem] border border-white/10 bg-black/5 dark:bg-white/[0.02] p-6 shadow-inner">
-                <div className="space-y-4">
-                    {filteredLocations.length > 0 ? filteredLocations.map(([locationName, details]) => (
-                        <Card key={locationName} className="glass-card border-white/5 bg-white/40 dark:bg-white/5 glass-card-hover transition-all duration-300">
-                            <CardHeader className="pb-2">
-                              <CardTitle className="text-base font-bold tracking-tight">{locationName}</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                                    <div className="space-y-2">
-                                        <Label htmlFor={`uv2028-${locationName}`} className="text-[10px] font-black uppercase tracking-widest opacity-50">Unit Value (Current)</Label>
-                                        <Input id={`uv2028-${locationName}`} type="text" inputMode="decimal" className="glass-input h-10 rounded-xl border-white/10 focus:ring-primary/20" value={details.unitValue2028} onChange={e => handleLocationDataChange(locationName, 'unitValue2028', e.target.value)} />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor={`uv2029-${locationName}`} className="text-[10px] font-black uppercase tracking-widest opacity-50">Unit Value (RPVARA)</Label>
-                                        <Input id={`uv2029-${locationName}`} type="text" inputMode="decimal" className="glass-input h-10 rounded-xl border-white/10 focus:ring-primary/20" value={details.unitValue2029} onChange={e => handleLocationDataChange(locationName, 'unitValue2029', e.target.value)} />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor={`pt-${locationName}`} className="text-[10px] font-black uppercase tracking-widest opacity-50">Property Type</Label>
-                                        <Select value={details.propertyType} onValueChange={(value: PropertyType) => handleLocationDataChange(locationName, 'propertyType', value)}>
-                                            <SelectTrigger id={`pt-${locationName}`} className="glass-input h-10 rounded-xl border-white/10"><SelectValue /></SelectTrigger>
-                                            <SelectContent className="glass-container border-white/10 backdrop-blur-3xl shadow-2xl">
-                                                <SelectItem value="Residential" className="focus:bg-primary/20 rounded-lg">Residential</SelectItem>
-                                                <SelectItem value="Commercial" className="focus:bg-primary/20 rounded-lg">Commercial</SelectItem>
-                                                <SelectItem value="Industrial" className="focus:bg-primary/20 rounded-lg">Industrial</SelectItem>
-                                                <SelectItem value="Commercial / Industrial" className="focus:bg-primary/20 rounded-lg">Commercial / Industrial</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )) : (
-                        <div className="text-center text-muted-foreground py-16 opacity-50 font-medium italic">
-                            {selectedBarangay ? 'No locations found for your search.' : 'Please select a barangay to view data.'}
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            {filteredLocations.length > 0 ? filteredLocations.map(([locationName, details]) => (
+                <Card key={locationName} className="group glass-card border-white/5 bg-white/5 hover:bg-white/[0.08] transition-all duration-500 rounded-[24px] border-l-4 border-l-primary overflow-hidden shadow-xl">
+                    <CardHeader className="pb-6 pt-8 px-8">
+                      <CardTitle className="text-xl font-black tracking-tight text-foreground/90">{locationName}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="px-8 pb-10">
+                        <div className="grid grid-cols-3 gap-8 items-end">
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 leading-none">Current Value</Label>
+                                <Input 
+                                  type="text" 
+                                  inputMode="decimal" 
+                                  className="h-14 text-center text-lg font-bold rounded-2xl bg-black/40 border-white/10 focus:ring-primary/20" 
+                                  value={details.unitValue2028} 
+                                  onChange={e => handleLocationDataChange(locationName, 'unitValue2028', e.target.value)} 
+                                />
+                            </div>
+                            <div className="space-y-3 relative">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary leading-none">RPVARA Value</Label>
+                                <div className="absolute inset-0 top-6 bg-primary/10 blur-[20px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                                <Input 
+                                  type="text" 
+                                  inputMode="decimal" 
+                                  className="h-14 text-center text-lg font-bold rounded-2xl bg-primary/10 border-primary/20 text-primary shadow-[0_0_20px_rgba(34,197,94,0.1)] focus:ring-primary/40 relative z-10" 
+                                  value={details.unitValue2029} 
+                                  onChange={e => handleLocationDataChange(locationName, 'unitValue2029', e.target.value)} 
+                                />
+                            </div>
+                            <div className="space-y-3">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 leading-none">Type</Label>
+                                <Select value={details.propertyType} onValueChange={(value: PropertyType) => handleLocationDataChange(locationName, 'propertyType', value)}>
+                                    <SelectTrigger className="h-14 rounded-2xl bg-black/40 border-white/10 font-bold px-4">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="glass-container border-white/10 backdrop-blur-3xl shadow-2xl">
+                                        <SelectItem value="Residential" className="focus:bg-primary/20 rounded-lg">Residential</SelectItem>
+                                        <SelectItem value="Commercial" className="focus:bg-primary/20 rounded-lg">Commercial</SelectItem>
+                                        <SelectItem value="Industrial" className="focus:bg-primary/20 rounded-lg">Industrial</SelectItem>
+                                        <SelectItem value="Commercial / Industrial" className="focus:bg-primary/20 rounded-lg">Commercial / Industrial</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
-                    )}
+                    </CardContent>
+                </Card>
+            )) : (
+                <div className="col-span-full py-24 text-center rounded-[2rem] border-2 border-dashed border-white/5 bg-black/20">
+                    <p className="text-xl font-medium text-muted-foreground opacity-40 italic">
+                        {selectedBarangay ? 'No locations found for your search.' : 'Please select a barangay to view data.'}
+                    </p>
                 </div>
-            </ScrollArea>
-          </CardContent>
-        </Card>
+            )}
+        </div>
     </div>
   )
 });
@@ -561,43 +571,42 @@ const CalibrateSettings = forwardRef(({ settings: settingsProp, onSettingsChange
     }
 
     return (
-        <div className="space-y-8 pb-8">
-            <div className="grid gap-8 md:grid-cols-2">
-                <Card className="glass-card border-white/10 bg-white/20 dark:bg-white/[0.02] shadow-xl">
-                <CardHeader>
-                    <CardTitle className="text-lg font-bold">Assessment Levels</CardTitle>
-                    <CardDescription className="text-xs opacity-70">Base assessment percentage per property type.</CardDescription>
+        <div className="grid gap-10 md:grid-cols-2 pb-16">
+            <Card className="glass-card border-white/5 bg-white/5 rounded-[32px] border-l-4 border-l-primary overflow-hidden shadow-2xl">
+                <CardHeader className="p-8 pb-4">
+                    <CardTitle className="text-2xl font-black tracking-tight">Assessment Levels</CardTitle>
+                    <CardDescription className="text-sm font-medium opacity-60">Base assessment percentage per property type.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="p-8 space-y-4">
                     {formValues && Object.entries(formValues.assessmentLevels).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between space-x-4 p-4 rounded-2xl bg-white/30 dark:bg-white/5 border border-white/10 hover:border-primary/20 transition-colors">
-                            <Label htmlFor={`assessment-${key}`} className="font-bold text-sm tracking-tight">{key}</Label>
-                            <div className="flex items-center gap-3">
-                              <Input id={`assessment-${key}`} type="text" inputMode="decimal" className="w-24 text-right glass-input h-10 rounded-xl border-white/10 focus:ring-primary/20" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
-                              <span className="text-xs font-black opacity-40">%</span>
+                        <div key={key} className="flex items-center justify-between p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-primary/30 transition-all group">
+                            <Label className="font-bold text-base tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">{key}</Label>
+                            <div className="flex items-center gap-4">
+                              <Input type="text" inputMode="decimal" className="w-28 h-12 text-center text-lg font-black bg-white/5 border-white/10 rounded-xl focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
+                              <span className="text-xs font-black text-primary/40 uppercase tracking-widest">%</span>
                             </div>
                         </div>
                     ))}
                 </CardContent>
-                </Card>
-                <Card className="glass-card border-white/10 bg-white/20 dark:bg-white/[0.02] shadow-xl">
-                <CardHeader>
-                    <CardTitle className="text-lg font-bold">Tax Rates</CardTitle>
-                    <CardDescription className="text-xs opacity-70">Annual tax percentage applied to assessed value.</CardDescription>
+            </Card>
+            
+            <Card className="glass-card border-white/5 bg-white/5 rounded-[32px] border-l-4 border-l-primary overflow-hidden shadow-2xl">
+                <CardHeader className="p-8 pb-4">
+                    <CardTitle className="text-2xl font-black tracking-tight">Tax Rates</CardTitle>
+                    <CardDescription className="text-sm font-medium opacity-60">Annual tax percentage applied to assessed value.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="p-8 space-y-4">
                     {formValues && Object.entries(formValues.taxRates).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between space-x-4 p-4 rounded-2xl bg-white/30 dark:bg-white/5 border border-white/10 hover:border-primary/20 transition-colors">
-                            <Label htmlFor={`taxrate-${key}`} className="font-bold text-sm tracking-tight">{key}</Label>
-                            <div className="flex items-center gap-3">
-                              <Input id={`taxrate-${key}`} type="text" inputMode="decimal" className="w-24 text-right glass-input h-10 rounded-xl border-white/10 focus:ring-primary/20" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
-                              <span className="text-xs font-black opacity-40">%</span>
+                        <div key={key} className="flex items-center justify-between p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-primary/30 transition-all group">
+                            <Label className="font-bold text-base tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">{key}</Label>
+                            <div className="flex items-center gap-4">
+                              <Input type="text" inputMode="decimal" className="w-28 h-12 text-center text-lg font-black bg-white/5 border-white/10 rounded-xl focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
+                              <span className="text-xs font-black text-primary/40 uppercase tracking-widest">%</span>
                             </div>
                         </div>
                     ))}
                 </CardContent>
-                </Card>
-            </div>
+            </Card>
         </div>
     )
 });
