@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Loader2, ArrowLeft, X, Save, LogOut } from "lucide-react";
+import { Settings, Loader2, ArrowLeft, X, Save, LogOut, Search } from "lucide-react";
 import type { TaxSettings, LocationDetails, PropertyType, SuggestedItem } from "@/lib/definitions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -77,7 +77,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
   return (
     <Dialog open={open} onOpenChange={onDialogChange}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Admin Panel" title="Admin Panel">
+        <Button variant="ghost" size="icon" aria-label="Admin Panel" title="Admin Panel" className="hover:bg-primary/10">
           <Settings className="h-[1.2rem] w-[1.2rem]" />
         </Button>
       </DialogTrigger>
@@ -87,10 +87,10 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
           "p-0 border-none transition-all duration-500 ease-in-out overflow-hidden shadow-none",
           isAuthenticated 
             ? "max-w-[98vw] w-[98vw] h-[96dvh] rounded-[2rem] bg-white/80 dark:bg-[#0D1210]/60 backdrop-blur-[20px] border border-black/5 dark:border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
-            : "max-w-[90vw] sm:max-w-md md:max-w-[500px] w-full h-auto max-h-[90dvh] rounded-[2.5rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] shadow-primary/20"
+            : "max-w-[90vw] sm:max-w-md md:max-w-[500px] w-full h-auto max-h-[90dvh] rounded-[2.5rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
         )}
       >
-          {/* Mesh Gradient Background for Authenticated State */}
+          {/* Mesh Gradient Background */}
           {isAuthenticated && (
             <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden opacity-[0.03] dark:opacity-[0.02] transition-opacity duration-1000">
               <div className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-primary/10 rounded-full blur-[150px] animate-pulse" />
@@ -141,13 +141,13 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
 
 function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, onClose, settings, onSettingsChange, onSaveSuccess }: { isAuthenticated: boolean; onLoginSuccess: () => void; onLogout: () => void; isLoadingAuth: boolean; onClose: () => void; settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }) {
   if (isLoadingAuth) {
-     return <div className="flex-1 flex items-center justify-center h-full"><Loader2 className="h-8 w-8 animate-spin text-green-500" /></div>
+     return <div className="flex-1 flex items-center justify-center h-full"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
   }
 
   return (
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {isAuthenticated ? (
-            <div className="admin-dashboard-wrapper flex-1 flex flex-col min-h-0 overflow-hidden relative z-10">
+            <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative z-10">
               <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
             </div>
         ) : (
@@ -250,8 +250,9 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
-       <Tabs defaultValue="dashboard" onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+    <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+       <Tabs defaultValue="dashboard" onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+        {/* Fixed Header Section */}
         <div className="px-4 md:px-12 pt-8 md:pt-12 mb-10 shrink-0">
           <div className="flex flex-col lg:flex-row justify-between items-start gap-8">
             <div className="space-y-6 flex-1 w-full lg:w-auto">
@@ -300,7 +301,8 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto premium-scrollbar scroll-smooth px-4 md:px-12 pb-10">
+        {/* Scrollable Content Section */}
+        <div className="flex-1 overflow-y-auto premium-scrollbar scroll-smooth px-4 md:px-12 pb-16 min-h-0">
           <TabsContent value="dashboard" className="m-0 focus-visible:ring-0">
               {settings && <AdminDashboard ref={dashboardRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
           </TabsContent>
@@ -413,37 +415,42 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
   }
 
   return (
-    <div className="space-y-10 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-            <div className="space-y-3">
-                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary ml-1">Select Barangay</Label>
-                <AutocompleteInput
-                    placeholder="Search for a barangay..."
-                    suggestions={filteredBarangaySuggestions}
-                    onInputChange={setBarangaySearch}
-                    onSelect={(item) => {
-                        if (item) setSelectedBarangay(item.name);
-                    }}
-                    value={selectedBarangay ? { name: selectedBarangay, type: 'barangay' } : null}
-                    onOpen={() => setBarangaySearch("")}
-                    disablePortal={true}
-                />
-            </div>
-            <div className="space-y-3">
-                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary ml-1">Search Location</Label>
-                <div className="relative">
-                  <Input 
-                    placeholder="Filter locations by name..." 
-                    className="glass-input h-14 rounded-[18px] border-black/5 dark:border-white/10 bg-black/[0.02] dark:bg-black/40 px-6 focus:ring-primary/30" 
-                    value={locationSearch} 
-                    onChange={(e) => setLocationSearch(e.target.value)} 
-                    disabled={!selectedBarangay} 
+    <div className="space-y-10 pb-8">
+        {/* Sticky Barangay/Search Section */}
+        <div className="sticky top-0 z-20 -mx-4 px-4 py-6 bg-white/40 dark:bg-[#0D1210]/40 backdrop-blur-xl border-b border-black/5 dark:border-white/5 rounded-b-[2rem] transition-all duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              <div className="space-y-3">
+                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary ml-1">Select Barangay</Label>
+                  <AutocompleteInput
+                      placeholder="Search for a barangay..."
+                      suggestions={filteredBarangaySuggestions}
+                      onInputChange={setBarangaySearch}
+                      onSelect={(item) => {
+                          if (item) setSelectedBarangay(item.name);
+                      }}
+                      value={selectedBarangay ? { name: selectedBarangay, type: 'barangay' } : null}
+                      onOpen={() => setBarangaySearch("")}
+                      disablePortal={true}
                   />
-                </div>
-            </div>
+              </div>
+              <div className="space-y-3">
+                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary ml-1">Search Location</Label>
+                  <div className="relative">
+                    <Input 
+                      placeholder="Filter locations by name..." 
+                      className="glass-input h-14 rounded-[18px] border-black/5 dark:border-white/10 bg-black/[0.02] dark:bg-black/40 px-6 focus:ring-primary/30" 
+                      value={locationSearch} 
+                      onChange={(e) => setLocationSearch(e.target.value)} 
+                      disabled={!selectedBarangay} 
+                    />
+                    <Search className="absolute right-5 top-4 h-5 w-5 opacity-20" />
+                  </div>
+              </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* Property Cards Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 pt-4">
             {filteredLocations.length > 0 ? filteredLocations.map(([locationName, details]) => (
                 <Card key={locationName} className="group glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/[0.08] transition-all duration-500 rounded-[24px] border-l-2 border-l-primary/40 overflow-hidden shadow-xl w-full">
                     <CardHeader className="pb-6 pt-8 px-8">
@@ -584,15 +591,15 @@ const CalibrateSettings = forwardRef(({ settings: settingsProp, onSettingsChange
     }
 
     return (
-        <div className="grid gap-6 md:grid-cols-2 pb-16 md:scale-[0.98] lg:scale-95 origin-top transition-transform duration-500">
-            <Card className="glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 rounded-[24px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl">
+        <div className="grid gap-6 md:grid-cols-2 pb-16 transition-all duration-500">
+            <Card className="glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 rounded-[24px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl h-fit">
                 <CardHeader className="p-5 md:px-6 md:pt-6 md:pb-3">
                     <CardTitle className="text-lg md:text-xl font-black tracking-tight">Assessment Levels</CardTitle>
                     <CardDescription className="text-xs font-medium opacity-60">Base assessment percentage per property type.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-5 md:px-6 md:pb-6 md:pt-0 space-y-2">
                     {formValues && Object.entries(formValues.assessmentLevels).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between p-3 md:py-3.5 md:px-4 rounded-xl bg-black/[0.02] dark:bg-black/40 border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all group">
+                        <div key={key} className="flex items-center justify-between p-3 rounded-xl bg-black/[0.02] dark:bg-black/40 border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all group">
                             <Label className="font-bold text-xs md:text-sm tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">{key}</Label>
                             <div className="flex items-center gap-3">
                               <Input type="text" inputMode="decimal" className="w-16 md:w-24 h-9 md:h-10 text-center text-sm md:text-base font-black bg-black/[0.03] dark:bg-white/5 border-black/5 dark:border-white/10 rounded-lg focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
@@ -603,14 +610,14 @@ const CalibrateSettings = forwardRef(({ settings: settingsProp, onSettingsChange
                 </CardContent>
             </Card>
             
-            <Card className="glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 rounded-[24px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl">
+            <Card className="glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 rounded-[24px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl h-fit">
                 <CardHeader className="p-5 md:px-6 md:pt-6 md:pb-3">
                     <CardTitle className="text-lg md:text-xl font-black tracking-tight">Tax Rates</CardTitle>
                     <CardDescription className="text-xs font-medium opacity-60">Annual tax percentage applied to assessed value.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-5 md:px-6 md:pb-6 md:pt-0 space-y-2">
                     {formValues && Object.entries(formValues.taxRates).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between p-3 md:py-3.5 md:px-4 rounded-xl bg-black/[0.02] dark:bg-black/40 border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all group">
+                        <div key={key} className="flex items-center justify-between p-3 rounded-xl bg-black/[0.02] dark:bg-black/40 border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all group">
                             <Label className="font-bold text-xs md:text-sm tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">{key}</Label>
                             <div className="flex items-center gap-3">
                               <Input type="text" inputMode="decimal" className="w-16 md:w-24 h-9 md:h-10 text-center text-sm md:text-base font-black bg-black/[0.03] dark:bg-white/5 border-black/5 dark:border-white/10 rounded-lg focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
