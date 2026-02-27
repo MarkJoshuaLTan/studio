@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,9 +14,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Loader2, ArrowLeft, X, Maximize2, Minimize2 } from "lucide-react";
+import { Settings, Loader2, ArrowLeft, X, Maximize2, Minimize2, Save } from "lucide-react";
 import type { TaxSettings, LocationDetails, PropertyType } from "@/lib/definitions";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -68,7 +68,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
     handleClose();
   };
 
-  const onDialogClose = (isOpen: boolean) => {
+  const onDialogChange = (isOpen: boolean) => {
     if (!isOpen) {
       handleClose();
       setIsMaximized(false);
@@ -78,7 +78,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
   };
   
   return (
-    <Dialog open={open} onOpenChange={onDialogClose}>
+    <Dialog open={open} onOpenChange={onDialogChange}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon" aria-label="Admin Panel" title="Admin Panel">
           <Settings className="h-[1.2rem] w-[1.2rem]" />
@@ -236,24 +236,52 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
 }
 
 function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSuccess }: { onLogout: () => void; onClose: () => void; settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }) {
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const dashboardRef = useRef<{ save: () => Promise<void> } | null>(null);
+  const calibrateRef = useRef<{ save: () => Promise<void> } | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleGlobalSave = async () => {
+    setIsSaving(true);
+    try {
+      if (activeTab === "dashboard" && dashboardRef.current) {
+        await dashboardRef.current.save();
+      } else if (activeTab === "calibrate" && calibrateRef.current) {
+        await calibrateRef.current.save();
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="h-full flex flex-col px-6 pb-6">
-       <Tabs defaultValue="dashboard" className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex justify-between items-center mb-4">
+       <Tabs defaultValue="dashboard" onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <TabsList className="h-11">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="calibrate">Calibrate</TabsTrigger>
           </TabsList>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" onClick={onClose}><ArrowLeft className="mr-2 h-4 w-4"/> Back to App</Button>
-            <Button variant="outline" className="glass-card" onClick={onLogout}>Logout</Button>
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <Button 
+              onClick={handleGlobalSave} 
+              disabled={isSaving}
+              className="flex-1 md:flex-none h-11 bg-primary hover:bg-primary/90 font-bold shadow-lg"
+            >
+              {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+              Save Changes
+            </Button>
+            <Button variant="ghost" onClick={onClose} className="hidden sm:flex h-11">
+              <ArrowLeft className="mr-2 h-4 w-4"/> Back to App
+            </Button>
+            <Button variant="outline" className="h-11 glass-card" onClick={onLogout}>Logout</Button>
           </div>
         </div>
-        <TabsContent value="dashboard" className="flex-1 overflow-y-auto pr-2">
-            {settings && <AdminDashboard settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
+        <TabsContent value="dashboard" className="flex-1 overflow-y-auto pr-2 m-0 focus-visible:ring-0">
+            {settings && <AdminDashboard ref={dashboardRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
         </TabsContent>
-        <TabsContent value="calibrate" className="flex-1 overflow-y-auto pr-2">
-            {settings && <CalibrateSettings settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
+        <TabsContent value="calibrate" className="flex-1 overflow-y-auto pr-2 m-0 focus-visible:ring-0">
+            {settings && <CalibrateSettings ref={calibrateRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
         </TabsContent>
       </Tabs>
     </div>
@@ -261,11 +289,10 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
 }
 
 
-function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSuccess }: { settings: TaxSettings, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }) {
+const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, onSaveSuccess }: { settings: TaxSettings, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }, ref) => {
   const { toast } = useToast();
   const [editedSettings, setEditedSettings] = useState<TaxSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [selectedBarangay, setSelectedBarangay] = useState<string>('');
   const [locationSearch, setLocationSearch] = useState('');
 
@@ -304,7 +331,6 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
   };
   
   const handleSaveUnitValues = async () => {
-    setIsSaving(true);
     try {
       if(!editedSettings) return;
       
@@ -332,10 +358,13 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
 
     } catch (error: any) {
        toast({ variant: "destructive", title: "Error", description: error.message || "Could not save settings." });
-    } finally {
-       setIsSaving(false);
+       throw error;
     }
   };
+
+  useImperativeHandle(ref, () => ({
+    save: handleSaveUnitValues
+  }));
 
   const filteredLocations = editedSettings && selectedBarangay && editedSettings.taxData[selectedBarangay]
     ? Object.entries(editedSettings.taxData[selectedBarangay]).filter(([name]) =>
@@ -409,20 +438,15 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
             </ScrollArea>
           </CardContent>
         </Card>
-       <div className="flex justify-end pt-4">
-          <Button onClick={handleSaveUnitValues} className="h-11 px-8 font-bold shadow-lg" disabled={isSaving}>
-            {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : 'Save Unit Values'}
-          </Button>
-        </div>
     </div>
   )
-}
+});
+AdminDashboard.displayName = "AdminDashboard";
 
-function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuccess }: { settings: TaxSettings, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }) {
+const CalibrateSettings = forwardRef(({ settings: settingsProp, onSettingsChange, onSaveSuccess }: { settings: TaxSettings, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }, ref) => {
     const { toast } = useToast();
     const [formValues, setFormValues] = useState<any>({ assessmentLevels: {}, taxRates: {} });
     const [isLoading, setIsLoading] = useState(true);
-    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         if (settingsProp) {
@@ -467,7 +491,6 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
     };
     
     const handleSave = async () => {
-        setIsSaving(true);
         try {
             if(!formValues || !settingsProp) return;
 
@@ -490,10 +513,13 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
             toast({ title: 'Success!', description: 'Settings have been saved. They will be applied when you close the panel.' });
         } catch (error: any) {
             toast({ variant: "destructive", title: "Error", description: error.message || "Could not save settings." });
-        } finally {
-            setIsSaving(false);
+            throw error;
         }
     };
+
+    useImperativeHandle(ref, () => ({
+      save: handleSave
+    }));
     
     if (isLoading) {
         return <div className="flex h-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;
@@ -531,11 +557,7 @@ function CalibrateSettings({ settings: settingsProp, onSettingsChange, onSaveSuc
                 </CardContent>
                 </Card>
             </div>
-            <div className="flex justify-end pt-4">
-                <Button onClick={handleSave} className="h-11 px-8 font-bold shadow-lg" disabled={isSaving}>
-                    {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : 'Save Calibrations'}
-                </Button>
-            </div>
         </div>
     )
-}
+});
+CalibrateSettings.displayName = "CalibrateSettings";
