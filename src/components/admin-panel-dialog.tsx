@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react";
@@ -107,7 +108,14 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
           )}
 
           <div className={cn("flex flex-col h-full relative z-10", !isAuthenticated ? "p-10" : "p-0")}>
-            {!isAuthenticated && (
+            {isAuthenticated ? (
+              <>
+                <DialogTitle className="sr-only">Admin Dashboard</DialogTitle>
+                <DialogDescription className="sr-only">
+                  Manage application settings and data.
+                </DialogDescription>
+              </>
+            ) : (
               <div className="mb-10 space-y-1">
                 <DialogTitle className="text-4xl font-extrabold tracking-tight text-foreground">Admin Panel</DialogTitle>
                 <DialogDescription className="text-muted-foreground font-medium text-base">
