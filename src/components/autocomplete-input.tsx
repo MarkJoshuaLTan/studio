@@ -69,7 +69,7 @@ export function AutocompleteInput({
             role="combobox"
             aria-expanded={open}
             className={cn(
-              "w-full h-12 px-4 justify-between font-medium text-left transition-all duration-300 rounded-[14px]",
+              "w-full min-h-[3rem] h-auto py-2 px-4 justify-between font-medium text-left transition-all duration-300 rounded-[14px]",
               "glass-input text-foreground",
               "focus:ring-2 focus:ring-primary/30 focus:border-primary/50",
               !value && "text-muted-foreground",
@@ -77,10 +77,10 @@ export function AutocompleteInput({
             )}
             disabled={disabled}
           >
-            <span className="truncate flex-1 mr-2">
+            <span className="whitespace-normal break-words flex-1 mr-2">
               {value ? value.name : placeholder}
             </span>
-            <div className="flex items-center gap-1.5 opacity-40 shrink-0">
+            <div className="flex items-center gap-1.5 opacity-40 shrink-0 self-center">
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
@@ -97,6 +97,7 @@ export function AutocompleteInput({
           align="start"
           side="bottom"
           sideOffset={8}
+          avoidCollisions={false}
           disablePortal={disablePortal}
         >
           <div className="flex items-center px-4 border-b border-black/[0.05] dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]">
@@ -118,7 +119,7 @@ export function AutocompleteInput({
             )}
           </div>
 
-          <ScrollArea className="h-72 premium-scrollbar">
+          <ScrollArea className="max-h-[300px] overflow-y-auto premium-scrollbar">
             <div className="p-2">
               {suggestions.length === 0 ? (
                 <div className="p-8 text-center text-sm text-muted-foreground/50 italic">No results found.</div>
@@ -134,7 +135,7 @@ export function AutocompleteInput({
                     )}
                     onClick={() => handleSelect(item)}
                   >
-                    <span className="truncate flex-1 mr-3">
+                    <span className="whitespace-normal break-words flex-1 mr-3">
                       {item.name}
                     </span>
                     {value?.name === item.name && (
