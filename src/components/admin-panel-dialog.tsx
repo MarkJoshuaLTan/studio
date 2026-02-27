@@ -15,11 +15,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Loader2, ArrowLeft, X, Maximize2, Minimize2, Save } from "lucide-react";
-import type { TaxSettings, LocationDetails, PropertyType } from "@/lib/definitions";
+import type { TaxSettings, LocationDetails, PropertyType, SuggestedItem } from "@/lib/definitions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AutocompleteInput } from "./autocomplete-input";
 import { cn } from "@/lib/utils";
 
 export function AdminPanelDialog({ settings, onSettingsChange }: { settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void }) {
@@ -198,7 +199,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
   };
 
   return (
-    <div className="w-full p-8 rounded-[2.5rem] border border-black/[0.06] dark:border-white/10 bg-black/5 dark:bg-white/[0.03] backdrop-blur-md">
+    <div className="w-full p-8 rounded-[2.5rem] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-white/[0.03] shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
       <form onSubmit={handleLogin} className="space-y-8">
         <div className="space-y-2">
           <h3 className="text-3xl font-bold text-foreground tracking-tight">Login</h3>
@@ -214,7 +215,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
               id="username"
               type="text"
               required
-              className="glass-input h-14 rounded-2xl border-black/[0.1] dark:border-white/20"
+              className="glass-input h-14 rounded-2xl border-black/[0.1] dark:border-white/20 bg-background/50 dark:bg-black/40"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -225,7 +226,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
               id="password"
               type="password"
               required
-              className="glass-input h-14 rounded-2xl border-black/[0.1] dark:border-white/20"
+              className="glass-input h-14 rounded-2xl border-black/[0.1] dark:border-white/20 bg-background/50 dark:bg-black/40"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -303,6 +304,7 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
   const [editedSettings, setEditedSettings] = useState<TaxSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedBarangay, setSelectedBarangay] = useState<string>('');
+  const [barangaySearch, setBarangaySearch] = useState("");
   const [locationSearch, setLocationSearch] = useState('');
 
   useEffect(() => {
@@ -381,6 +383,14 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
       )
     : [];
 
+  const barangaySuggestions: SuggestedItem[] = editedSettings 
+    ? Object.keys(editedSettings.taxData).sort().map(name => ({ name, type: 'barangay' }))
+    : [];
+
+  const filteredBarangaySuggestions = barangaySuggestions.filter(b => 
+    b.name.toLowerCase().includes(barangaySearch.toLowerCase())
+  );
+
   if (isLoading || !editedSettings) {
     return <div className="flex h-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;
   }
@@ -396,16 +406,16 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
             <div className="flex flex-col md:flex-row gap-6 mb-8">
                 <div className="w-full md:w-1/2 space-y-2">
                     <Label className="text-xs font-black uppercase tracking-widest opacity-60 ml-1">Barangay</Label>
-                    <Select value={selectedBarangay} onValueChange={setSelectedBarangay}>
-                        <SelectTrigger className="glass-input h-12 rounded-2xl border-white/20">
-                          <SelectValue placeholder="Select a Barangay" />
-                        </SelectTrigger>
-                        <SelectContent className="glass-container border-white/10">
-                            {Object.keys(editedSettings.taxData).sort().map(b => (
-                                <SelectItem key={b} value={b} className="focus:bg-primary/20 rounded-xl">{b}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <AutocompleteInput
+                        placeholder="Select a Barangay"
+                        suggestions={filteredBarangaySuggestions}
+                        onInputChange={setBarangaySearch}
+                        onSelect={(item) => {
+                            if (item) setSelectedBarangay(item.name);
+                        }}
+                        value={selectedBarangay ? { name: selectedBarangay, type: 'barangay' } : null}
+                        onOpen={() => setBarangaySearch("")}
+                    />
                 </div>
                 <div className="w-full md:w-1/2 space-y-2">
                     <Label className="text-xs font-black uppercase tracking-widest opacity-60 ml-1">Search Location</Label>
