@@ -145,13 +145,13 @@ function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, 
   }
 
   return (
-      <div className="flex-1 h-full overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {isAuthenticated ? (
-            <div className="admin-dashboard-wrapper h-full overflow-y-auto overflow-x-hidden scroll-smooth premium-scrollbar relative z-10">
+            <div className="admin-dashboard-wrapper flex-1 overflow-y-auto overflow-x-hidden scroll-smooth premium-scrollbar relative z-10">
               <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
             </div>
         ) : (
-            <div className="h-full overflow-y-auto md:overflow-hidden p-1">
+            <div className="flex-1 overflow-y-auto md:overflow-hidden p-1">
               <LoginForm onLoginSuccess={onLoginSuccess} />
             </div>
         )}
