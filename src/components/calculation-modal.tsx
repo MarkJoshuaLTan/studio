@@ -143,7 +143,7 @@ export function CalculationModal({
             <p className="text-[10px] text-muted-foreground/80 uppercase font-bold tracking-tight">Based on Classification & Market Value</p>
             
             <div className="rounded-xl border border-border/50 dark:border-white/10 overflow-hidden bg-background/20">
-              <div className="grid grid-cols-2 bg-foreground/[0.05] border-b border-border/50 dark:border-white/10 font-bold p-2 text-[9px] uppercase tracking-wider">
+              <div className="grid grid-cols-[1fr_auto] bg-foreground/[0.05] border-b border-border/50 dark:border-white/10 font-bold p-2 text-[9px] uppercase tracking-wider gap-4">
                 <div>Market Value Range</div>
                 <div className="text-right">Level</div>
               </div>
@@ -154,17 +154,19 @@ export function CalculationModal({
                     <div 
                       key={idx} 
                       className={cn(
-                        "grid grid-cols-2 p-2 border-b border-border/50 dark:border-white/5 last:border-0 text-[10px] transition-colors",
+                        "grid grid-cols-[1fr_auto] p-2 border-b border-border/50 dark:border-white/5 last:border-0 transition-colors gap-4",
                         isActive ? "bg-primary/20 text-primary font-bold" : "text-muted-foreground/70"
                       )}
                     >
-                      <div className="flex items-center gap-1.5">
-                        {isActive && <div className="h-1 w-1 rounded-full bg-primary" />}
-                        {row.max === Infinity 
-                          ? `Over ${formatCurrency(row.min)}` 
-                          : `${formatCurrency(row.min)} - ${formatCurrency(row.max)}`}
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        {isActive && <div className="h-1 w-1 rounded-full bg-primary shrink-0" />}
+                        <span className="text-[9.5px] whitespace-nowrap overflow-hidden">
+                          {row.max === Infinity 
+                            ? `Over ${formatCurrency(row.min)}` 
+                            : `${formatCurrency(row.min)} - ${formatCurrency(row.max)}`}
+                        </span>
                       </div>
-                      <div className="text-right">{(row.level * 100).toFixed(0)}%</div>
+                      <div className="text-right text-[10px] tabular-nums">{(row.level * 100).toFixed(0)}%</div>
                     </div>
                   );
                 })}
