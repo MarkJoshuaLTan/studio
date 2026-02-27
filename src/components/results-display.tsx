@@ -99,7 +99,7 @@ const ResultRow = ({
 export function ResultsDisplay({ results }: ResultsDisplayProps) {
   return (
     <div className="mt-0 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out">
-      <Card className="glass-container border-0 overflow-hidden shadow-2xl">
+      <Card className="glass-container border-0 overflow-hidden">
         <CardHeader className="pb-4">
           <CardTitle className="text-2xl">Tax Calculation</CardTitle>
           <CardDescription className="text-muted-foreground/80">

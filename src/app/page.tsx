@@ -159,7 +159,7 @@ export default function Home() {
       </main>
 
       <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
-        <div className="flex flex-col gap-2 rounded-full border border-white/10 bg-background/60 p-2 shadow-2xl backdrop-blur-xl">
+        <div className="flex flex-col gap-2 rounded-full border border-white/10 bg-background/60 p-2 backdrop-blur-xl">
           <AboutDialog />
           <ContactSupportButton />
         </div>

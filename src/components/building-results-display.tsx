@@ -88,7 +88,7 @@ const ImpactResultRow = ({
   label: React.ReactNode;
   value: number;
 }) => {
-  // Dynamic font sizing based on string length
+  // Dynamic font sizing based on string length and flexible labels
   const estimatedLength = Math.floor(value).toLocaleString().length + 4;
   let sizeClass;
 
@@ -120,7 +120,7 @@ export function BuildingResultsDisplay({ results, mode = 'summary' }: BuildingRe
   if (mode === 'summary') {
     return (
       <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out">
-        <Card className="glass-container border-0 overflow-hidden shadow-2xl">
+        <Card className="glass-container border-0 overflow-hidden">
           <CardHeader className="pb-4">
             <CardTitle className="text-2xl">Tax Calculation</CardTitle>
             <CardDescription className="text-muted-foreground/80">

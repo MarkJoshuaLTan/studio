@@ -83,15 +83,16 @@ body {
 @layer components {
   .glass-container {
     @apply bg-white/40 dark:bg-[#0B0F1B]/40 backdrop-blur-3xl border border-white/30 dark:border-white/10 rounded-[2rem] transition-all duration-500;
-    /* High-end iOS floating effect: Diffuse ambient shadow + sharp perimeter edge */
+    /* Unified Light Mode Shadow: Soft, clean elevation */
     box-shadow: 
-      0 30px 60px -12px rgba(0, 0, 0, 0.15),
-      0 18px 36px -18px rgba(0, 0, 0, 0.2),
+      0 4px 12px rgba(0, 0, 0, 0.06),
+      0 10px 30px rgba(0, 0, 0, 0.08),
       inset 0 0 0 1.5px rgba(255, 255, 255, 0.4),
       inset 0 1px 1px 0 rgba(255, 255, 255, 0.5);
   }
 
   .dark .glass-container {
+    /* Deeper shadow for Dark Mode drama */
     box-shadow: 
       0 30px 60px -12px rgba(0, 0, 0, 0.5),
       0 18px 36px -18px rgba(0, 0, 0, 0.6),
@@ -100,14 +101,23 @@ body {
   }
   
   .glass-card {
-    @apply bg-white/30 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-xl rounded-2xl transition-all duration-300;
+    @apply bg-white/30 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl transition-all duration-300;
+    /* Matching Light Mode Shadow */
     box-shadow: 
-      0 10px 25px -5px rgba(0, 0, 0, 0.05),
+      0 4px 12px rgba(0, 0, 0, 0.06),
+      0 10px 30px rgba(0, 0, 0, 0.08),
       inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   }
 
+  .dark .glass-card {
+    box-shadow: 
+      0 10px 25px -5px rgba(0, 0, 0, 0.3),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
   .glass-card-hover {
-    @apply hover:bg-white/40 dark:hover:bg-white/10 hover:shadow-2xl hover:-translate-y-1 hover:border-white/50 dark:hover:border-white/20;
+    @apply hover:bg-white/40 dark:hover:bg-white/10 hover:-translate-y-1 hover:border-white/50 dark:hover:border-white/20;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
   }
 
   .glass-input {

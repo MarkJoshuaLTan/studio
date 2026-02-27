@@ -12,11 +12,6 @@ import type { CalculationResults } from "./results-display";
 import type { TaxSettings } from "@/lib/definitions";
 import { AnimatedCurrency } from "./animated-currency";
 
-interface AssessmentLevelResultsProps {
-  results: CalculationResults;
-  settings: TaxSettings;
-}
-
 const ResultRow = ({
   label,
   value,
@@ -26,7 +21,8 @@ const ResultRow = ({
   value: number;
   isMain?: boolean;
 }) => {
-  // Estimate length: number + commas + ₱ + .00
+  // Anti-wrapping and dynamic scaling logic
+  const valueStr = value.toLocaleString();
   const estimatedLength = Math.floor(value).toLocaleString().length + 4;
   let sizeClass;
 
@@ -51,8 +47,8 @@ const ResultRow = ({
   }
 
   return (
-    <div className="flex justify-between items-start py-2.5">
-      <dt className="text-muted-foreground/80 text-xs font-medium mr-2 pt-0.5 leading-tight">{label}</dt>
+    <div className="flex justify-between items-start py-2.5 gap-2">
+      <dt className="text-muted-foreground/80 text-xs font-medium pt-0.5 leading-tight">{label}</dt>
       <dd
         className={cn(
           "font-bold text-right whitespace-nowrap break-keep shrink-0",
@@ -97,7 +93,7 @@ export function AssessmentLevelResults({
             <Card 
               key={level} 
               className={cn(
-                "flex flex-col glass-container border-white/10 shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
+                "flex flex-col glass-container border-white/10 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
                 index === 0 ? "delay-0" : index === 1 ? "delay-150" : "delay-300"
               )}
             >
@@ -129,7 +125,7 @@ export function AssessmentLevelResults({
                 </div>
 
                  <ResultRow
-                  label="2028 (Capped at 6%)"
+                  label={<span>2028<br/><span className="text-[10px] opacity-60">(Capped at 6%)</span></span>}
                   value={yearlyTax2028Capped}
                 />
                 <ResultRow

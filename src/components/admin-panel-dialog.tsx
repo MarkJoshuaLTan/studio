@@ -87,7 +87,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
       <DialogContent 
         showClose={false}
         className={cn(
-          "p-0 border-none transition-all duration-300 ease-in-out overflow-hidden shadow-2xl",
+          "p-0 border-none transition-all duration-300 ease-in-out overflow-hidden shadow-none",
           isAuthenticated 
             ? isMaximized
               ? "max-w-full w-full h-full max-h-full left-0 top-0 translate-x-0 translate-y-0 rounded-none bg-background" 
@@ -189,7 +189,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
   };
 
   return (
-    <div className="w-full glass-card p-8 rounded-[2.5rem] border-border/50 dark:border-white/10 bg-black/5 dark:bg-white/[0.03] shadow-2xl">
+    <div className="w-full glass-card p-8 rounded-[2.5rem] border-border/50 dark:border-white/10 bg-black/5 dark:bg-white/[0.03]">
       <form onSubmit={handleLogin} className="space-y-8">
         <div className="space-y-2">
           <h3 className="text-3xl font-bold text-foreground tracking-tight">Login</h3>
