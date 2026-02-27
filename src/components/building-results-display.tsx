@@ -198,7 +198,7 @@ export function BuildingResultsDisplay({ results, mode = 'summary' }: BuildingRe
             proposalTax={results[`${prop}YearlyTax` as keyof BuildingCalculationResults] as number}
             proposalAL={results[`${prop}AssessmentLevel` as keyof BuildingCalculationResults] as number}
             proposalAV={results[`${prop}AssessedValue` as keyof BuildingCalculationResults] as number}
-            delayClass={idx === 0 ? "delay-0" : idx === 1 ? "delay-300" : "delay-700"}
+            delayClass={idx === 0 ? "delay-0" : idx === 1 ? "delay-500" : "delay-1000"}
             onInfoClick={() => {
               setActiveProposal(prop);
               setModalOpen(true);

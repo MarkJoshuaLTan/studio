@@ -90,7 +90,7 @@ export function AssessmentLevelResults({
               key={level} 
               className={cn(
                 "relative flex flex-col glass-container border-white/10 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-1000 ease-out fill-mode-backwards",
-                index === 0 ? "delay-0" : index === 1 ? "delay-300" : "delay-700"
+                index === 0 ? "delay-0" : index === 1 ? "delay-500" : "delay-1000"
               )}
             >
               <Button
@@ -156,7 +156,7 @@ export function AssessmentLevelResults({
           results={{
             ...results,
             assessmentLevel: activeLevel,
-            yearlyTax2029: results.marketValue2029 * activeLevel * (results.taxRate || 0.03)
+            yearlyTax2029: results.marketValue2029 * activeLevel * (results.taxRate || 0.02)
           }}
           mode="rpvara"
         />
