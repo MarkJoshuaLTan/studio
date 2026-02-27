@@ -21,6 +21,7 @@ interface AutocompleteInputProps {
   isLoading?: boolean;
   disabled?: boolean;
   onOpen?: () => void;
+  disablePortal?: boolean;
 }
 
 export function AutocompleteInput({
@@ -32,6 +33,7 @@ export function AutocompleteInput({
   isLoading = false,
   disabled = false,
   onOpen,
+  disablePortal,
 }: AutocompleteInputProps) {
   const [open, setOpen] = React.useState(false);
   const [localSearch, setLocalSearch] = React.useState("");
@@ -95,6 +97,7 @@ export function AutocompleteInput({
           align="start"
           side="bottom"
           sideOffset={8}
+          disablePortal={disablePortal}
         >
           <div className="flex items-center px-4 border-b border-black/[0.05] dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]">
             <Search className="h-4 w-4 shrink-0 opacity-40 mr-2 text-primary" />
