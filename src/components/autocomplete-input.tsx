@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/popover";
 import { SuggestedItem } from "@/lib/definitions";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 interface AutocompleteInputProps {
   placeholder: string;
@@ -34,25 +35,24 @@ export function AutocompleteInput({
   onOpen,
 }: AutocompleteInputProps) {
   const [open, setOpen] = React.useState(false);
-  const [searchValue, setSearchValue] = React.useState("");
+  const [localSearch, setLocalSearch] = React.useState("");
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
 
+  // Clear internal search when popover closes
   React.useEffect(() => {
-    if (value) {
-      setSearchValue(value.name);
-    } else {
-      setSearchValue("");
+    if (!open) {
+      setLocalSearch("");
+      onInputChange("");
     }
-  }, [value]);
+  }, [open, onInputChange]);
 
-  const handleInputChange = (val: string) => {
-    setSearchValue(val);
+  const handleSearchChange = (val: string) => {
+    setLocalSearch(val);
     onInputChange(val);
-    if (!open) setOpen(true);
   };
 
   const handleSelect = (item: SuggestedItem) => {
     onSelect(item);
-    setSearchValue(item.name);
     setOpen(false);
   };
 
@@ -63,48 +63,82 @@ export function AutocompleteInput({
         if (isOpen && onOpen) onOpen();
       }}>
         <PopoverTrigger asChild>
-          <div className="relative">
-            <Input
-              placeholder={placeholder}
-              className="glass-input h-11 pr-10"
-              value={searchValue}
-              onChange={(e) => handleInputChange(e.target.value)}
-              onFocus={() => {
-                setOpen(true);
-                if (onOpen) onOpen();
-              }}
-              disabled={disabled}
-            />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-40">
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className={cn(
+              "glass-input w-full h-auto min-h-11 px-3 py-2.5 justify-between font-normal hover:bg-white/5 text-left transition-all",
+              !value && "text-muted-foreground",
+              disabled && "opacity-50 cursor-not-allowed"
+            )}
+            disabled={disabled}
+          >
+            <span className="whitespace-normal break-words [overflow-wrap:anywhere] leading-snug flex-1">
+              {value ? value.name : placeholder}
+            </span>
+            <div className="ml-2 flex items-center gap-1.5 opacity-40 shrink-0">
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <ChevronsUpDown className="h-4 w-4" />
               )}
             </div>
-          </div>
+          </Button>
         </PopoverTrigger>
         <PopoverContent 
-          className="w-[var(--radix-popover-trigger-width)] p-0 border-white/10 bg-background/95 backdrop-blur-xl"
-          onOpenAutoFocus={(e) => e.preventDefault()}
+          className="w-[var(--radix-popover-trigger-width)] p-0 border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#0F131E] shadow-xl rounded-2xl overflow-hidden"
+          onOpenAutoFocus={(e) => {
+            // Prevent standard focus behavior to avoid jumping/glitching
+            // Manually focus the search input instead
+            searchInputRef.current?.focus();
+          }}
           align="start"
+          side="bottom"
+          sideOffset={8}
         >
+          {/* Internal Search Bar */}
+          <div className="flex items-center px-3 border-b border-black/[0.05] dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]">
+            <Search className="h-4 w-4 shrink-0 opacity-40 mr-2" />
+            <input
+              ref={searchInputRef}
+              className="flex h-11 w-full bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              placeholder={`Search ${placeholder.toLowerCase()}...`}
+              value={localSearch}
+              onChange={(e) => handleSearchChange(e.target.value)}
+            />
+            {localSearch && (
+              <button 
+                onClick={() => handleSearchChange("")}
+                className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors"
+              >
+                <X className="h-3 w-3 opacity-40" />
+              </button>
+            )}
+          </div>
+
           <ScrollArea className="h-72">
-            <div className="p-1">
+            <div className="p-1.5">
               {suggestions.length === 0 ? (
-                <div className="p-4 text-center text-sm text-muted-foreground">No matches found.</div>
+                <div className="p-6 text-center text-sm text-muted-foreground italic">No results found.</div>
               ) : (
                 suggestions.map((item) => (
                   <button
                     key={item.name}
                     className={cn(
-                      "w-full text-left px-3 py-2 text-sm rounded-md flex items-center justify-between group transition-colors",
-                      value?.name === item.name ? "bg-primary/20 text-primary" : "hover:bg-white/5"
+                      "w-full text-left px-3 py-3 text-sm rounded-xl flex items-start justify-between group transition-all duration-200 mb-0.5",
+                      value?.name === item.name 
+                        ? "bg-primary/10 text-primary font-semibold" 
+                        : "hover:bg-black/[0.03] dark:hover:bg-white/5 text-foreground/80 hover:text-foreground"
                     )}
                     onClick={() => handleSelect(item)}
                   >
-                    <span className="truncate">{item.name}</span>
-                    {value?.name === item.name && <Check className="h-4 w-4 shrink-0" />}
+                    <span className="whitespace-normal break-words [overflow-wrap:anywhere] leading-relaxed flex-1 mr-3">
+                      {item.name}
+                    </span>
+                    {value?.name === item.name && (
+                      <Check className="h-4 w-4 shrink-0 mt-0.5 animate-in fade-in zoom-in-75 duration-200" />
+                    )}
                   </button>
                 ))
               )}
