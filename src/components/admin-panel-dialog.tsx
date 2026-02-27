@@ -91,8 +91,8 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
           isAuthenticated 
             ? isMaximized
               ? "max-w-full w-full h-full max-h-full left-0 top-0 translate-x-0 translate-y-0 rounded-none bg-background" 
-              : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-2xl glass-container border-0"
-            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2rem] glass-container bg-white/5 dark:bg-[#0B0F1B]/90 backdrop-blur-3xl border border-border/50 dark:border-white/10"
+              : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-2xl bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] dark:shadow-none backdrop-blur-none dark:backdrop-blur-3xl"
+            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] dark:shadow-none backdrop-blur-none dark:backdrop-blur-3xl"
         )}
       >
           {!isAuthenticated ? (
@@ -189,7 +189,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
   };
 
   return (
-    <div className="w-full glass-card p-8 rounded-[2.5rem] border-border/50 dark:border-white/10 bg-black/5 dark:bg-white/[0.03]">
+    <div className="w-full p-8 rounded-[2.5rem] border border-black/[0.06] dark:border-white/10 bg-black/5 dark:bg-white/[0.03]">
       <form onSubmit={handleLogin} className="space-y-8">
         <div className="space-y-2">
           <h3 className="text-3xl font-bold text-foreground tracking-tight">Login</h3>
