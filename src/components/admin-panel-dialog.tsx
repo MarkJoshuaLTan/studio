@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react";
@@ -91,9 +90,9 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
             : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2.5rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] shadow-primary/20"
         )}
       >
-          {/* Mesh Gradient Background for Authenticated State - Subtle iOS Style */}
+          {/* Mesh Gradient Background for Authenticated State - Reduced Opacity for Cleanliness */}
           {isAuthenticated && (
-            <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden opacity-30 dark:opacity-20 transition-opacity duration-1000">
+            <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden opacity-10 dark:opacity-5 transition-opacity duration-1000">
               <div className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-primary/5 rounded-full blur-[150px] animate-pulse" />
               <div className="absolute bottom-[-20%] right-[-5%] w-[60%] h-[60%] bg-emerald-500/2 rounded-full blur-[120px] animate-[pulse_10s_infinite]" />
             </div>
