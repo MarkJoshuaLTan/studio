@@ -147,7 +147,7 @@ function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, 
   return (
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {isAuthenticated ? (
-            <div className="admin-dashboard-wrapper flex-1 overflow-y-auto overflow-x-hidden scroll-smooth premium-scrollbar relative z-10">
+            <div className="admin-dashboard-wrapper flex-1 flex flex-col min-h-0 overflow-hidden relative z-10">
               <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
             </div>
         ) : (
@@ -250,60 +250,64 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
   };
 
   return (
-    <div className="px-4 md:px-12 pt-8 md:pt-12 pb-10">
-       <Tabs defaultValue="dashboard" onValueChange={setActiveTab} className="flex flex-col">
-        <div className="flex flex-col lg:flex-row justify-between items-start gap-8 mb-10">
-          <div className="space-y-6 flex-1 w-full lg:w-auto">
-            <div className="space-y-1">
-              <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-foreground">Admin Dashboard</h1>
-              <p className="text-base md:text-lg font-medium text-muted-foreground/70">Manage application settings and data.</p>
+    <div className="flex-1 flex flex-col min-h-0">
+       <Tabs defaultValue="dashboard" onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+        <div className="px-4 md:px-12 pt-8 md:pt-12 mb-10 shrink-0">
+          <div className="flex flex-col lg:flex-row justify-between items-start gap-8">
+            <div className="space-y-6 flex-1 w-full lg:w-auto">
+              <div className="space-y-1">
+                <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-foreground">Admin Dashboard</h1>
+                <p className="text-base md:text-lg font-medium text-muted-foreground/70">Manage application settings and data.</p>
+              </div>
+              <TabsList className="h-14 bg-black/[0.05] dark:bg-black/40 p-1.5 rounded-2xl border border-black/5 dark:border-white/5 shadow-inner w-full md:w-auto">
+                <TabsTrigger 
+                  value="dashboard" 
+                  className="flex-1 md:flex-none rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg px-4 md:px-8 py-2.5 font-bold transition-all duration-300"
+                >
+                  Dashboard
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="calibrate" 
+                  className="flex-1 md:flex-none rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg px-4 md:px-8 py-2.5 font-bold transition-all duration-300"
+                >
+                  Calibrate
+                </TabsTrigger>
+              </TabsList>
             </div>
-            <TabsList className="h-14 bg-black/[0.05] dark:bg-black/40 p-1.5 rounded-2xl border border-black/5 dark:border-white/5 shadow-inner w-full md:w-auto">
-              <TabsTrigger 
-                value="dashboard" 
-                className="flex-1 md:flex-none rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg px-4 md:px-8 py-2.5 font-bold transition-all duration-300"
-              >
-                Dashboard
-              </TabsTrigger>
-              <TabsTrigger 
-                value="calibrate" 
-                className="flex-1 md:flex-none rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg px-4 md:px-8 py-2.5 font-bold transition-all duration-300"
-              >
-                Calibrate
-              </TabsTrigger>
-            </TabsList>
-          </div>
 
-          <div className="flex flex-wrap items-center gap-3 p-2 bg-black/[0.03] dark:bg-black/20 rounded-[2rem] border border-black/5 dark:border-white/5 backdrop-blur-md w-full lg:w-auto justify-center md:justify-end">
-            <Button 
-              onClick={handleGlobalSave} 
-              disabled={isSaving}
-              className="btn-ios-green h-12 px-6 md:px-8 rounded-2xl active:scale-95 transition-transform flex-1 md:flex-none"
-            >
-              {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-              Save Changes
-            </Button>
-            <Button variant="ghost" onClick={onClose} className="h-12 px-4 md:px-6 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 text-foreground/80 transition-all font-semibold">
-              <ArrowLeft className="mr-2 h-4 w-4"/> Back to App
-            </Button>
-            <div className="hidden md:block w-px h-8 bg-black/10 dark:bg-white/10 mx-1" />
-            <Button 
-              variant="outline" 
-              className="h-12 px-4 md:px-6 rounded-2xl border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 hover:bg-destructive/20 hover:border-destructive/30 hover:text-destructive-foreground transition-all active:scale-95 font-bold" 
-              onClick={onLogout}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
+            <div className="flex flex-wrap items-center gap-3 p-2 bg-black/[0.03] dark:bg-black/20 rounded-[2rem] border border-black/5 dark:border-white/5 backdrop-blur-md w-full lg:w-auto justify-center md:justify-end">
+              <Button 
+                onClick={handleGlobalSave} 
+                disabled={isSaving}
+                className="btn-ios-green h-12 px-6 md:px-8 rounded-2xl active:scale-95 transition-transform flex-1 md:flex-none"
+              >
+                {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                Save Changes
+              </Button>
+              <Button variant="ghost" onClick={onClose} className="h-12 px-4 md:px-6 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 text-foreground/80 transition-all font-semibold">
+                <ArrowLeft className="mr-2 h-4 w-4"/> Back to App
+              </Button>
+              <div className="hidden md:block w-px h-8 bg-black/10 dark:bg-white/10 mx-1" />
+              <Button 
+                variant="outline" 
+                className="h-12 px-4 md:px-6 rounded-2xl border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 hover:bg-destructive/20 hover:border-destructive/30 hover:text-destructive-foreground transition-all active:scale-95 font-bold" 
+                onClick={onLogout}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
 
-        <TabsContent value="dashboard" className="m-0 focus-visible:ring-0">
-            {settings && <AdminDashboard ref={dashboardRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
-        </TabsContent>
-        <TabsContent value="calibrate" className="m-0 focus-visible:ring-0">
-            {settings && <CalibrateSettings ref={calibrateRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
-        </TabsContent>
+        <div className="flex-1 overflow-y-auto premium-scrollbar scroll-smooth px-4 md:px-12 pb-10">
+          <TabsContent value="dashboard" className="m-0 focus-visible:ring-0">
+              {settings && <AdminDashboard ref={dashboardRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
+          </TabsContent>
+          <TabsContent value="calibrate" className="m-0 focus-visible:ring-0">
+              {settings && <CalibrateSettings ref={calibrateRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
+          </TabsContent>
+        </div>
       </Tabs>
     </div>
   )
