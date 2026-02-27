@@ -92,7 +92,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
             ? isMaximized
               ? "max-w-full w-full h-full max-h-full left-0 top-0 translate-x-0 translate-y-0 rounded-none bg-background" 
               : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-2xl glass-container border-0"
-            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2rem] glass-container bg-black/90 backdrop-blur-3xl border border-white/10"
+            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2rem] glass-container bg-white/5 dark:bg-black/90 backdrop-blur-3xl border border-border/50 dark:border-white/10"
         )}
       >
           {!isAuthenticated ? (
@@ -116,8 +116,8 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
           <div className={cn("flex flex-col h-full", !isAuthenticated ? "p-10" : "p-0")}>
             {!isAuthenticated && (
               <div className="mb-10 space-y-1">
-                <DialogTitle className="text-4xl font-extrabold tracking-tight text-white">Admin Panel</DialogTitle>
-                <DialogDescription className="text-neutral-400 font-medium text-base">
+                <DialogTitle className="text-4xl font-extrabold tracking-tight text-foreground">Admin Panel</DialogTitle>
+                <DialogDescription className="text-muted-foreground font-medium text-base">
                   Please log in to continue.
                 </DialogDescription>
               </div>
@@ -189,34 +189,34 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
   };
 
   return (
-    <div className="w-full glass-card p-8 rounded-[2.5rem] border-white/10 bg-white/[0.03] shadow-2xl">
+    <div className="w-full glass-card p-8 rounded-[2.5rem] border-border/50 dark:border-white/10 bg-black/5 dark:bg-white/[0.03] shadow-2xl">
       <form onSubmit={handleLogin} className="space-y-8">
         <div className="space-y-2">
-          <h3 className="text-3xl font-bold text-white tracking-tight">Login</h3>
-          <p className="text-xs text-neutral-500 font-bold uppercase tracking-[0.2em]">
+          <h3 className="text-3xl font-bold text-foreground tracking-tight">Login</h3>
+          <p className="text-xs text-muted-foreground font-bold uppercase tracking-[0.2em]">
             Enter your credentials to access the admin panel.
           </p>
         </div>
         
         <div className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="username" className="text-neutral-300 text-sm font-semibold ml-1">Username</Label>
+            <Label htmlFor="username" className="text-muted-foreground text-sm font-semibold ml-1">Username</Label>
             <Input
               id="username"
               type="text"
               required
-              className="glass-input h-14 rounded-2xl text-white border-white/10 bg-black/40 focus:ring-primary/50 text-base"
+              className="glass-input h-14 rounded-2xl text-foreground border-border/50 dark:border-white/10 bg-background/20 dark:bg-black/40 focus:ring-primary/50 text-base"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-neutral-300 text-sm font-semibold ml-1">Password</Label>
+            <Label htmlFor="password" className="text-muted-foreground text-sm font-semibold ml-1">Password</Label>
             <Input
               id="password"
               type="password"
               required
-              className="glass-input h-14 rounded-2xl text-white border-white/10 bg-black/40 focus:ring-primary/50 text-base"
+              className="glass-input h-14 rounded-2xl text-foreground border-border/50 dark:border-white/10 bg-background/20 dark:bg-black/40 focus:ring-primary/50 text-base"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
