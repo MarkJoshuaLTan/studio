@@ -67,8 +67,8 @@ export function AutocompleteInput({
             role="combobox"
             aria-expanded={open}
             className={cn(
-              "w-full h-12 px-4 justify-between font-medium text-left transition-all duration-300 rounded-[14px] border-white/5",
-              "bg-[#0B0F0E] hover:bg-[#121615] text-foreground",
+              "w-full h-12 px-4 justify-between font-medium text-left transition-all duration-300 rounded-[14px]",
+              "glass-input text-foreground",
               "focus:ring-2 focus:ring-primary/30 focus:border-primary/50",
               !value && "text-muted-foreground",
               disabled && "opacity-50 cursor-not-allowed"
@@ -88,7 +88,7 @@ export function AutocompleteInput({
           </Button>
         </PopoverTrigger>
         <PopoverContent 
-          className="w-[var(--radix-popover-trigger-width)] p-0 border border-white/5 bg-[#0B0F0E] shadow-[0_10px_30px_rgba(0,0,0,0.4)] rounded-[16px] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+          className="w-[var(--radix-popover-trigger-width)] p-0 border border-black/[0.06] dark:border-white/10 bg-white/95 dark:bg-black/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.2)] rounded-[16px] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
           onOpenAutoFocus={(e) => {
             searchInputRef.current?.focus();
           }}
@@ -96,7 +96,7 @@ export function AutocompleteInput({
           side="bottom"
           sideOffset={8}
         >
-          <div className="flex items-center px-4 border-b border-white/5 bg-white/[0.02]">
+          <div className="flex items-center px-4 border-b border-black/[0.05] dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]">
             <Search className="h-4 w-4 shrink-0 opacity-40 mr-2 text-primary" />
             <input
               ref={searchInputRef}
@@ -108,7 +108,7 @@ export function AutocompleteInput({
             {localSearch && (
               <button 
                 onClick={() => handleSearchChange("")}
-                className="p-1 hover:bg-white/10 rounded-full transition-colors"
+                className="p-1 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors"
               >
                 <X className="h-3 w-3 opacity-40" />
               </button>
@@ -127,7 +127,7 @@ export function AutocompleteInput({
                       "w-full text-left px-4 py-3.5 text-sm rounded-[12px] flex items-center justify-between group transition-all duration-200 mb-1 font-medium",
                       value?.name === item.name 
                         ? "bg-gradient-to-r from-[#14532D] to-[#166534] text-white shadow-[inset_0_0_10px_rgba(34,197,94,0.2)]" 
-                        : "hover:bg-white/5 text-foreground/80 hover:text-white"
+                        : "hover:bg-black/5 dark:hover:bg-white/5 text-foreground/80 hover:text-foreground"
                     )}
                     onClick={() => handleSelect(item)}
                   >
