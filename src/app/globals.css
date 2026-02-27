@@ -40,7 +40,6 @@ body {
   }
 
   .dark {
-    /* Refined Deep Midnight Navy: HSL 225, 50%, 3% */
     --background: 225 50% 3%;
     --foreground: 210 40% 98%;
 
@@ -79,7 +78,6 @@ body {
     @apply bg-background text-foreground selection:bg-primary/30;
   }
 
-  /* Custom Modern Scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -103,7 +101,6 @@ body {
     background-clip: content-box;
   }
 
-  /* Dark Mode Scrollbar Overrides */
   .dark ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.02);
   }
@@ -121,55 +118,60 @@ body {
 
 @layer components {
   .glass-container {
-    @apply bg-white/40 dark:bg-[#05070A]/60 backdrop-blur-3xl border border-white/30 dark:border-white/5 rounded-[2rem] transition-all duration-500;
-    /* Unified Light Mode Shadow: Soft, clean elevation */
-    box-shadow: 
-      0 4px 12px rgba(0, 0, 0, 0.06),
-      0 10px 30px rgba(0, 0, 0, 0.08),
-      inset 0 0 0 1.5px rgba(255, 255, 255, 0.4),
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.5);
-  }
-
-  .dark .glass-container {
-    /* Deeper shadow for Dark Mode drama */
-    box-shadow: 
-      0 30px 60px -12px rgba(0, 0, 0, 0.7),
-      0 18px 36px -18px rgba(0, 0, 0, 0.8),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.05),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.02);
-  }
-  
-  .glass-card {
-    @apply bg-white/30 dark:bg-white/[0.02] backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-2xl transition-all duration-300;
-    /* Matching Light Mode Shadow */
+    @apply bg-white/40 dark:bg-black/40 backdrop-blur-[20px] border border-white/20 dark:border-white/10 rounded-[2rem] transition-all duration-500;
     box-shadow: 
       0 4px 12px rgba(0, 0, 0, 0.06),
       0 10px 30px rgba(0, 0, 0, 0.08),
       inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   }
 
+  .dark .glass-container {
+    box-shadow: 
+      0 30px 60px -12px rgba(0, 0, 0, 0.7),
+      0 18px 36px -18px rgba(0, 0, 0, 0.8),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+  
+  .glass-card {
+    @apply bg-white/30 dark:bg-white/[0.03] backdrop-blur-xl border border-white/20 dark:border-white/[0.08] rounded-2xl transition-all duration-300;
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.06),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
   .dark .glass-card {
     box-shadow: 
       0 10px 25px -5px rgba(0, 0, 0, 0.5),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+      inset 0 0 0 1px rgba(255, 255, 255, 0.02);
   }
 
   .glass-card-hover {
-    @apply hover:bg-white/40 dark:hover:bg-white/[0.05] hover:-translate-y-1 hover:border-white/50 dark:hover:border-white/10;
+    @apply hover:bg-white/40 dark:hover:bg-white/[0.06] hover:-translate-y-0.5 hover:border-white/40 dark:hover:border-white/20;
     box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
   }
 
   .glass-input {
-    @apply bg-white/60 dark:bg-[#05070A]/40 backdrop-blur-md border border-white/30 dark:border-white/5 focus:ring-primary/40 transition-all duration-300;
-    /* Recessed inset feel for inputs */
+    @apply bg-white/60 dark:bg-black/40 backdrop-blur-md border border-black/[0.08] dark:border-white/10 focus:ring-primary/40 focus:border-primary/50 transition-all duration-300;
     box-shadow: 
-      inset 0 2px 4px 0 rgba(0, 0, 0, 0.03),
-      0 1px 2px 0 rgba(255, 255, 255, 0.4);
+      inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);
   }
 
   .dark .glass-input {
     box-shadow: 
-      inset 0 2px 4px 0 rgba(0, 0, 0, 0.6),
+      inset 0 2px 4px 0 rgba(0, 0, 0, 0.4),
       0 1px 0 0 rgba(255, 255, 255, 0.02);
+  }
+
+  .btn-ios-green {
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition-all active:scale-[0.98] shadow-lg shadow-primary/20 relative overflow-hidden;
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
+  }
+
+  .mesh-gradient-overlay {
+    @apply absolute inset-0 pointer-events-none -z-10 overflow-hidden opacity-40 dark:opacity-20;
+    background: 
+      radial-gradient(at 0% 0%, hsla(142, 76%, 36%, 0.15) 0, transparent 50%), 
+      radial-gradient(at 50% 0%, hsla(142, 71%, 45%, 0.1) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, hsla(142, 76%, 36%, 0.15) 0, transparent 50%);
   }
 }

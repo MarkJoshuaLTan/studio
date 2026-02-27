@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Loader2, ArrowLeft, X, Maximize2, Minimize2, Save } from "lucide-react";
-import type { TaxSettings, LocationDetails, PropertyType, SuggestedItem } from "@/lib/definitions";
+import type { TaxSettings, LocationDetails, PropertyType } from "@/lib/definitions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -87,33 +87,42 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
       <DialogContent 
         showClose={false}
         className={cn(
-          "p-0 border-none transition-all duration-300 ease-in-out overflow-hidden shadow-none",
+          "p-0 border-none transition-all duration-500 ease-in-out overflow-hidden shadow-none",
           isAuthenticated 
             ? isMaximized
               ? "max-w-full w-full h-full max-h-full left-0 top-0 translate-x-0 translate-y-0 rounded-none bg-background" 
-              : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-2xl bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] dark:shadow-none backdrop-blur-none dark:backdrop-blur-3xl"
-            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] dark:shadow-none backdrop-blur-none dark:backdrop-blur-3xl"
+              : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-3xl bg-white/95 dark:bg-black/90 backdrop-blur-3xl border border-white/20 dark:border-white/5 shadow-2xl"
+            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2.5rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] dark:shadow-none"
         )}
       >
+          {/* Mesh Gradient Background for Authenticated State */}
+          {isAuthenticated && (
+            <div className="mesh-gradient-overlay" />
+          )}
+
           {!isAuthenticated ? (
             <DialogClose className="absolute right-6 top-6 rounded-full border border-primary/50 p-1.5 opacity-70 transition-all hover:opacity-100 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary z-50">
               <X className="h-5 w-5 text-primary" />
               <span className="sr-only">Close</span>
             </DialogClose>
           ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-green-500 z-50 text-neutral-400 hover:text-foreground"
-              onClick={() => setIsMaximized(!isMaximized)}
-              title={isMaximized ? "Restore" : "Maximize"}
-            >
-              {isMaximized ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
-              <span className="sr-only">{isMaximized ? "Restore" : "Maximize"}</span>
-            </Button>
+            <div className="absolute right-4 top-4 flex items-center gap-2 z-50">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full opacity-70 transition-all hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-green-500 text-neutral-400 hover:text-foreground hover:bg-white/10 dark:hover:bg-white/5"
+                onClick={() => setIsMaximized(!isMaximized)}
+                title={isMaximized ? "Restore" : "Maximize"}
+              >
+                {isMaximized ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+              </Button>
+              <DialogClose className="rounded-full border border-white/20 p-1.5 opacity-70 transition-all hover:opacity-100 hover:bg-white/10 dark:hover:bg-white/5">
+                <X className="h-5 w-5" />
+              </DialogClose>
+            </div>
           )}
 
-          <div className={cn("flex flex-col h-full", !isAuthenticated ? "p-10" : "p-0")}>
+          <div className={cn("flex flex-col h-full relative z-10", !isAuthenticated ? "p-10" : "p-0")}>
             {!isAuthenticated && (
               <div className="mb-10 space-y-1">
                 <DialogTitle className="text-4xl font-extrabold tracking-tight text-foreground">Admin Panel</DialogTitle>
@@ -149,10 +158,10 @@ function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, 
       <div className="flex-1 overflow-hidden">
         {isAuthenticated ? (
             <div className="h-full flex flex-col">
-              <div className="flex flex-col space-y-1.5 text-center sm:text-left mb-6 px-6 pt-6">
-                <DialogTitle className="text-2xl font-bold tracking-tight">Admin Dashboard</DialogTitle>
-                <DialogDescription className="text-sm text-neutral-400">
-                  Manage application settings and data.
+              <div className="flex flex-col space-y-1.5 text-center sm:text-left mb-6 px-8 pt-8">
+                <DialogTitle className="text-3xl font-black tracking-tight text-foreground">Admin Dashboard</DialogTitle>
+                <DialogDescription className="text-sm font-medium text-muted-foreground opacity-70">
+                  Manage application settings and valuation data.
                 </DialogDescription>
               </div>
               <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
@@ -189,12 +198,12 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
   };
 
   return (
-    <div className="w-full p-8 rounded-[2.5rem] border border-black/[0.06] dark:border-white/10 bg-black/5 dark:bg-white/[0.03]">
+    <div className="w-full p-8 rounded-[2.5rem] border border-black/[0.06] dark:border-white/10 bg-black/5 dark:bg-white/[0.03] backdrop-blur-md">
       <form onSubmit={handleLogin} className="space-y-8">
         <div className="space-y-2">
           <h3 className="text-3xl font-bold text-foreground tracking-tight">Login</h3>
           <p className="text-xs text-muted-foreground font-bold uppercase tracking-[0.2em]">
-            Enter your credentials to access the admin panel.
+            Access secure admin controls
           </p>
         </div>
         
@@ -205,7 +214,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
               id="username"
               type="text"
               required
-              className="glass-input h-14 rounded-2xl text-foreground border-black/[0.1] dark:border-white/20 bg-background/50 dark:bg-white/5 focus:ring-primary/50 text-base"
+              className="glass-input h-14 rounded-2xl border-black/[0.1] dark:border-white/20"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -216,7 +225,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
               id="password"
               type="password"
               required
-              className="glass-input h-14 rounded-2xl text-foreground border-black/[0.1] dark:border-white/20 bg-background/50 dark:bg-white/5 focus:ring-primary/50 text-base"
+              className="glass-input h-14 rounded-2xl border-black/[0.1] dark:border-white/20"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -225,7 +234,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
 
         <Button 
           type="submit" 
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-extrabold transition-all rounded-[1.25rem] h-16 shadow-lg shadow-primary/20 text-lg tracking-wide" 
+          className="w-full btn-ios-green h-16 rounded-[1.25rem] text-lg tracking-wide" 
           disabled={isLoading}
         >
           {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : "Sign in"}
@@ -255,26 +264,26 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
   };
 
   return (
-    <div className="h-full flex flex-col px-6 pb-6">
+    <div className="h-full flex flex-col px-8 pb-8">
        <Tabs defaultValue="dashboard" onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-          <TabsList className="h-11">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="calibrate">Calibrate</TabsTrigger>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <TabsList className="h-12 bg-black/10 dark:bg-white/10 p-1.5 rounded-2xl">
+            <TabsTrigger value="dashboard" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-white/20 data-[state=active]:shadow-sm px-6">Dashboard</TabsTrigger>
+            <TabsTrigger value="calibrate" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-white/20 data-[state=active]:shadow-sm px-6">Calibrate</TabsTrigger>
           </TabsList>
-          <div className="flex items-center gap-2 w-full md:w-auto">
+          <div className="flex items-center gap-3 w-full md:w-auto">
             <Button 
               onClick={handleGlobalSave} 
               disabled={isSaving}
-              className="flex-1 md:flex-none h-11 bg-primary hover:bg-primary/90 font-bold shadow-lg"
+              className="flex-1 md:flex-none btn-ios-green h-11 px-6"
             >
               {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
               Save Changes
             </Button>
-            <Button variant="ghost" onClick={onClose} className="hidden sm:flex h-11">
+            <Button variant="ghost" onClick={onClose} className="hidden sm:flex h-11 rounded-xl hover:bg-white/10 dark:hover:bg-white/5">
               <ArrowLeft className="mr-2 h-4 w-4"/> Back to App
             </Button>
-            <Button variant="outline" className="h-11 glass-card" onClick={onLogout}>Logout</Button>
+            <Button variant="outline" className="h-11 rounded-xl glass-card border-white/20 hover:bg-white/10 dark:hover:bg-white/5" onClick={onLogout}>Logout</Button>
           </div>
         </div>
         <TabsContent value="dashboard" className="flex-1 overflow-y-auto pr-2 m-0 focus-visible:ring-0">
@@ -354,7 +363,7 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
 
       onSettingsChange(settingsToSave);
       onSaveSuccess();
-      toast({ title: 'Success!', description: 'Settings have been saved. They will be applied when you close the panel.' });
+      toast({ title: 'Success!', description: 'Valuation data has been saved locally.' });
 
     } catch (error: any) {
        toast({ variant: "destructive", title: "Error", description: error.message || "Could not save settings." });
@@ -378,53 +387,57 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
 
   return (
     <div className="space-y-8 pb-8">
-        <Card className="glass-container border-0">
+        <Card className="glass-card border-white/10 dark:border-white/[0.05] bg-white/20 dark:bg-white/[0.02]">
           <CardHeader>
-            <CardTitle>Unit Value Tax Data</CardTitle>
-            <CardDescription>Select a barangay and search for a location to edit its values.</CardDescription>
+            <CardTitle className="text-xl font-bold">Unit Value Tax Data</CardTitle>
+            <CardDescription className="text-sm">Manage specific valuation units across barangays.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-                <div className="w-full md:w-1/2">
-                    <Label className="mb-1.5 block">Barangay</Label>
+            <div className="flex flex-col md:flex-row gap-6 mb-8">
+                <div className="w-full md:w-1/2 space-y-2">
+                    <Label className="text-xs font-black uppercase tracking-widest opacity-60 ml-1">Barangay</Label>
                     <Select value={selectedBarangay} onValueChange={setSelectedBarangay}>
-                        <SelectTrigger className="glass-input h-11"><SelectValue placeholder="Select a Barangay" /></SelectTrigger>
-                        <SelectContent className="glass-container border-0">
+                        <SelectTrigger className="glass-input h-12 rounded-2xl border-white/20">
+                          <SelectValue placeholder="Select a Barangay" />
+                        </SelectTrigger>
+                        <SelectContent className="glass-container border-white/10">
                             {Object.keys(editedSettings.taxData).sort().map(b => (
-                                <SelectItem key={b} value={b} className="focus:bg-primary/20">{b}</SelectItem>
+                                <SelectItem key={b} value={b} className="focus:bg-primary/20 rounded-xl">{b}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
                 </div>
-                <div className="w-full md:w-1/2">
-                    <Label className="mb-1.5 block">Search Location</Label>
-                    <Input placeholder="Filter locations..." className="glass-input h-11" value={locationSearch} onChange={(e) => setLocationSearch(e.target.value)} disabled={!selectedBarangay} />
+                <div className="w-full md:w-1/2 space-y-2">
+                    <Label className="text-xs font-black uppercase tracking-widest opacity-60 ml-1">Search Location</Label>
+                    <Input placeholder="Filter locations..." className="glass-input h-12 rounded-2xl border-white/20" value={locationSearch} onChange={(e) => setLocationSearch(e.target.value)} disabled={!selectedBarangay} />
                 </div>
             </div>
-            <ScrollArea className="h-[40vh] rounded-xl border border-white/5 bg-background/20 p-4">
+            <ScrollArea className="h-[45vh] rounded-[2rem] border border-white/10 bg-black/5 dark:bg-white/[0.02] p-6">
                 <div className="space-y-4">
                     {filteredLocations.length > 0 ? filteredLocations.map(([locationName, details]) => (
-                        <Card key={locationName} className="glass-card border-white/5 bg-white/5">
-                            <CardHeader className="pb-2"><CardTitle className="text-lg">{locationName}</CardTitle></CardHeader>
+                        <Card key={locationName} className="glass-card border-white/5 bg-white/40 dark:bg-white/5 glass-card-hover">
+                            <CardHeader className="pb-2">
+                              <CardTitle className="text-base font-bold tracking-tight">{locationName}</CardTitle>
+                            </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                                     <div className="space-y-2">
-                                        <Label htmlFor={`uv2028-${locationName}`}>Unit Value (Current)</Label>
-                                        <Input id={`uv2028-${locationName}`} type="text" inputMode="decimal" className="glass-input" value={details.unitValue2028} onChange={e => handleLocationDataChange(locationName, 'unitValue2028', e.target.value)} />
+                                        <Label htmlFor={`uv2028-${locationName}`} className="text-[10px] font-bold uppercase opacity-50">Unit Value (Current)</Label>
+                                        <Input id={`uv2028-${locationName}`} type="text" inputMode="decimal" className="glass-input h-10 rounded-xl border-white/10" value={details.unitValue2028} onChange={e => handleLocationDataChange(locationName, 'unitValue2028', e.target.value)} />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor={`uv2029-${locationName}`}>Unit Value (RPVARA)</Label>
-                                        <Input id={`uv2029-${locationName}`} type="text" inputMode="decimal" className="glass-input" value={details.unitValue2029} onChange={e => handleLocationDataChange(locationName, 'unitValue2029', e.target.value)} />
+                                        <Label htmlFor={`uv2029-${locationName}`} className="text-[10px] font-bold uppercase opacity-50">Unit Value (RPVARA)</Label>
+                                        <Input id={`uv2029-${locationName}`} type="text" inputMode="decimal" className="glass-input h-10 rounded-xl border-white/10" value={details.unitValue2029} onChange={e => handleLocationDataChange(locationName, 'unitValue2029', e.target.value)} />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor={`pt-${locationName}`}>Property Type</Label>
+                                        <Label htmlFor={`pt-${locationName}`} className="text-[10px] font-bold uppercase opacity-50">Property Type</Label>
                                         <Select value={details.propertyType} onValueChange={(value: PropertyType) => handleLocationDataChange(locationName, 'propertyType', value)}>
-                                            <SelectTrigger id={`pt-${locationName}`} className="glass-input"><SelectValue /></SelectTrigger>
-                                            <SelectContent className="glass-container border-0">
-                                                <SelectItem value="Residential" className="focus:bg-primary/20">Residential</SelectItem>
-                                                <SelectItem value="Commercial" className="focus:bg-primary/20">Commercial</SelectItem>
-                                                <SelectItem value="Industrial" className="focus:bg-primary/20">Industrial</SelectItem>
-                                                <SelectItem value="Commercial / Industrial" className="focus:bg-primary/20">Commercial / Industrial</SelectItem>
+                                            <SelectTrigger id={`pt-${locationName}`} className="glass-input h-10 rounded-xl border-white/10"><SelectValue /></SelectTrigger>
+                                            <SelectContent className="glass-container border-white/10">
+                                                <SelectItem value="Residential" className="focus:bg-primary/20 rounded-lg">Residential</SelectItem>
+                                                <SelectItem value="Commercial" className="focus:bg-primary/20 rounded-lg">Commercial</SelectItem>
+                                                <SelectItem value="Industrial" className="focus:bg-primary/20 rounded-lg">Industrial</SelectItem>
+                                                <SelectItem value="Commercial / Industrial" className="focus:bg-primary/20 rounded-lg">Commercial / Industrial</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -432,8 +445,8 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
                             </CardContent>
                         </Card>
                     )) : (
-                        <div className="text-center text-muted-foreground py-10">
-                            {selectedBarangay ? 'No locations found for your search.' : 'Please select a barangay.'}
+                        <div className="text-center text-muted-foreground py-16 opacity-50 font-medium">
+                            {selectedBarangay ? 'No locations found for your search.' : 'Please select a barangay to view data.'}
                         </div>
                     )}
                 </div>
@@ -512,7 +525,7 @@ const CalibrateSettings = forwardRef(({ settings: settingsProp, onSettingsChange
             onSettingsChange(updatedSettings);
             onSaveSuccess();
 
-            toast({ title: 'Success!', description: 'Settings have been saved. They will be applied when you close the panel.' });
+            toast({ title: 'Success!', description: 'Calibration parameters saved.' });
         } catch (error: any) {
             toast({ variant: "destructive", title: "Error", description: error.message || "Could not save settings." });
             throw error;
@@ -530,30 +543,36 @@ const CalibrateSettings = forwardRef(({ settings: settingsProp, onSettingsChange
     return (
         <div className="space-y-8 pb-8">
             <div className="grid gap-8 md:grid-cols-2">
-                <Card className="glass-container border-0">
+                <Card className="glass-card border-white/10 bg-white/20 dark:bg-white/[0.02]">
                 <CardHeader>
-                    <CardTitle>Assessment Levels</CardTitle>
-                    <CardDescription>Set the assessment level percentage (e.g., 20 for 20%).</CardDescription>
+                    <CardTitle className="text-lg font-bold">Assessment Levels</CardTitle>
+                    <CardDescription className="text-xs">Base assessment percentage per property type.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {formValues && Object.entries(formValues.assessmentLevels).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between space-x-4">
-                            <Label htmlFor={`assessment-${key}`} className="font-medium">{key}</Label>
-                            <Input id={`assessment-${key}`} type="text" inputMode="decimal" className="w-32 text-right glass-input h-10" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
+                        <div key={key} className="flex items-center justify-between space-x-4 p-3 rounded-2xl bg-white/30 dark:bg-white/5 border border-white/10">
+                            <Label htmlFor={`assessment-${key}`} className="font-semibold text-sm">{key}</Label>
+                            <div className="flex items-center gap-2">
+                              <Input id={`assessment-${key}`} type="text" inputMode="decimal" className="w-24 text-right glass-input h-10 rounded-xl border-white/10" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
+                              <span className="text-xs font-bold opacity-40">%</span>
+                            </div>
                         </div>
                     ))}
                 </CardContent>
                 </Card>
-                <Card className="glass-container border-0">
+                <Card className="glass-card border-white/10 bg-white/20 dark:bg-white/[0.02]">
                 <CardHeader>
-                    <CardTitle>Tax Rates</CardTitle>
-                    <CardDescription>Set the tax rate percentage (e.g., 2 for 2%).</CardDescription>
+                    <CardTitle className="text-lg font-bold">Tax Rates</CardTitle>
+                    <CardDescription className="text-xs">Annual tax percentage applied to assessed value.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {formValues && Object.entries(formValues.taxRates).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between space-x-4">
-                            <Label htmlFor={`taxrate-${key}`} className="font-medium">{key}</Label>
-                            <Input id={`taxrate-${key}`} type="text" inputMode="decimal" className="w-32 text-right glass-input h-10" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
+                        <div key={key} className="flex items-center justify-between space-x-4 p-3 rounded-2xl bg-white/30 dark:bg-white/5 border border-white/10">
+                            <Label htmlFor={`taxrate-${key}`} className="font-semibold text-sm">{key}</Label>
+                            <div className="flex items-center gap-2">
+                              <Input id={`taxrate-${key}`} type="text" inputMode="decimal" className="w-24 text-right glass-input h-10 rounded-xl border-white/10" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
+                              <span className="text-xs font-bold opacity-40">%</span>
+                            </div>
                         </div>
                     ))}
                 </CardContent>
