@@ -16,7 +16,6 @@ import { AboutDialog } from '@/components/about-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BuildingCalculator, { type BuildingCalculationResults } from '@/components/building-calculator';
 import { BuildingResultsDisplay } from '@/components/building-results-display';
-import { CalculationBreakdown } from '@/components/calculation-breakdown';
 
 export default function Home() {
   const [results, setResults] = useState<CalculationResults | null>(null);
@@ -109,7 +108,6 @@ export default function Home() {
                           results={results}
                           settings={settings}
                         />
-                        <CalculationBreakdown results={results} />
                       </div>
                     )}
                   </div>

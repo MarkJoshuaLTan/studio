@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,6 +13,9 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import type { BuildingCalculationResults } from "./building-calculator";
 import { AnimatedCurrency } from "./animated-currency";
+import { Calculator } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CalculationModal } from "./calculation-modal";
 
 interface BuildingResultsDisplayProps {
   results: BuildingCalculationResults;
@@ -29,9 +33,7 @@ const InfoRow = ({
 }) => {
   const valueStr = String(value);
   let sizeClass = "";
-  if (valueStr.length > 15) {
-    sizeClass = "text-xs";
-  }
+  if (valueStr.length > 15) sizeClass = "text-xs";
 
   return (
     <div className="flex justify-between py-2.5 text-sm border-b border-white/5 last:border-0">
@@ -50,27 +52,35 @@ const InfoRow = ({
 const SummaryResultRow = ({
   label,
   value,
+  onInfoClick,
 }: {
   label: React.ReactNode;
   value: number;
+  onInfoClick?: () => void;
 }) => {
-  // Anti-wrapping and scaling logic
   const estimatedLength = Math.floor(value).toLocaleString().length + 4;
   let sizeClass;
 
-  if (estimatedLength > 18) {
-    sizeClass = "text-lg";
-  } else if (estimatedLength > 15) {
-    sizeClass = "text-xl";
-  } else if (estimatedLength > 12) {
-    sizeClass = "text-2xl";
-  } else {
-    sizeClass = "text-3xl";
-  }
+  if (estimatedLength > 18) sizeClass = "text-lg";
+  else if (estimatedLength > 15) sizeClass = "text-xl";
+  else if (estimatedLength > 12) sizeClass = "text-2xl";
+  else sizeClass = "text-3xl";
 
   return (
-    <div className="flex justify-between items-center py-4 gap-4">
-      <dt className="text-muted-foreground/90 text-lg font-medium leading-tight">{label}</dt>
+    <div className="flex justify-between items-center py-4 gap-4 group">
+      <dt className="flex items-center gap-2">
+        <span className="text-muted-foreground/90 text-lg font-medium leading-tight">{label}</span>
+        {onInfoClick && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 rounded-full text-muted-foreground/20 group-hover:text-primary transition-all"
+            onClick={onInfoClick}
+          >
+            <Calculator className="h-3 w-3" />
+          </Button>
+        )}
+      </dt>
       <dd className={cn(
         "font-bold text-primary text-right tracking-tight drop-shadow-[0_0_15px_rgba(34,197,94,0.3)] whitespace-nowrap break-keep shrink-0", 
         sizeClass
@@ -88,17 +98,12 @@ const ImpactResultRow = ({
   label: React.ReactNode;
   value: number;
 }) => {
-  // Dynamic font sizing based on string length and flexible labels
   const estimatedLength = Math.floor(value).toLocaleString().length + 4;
   let sizeClass;
 
-  if (estimatedLength > 18) {
-    sizeClass = "text-[10px]";
-  } else if (estimatedLength > 15) {
-    sizeClass = "text-xs";
-  } else {
-    sizeClass = "text-sm";
-  }
+  if (estimatedLength > 18) sizeClass = "text-[10px]";
+  else if (estimatedLength > 15) sizeClass = "text-xs";
+  else sizeClass = "text-sm";
 
   return (
     <div className="flex justify-between items-start py-2.5 gap-2">
@@ -117,6 +122,9 @@ const ImpactResultRow = ({
 };
 
 export function BuildingResultsDisplay({ results, mode = 'summary' }: BuildingResultsDisplayProps) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [activeProposal, setActiveProposal] = useState<'current' | 'p1' | 'p2' | 'p3'>('current');
+
   if (mode === 'summary') {
     return (
       <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out">
@@ -141,6 +149,10 @@ export function BuildingResultsDisplay({ results, mode = 'summary' }: BuildingRe
               <SummaryResultRow
                 label="Current Yearly Tax"
                 value={results.currentYearlyTax}
+                onInfoClick={() => {
+                  setActiveProposal('current');
+                  setModalOpen(true);
+                }}
               />
             </div>
           </CardContent>
@@ -150,6 +162,14 @@ export function BuildingResultsDisplay({ results, mode = 'summary' }: BuildingRe
             </p>
           </CardFooter>
         </Card>
+
+        <CalculationModal
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          type="building"
+          results={results}
+          buildingProposal={activeProposal}
+        />
       </div>
     );
   }
@@ -163,44 +183,43 @@ export function BuildingResultsDisplay({ results, mode = 'summary' }: BuildingRe
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <ProposalCard 
-          title="PROPOSAL 1" 
-          currentTax={results.currentYearlyTax}
-          proposalTax={results.p1YearlyTax}
-          proposalAL={results.p1AssessmentLevel}
-          proposalAV={results.p1AssessedValue}
-          delayClass="delay-0"
-        />
-        <ProposalCard 
-          title="PROPOSAL 2" 
-          currentTax={results.currentYearlyTax}
-          proposalTax={results.p2YearlyTax}
-          proposalAL={results.p2AssessmentLevel}
-          proposalAV={results.p2AssessedValue}
-          delayClass="delay-150"
-        />
-        <ProposalCard 
-          title="PROPOSAL 3" 
-          currentTax={results.currentYearlyTax}
-          proposalTax={results.p3YearlyTax}
-          proposalAL={results.p3AssessmentLevel}
-          proposalAV={results.p3AssessedValue}
-          delayClass="delay-300"
-        />
+        {(['p1', 'p2', 'p3'] as const).map((prop, idx) => (
+          <ProposalCard 
+            key={prop}
+            title={`PROPOSAL ${idx + 1}`} 
+            currentTax={results.currentYearlyTax}
+            proposalTax={results[`${prop}YearlyTax` as keyof BuildingCalculationResults] as number}
+            proposalAL={results[`${prop}AssessmentLevel` as keyof BuildingCalculationResults] as number}
+            proposalAV={results[`${prop}AssessedValue` as keyof BuildingCalculationResults] as number}
+            delayClass={idx === 0 ? "delay-0" : idx === 1 ? "delay-150" : "delay-300"}
+            onInfoClick={() => {
+              setActiveProposal(prop);
+              setModalOpen(true);
+            }}
+          />
+        ))}
       </div>
+
+      <CalculationModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        type="building"
+        results={results}
+        buildingProposal={activeProposal}
+      />
     </div>
   );
 }
 
-function ProposalCard({ title, currentTax, proposalTax, proposalAL, proposalAV, delayClass }: { 
+function ProposalCard({ title, currentTax, proposalTax, proposalAL, proposalAV, delayClass, onInfoClick }: { 
   title: string; 
   currentTax: number; 
   proposalTax: number; 
   proposalAL: number;
   proposalAV: number;
   delayClass: string;
+  onInfoClick: () => void;
 }) {
-  // Font scaling for the main centered value
   const estimatedLength = Math.floor(proposalTax).toLocaleString().length + 4;
   let displaySize;
   if (estimatedLength > 18) displaySize = "text-lg";
@@ -210,9 +229,18 @@ function ProposalCard({ title, currentTax, proposalTax, proposalAL, proposalAV, 
 
   return (
     <Card className={cn(
-      "flex flex-col glass-container border-0 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
+      "relative flex flex-col glass-container border-0 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
       delayClass
     )}>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute top-4 right-4 h-8 w-8 rounded-full text-muted-foreground/40 hover:text-primary hover:bg-primary/10 transition-all duration-300 z-20"
+        onClick={onInfoClick}
+      >
+        <Calculator className="h-4 w-4" />
+      </Button>
+
       <CardHeader className="pb-4 pt-8">
         <div className="text-center">
           <div className="text-5xl font-black text-primary mb-1 drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]">

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -11,6 +12,9 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { AnimatedCurrency } from "./animated-currency";
+import { Calculator } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CalculationModal } from "./calculation-modal";
 
 export type CalculationResults = {
   barangay: string;
@@ -66,27 +70,35 @@ const InfoRow = ({
 const ResultRow = ({
   label,
   value,
+  onInfoClick,
 }: {
   label: React.ReactNode;
   value: number;
+  onInfoClick?: () => void;
 }) => {
-  // Anti-wrapping and scaling logic
   const estimatedLength = Math.floor(value).toLocaleString().length + 4;
   let sizeClass;
 
-  if (estimatedLength > 18) {
-    sizeClass = "text-lg";
-  } else if (estimatedLength > 15) {
-    sizeClass = "text-xl";
-  } else if (estimatedLength > 12) {
-    sizeClass = "text-2xl";
-  } else {
-    sizeClass = "text-3xl";
-  }
+  if (estimatedLength > 18) sizeClass = "text-lg";
+  else if (estimatedLength > 15) sizeClass = "text-xl";
+  else if (estimatedLength > 12) sizeClass = "text-2xl";
+  else sizeClass = "text-3xl";
 
   return (
-    <div className="flex justify-between items-center py-4 border-b border-white/10 last:border-0 gap-4">
-      <dt className="text-muted-foreground/90 text-lg font-medium leading-tight">{label}</dt>
+    <div className="flex justify-between items-center py-4 border-b border-white/10 last:border-0 gap-4 group">
+      <dt className="flex items-center gap-2">
+        <span className="text-muted-foreground/90 text-lg font-medium leading-tight">{label}</span>
+        {onInfoClick && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 rounded-full text-muted-foreground/20 group-hover:text-primary transition-all"
+            onClick={onInfoClick}
+          >
+            <Calculator className="h-3 w-3" />
+          </Button>
+        )}
+      </dt>
       <dd className={cn(
         "font-bold text-primary text-right tracking-tight drop-shadow-[0_0_15px_rgba(34,197,94,0.3)] whitespace-nowrap break-keep shrink-0", 
         sizeClass
@@ -98,6 +110,9 @@ const ResultRow = ({
 };
 
 export function ResultsDisplay({ results }: ResultsDisplayProps) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'current' | 'rpvara' | 'future'>('current');
+
   return (
     <div className="mt-0 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out">
       <Card className="glass-container border-0 overflow-hidden">
@@ -153,6 +168,10 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
             <ResultRow
               label="Current Tax"
               value={results.currentTax}
+              onInfoClick={() => {
+                setModalMode('current');
+                setModalOpen(true);
+              }}
             />
             <ResultRow
               label={
@@ -165,10 +184,18 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
                 </span>
               }
               value={results.realYearlyTax2028}
+              onInfoClick={() => {
+                setModalMode('rpvara');
+                setModalOpen(true);
+              }}
             />
             <ResultRow
               label="Tax (2029)"
               value={results.yearlyTax2029}
+              onInfoClick={() => {
+                setModalMode('future');
+                setModalOpen(true);
+              }}
             />
           </div>
         </CardContent>
@@ -178,6 +205,14 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
             </p>
         </CardFooter>
       </Card>
+
+      <CalculationModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        type="land"
+        results={results}
+        mode={modalMode === 'future' ? 'rpvara' : modalMode}
+      />
     </div>
   );
 }
