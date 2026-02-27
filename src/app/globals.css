@@ -117,17 +117,27 @@ body {
 }
 
 @layer components {
+  .premium-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(34, 197, 94, 0.4) rgba(0, 0, 0, 0.1);
+  }
+
   .premium-scrollbar::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
 
   .premium-scrollbar::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1) !important;
+    background: rgba(0, 0, 0, 0.05);
     border-radius: 10px;
   }
 
+  .dark .premium-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
   .premium-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(34, 197, 94, 0.4) !important;
+    background: rgba(34, 197, 94, 0.3) !important;
     border-radius: 10px;
     border: 1px solid transparent;
     background-clip: content-box;
@@ -135,6 +145,25 @@ body {
 
   .premium-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(34, 197, 94, 0.6) !important;
+  }
+
+  /* Hover-only scrollbar logic */
+  .scrollbar-hover-only::-webkit-scrollbar-thumb {
+    background: transparent !important;
+  }
+
+  .scrollbar-hover-only:hover::-webkit-scrollbar-thumb {
+    background: rgba(34, 197, 94, 0.4) !important;
+  }
+
+  /* Performance utilities */
+  .gpu-accelerated {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .contain-layout-paint {
+    contain: layout paint;
   }
 
   .glass-container {

@@ -252,7 +252,7 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
        <Tabs defaultValue="dashboard" onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0 overflow-hidden">
-        {/* Fixed Header Section */}
+        {/* Fixed Header Section - Stays at top */}
         <div className="px-4 md:px-12 pt-8 md:pt-12 mb-10 shrink-0">
           <div className="flex flex-col lg:flex-row justify-between items-start gap-8">
             <div className="space-y-6 flex-1 w-full lg:w-auto">
@@ -301,12 +301,12 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
           </div>
         </div>
 
-        {/* Scrollable Content Section */}
-        <div className="flex-1 overflow-y-auto premium-scrollbar scroll-smooth px-4 md:px-12 pb-16 min-h-0">
-          <TabsContent value="dashboard" className="m-0 focus-visible:ring-0">
+        {/* Scrollable Content Section - Independent Scrolling Areas */}
+        <div className="flex-1 flex flex-col min-h-0 px-4 md:px-12 pb-16">
+          <TabsContent value="dashboard" className="flex-1 flex flex-col min-h-0 m-0 focus-visible:ring-0 overflow-hidden">
               {settings && <AdminDashboard ref={dashboardRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
           </TabsContent>
-          <TabsContent value="calibrate" className="m-0 focus-visible:ring-0">
+          <TabsContent value="calibrate" className="flex-1 overflow-y-auto premium-scrollbar scroll-smooth m-0 focus-visible:ring-0 scrollbar-hover-only gpu-accelerated">
               {settings && <CalibrateSettings ref={calibrateRef} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />}
           </TabsContent>
         </div>
@@ -415,9 +415,9 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
   }
 
   return (
-    <div className="space-y-10 pb-8">
-        {/* Sticky Barangay/Search Section */}
-        <div className="sticky top-0 z-20 -mx-4 px-4 py-6 bg-white/40 dark:bg-[#0D1210]/40 backdrop-blur-xl border-b border-black/5 dark:border-white/5 rounded-b-[2rem] transition-all duration-300">
+    <div className="flex-1 flex flex-col min-h-0 overflow-hidden space-y-6">
+        {/* Sticky Filter Section - Stays at top of Tab */}
+        <div className="sticky top-0 z-20 px-1 py-6 bg-white/10 dark:bg-black/20 backdrop-blur-xl border-b border-black/5 dark:border-white/5 rounded-b-[2rem] transition-all duration-300 shrink-0">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <div className="space-y-3">
                   <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary ml-1">Select Barangay</Label>
@@ -449,59 +449,61 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
           </div>
         </div>
 
-        {/* Property Cards Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 pt-4">
-            {filteredLocations.length > 0 ? filteredLocations.map(([locationName, details]) => (
-                <Card key={locationName} className="group glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/[0.08] transition-all duration-500 rounded-[24px] border-l-2 border-l-primary/40 overflow-hidden shadow-xl w-full">
-                    <CardHeader className="pb-6 pt-8 px-8">
-                      <CardTitle className="text-xl font-black tracking-tight text-foreground/90">{locationName}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-8 pb-10">
-                        <div className="grid grid-cols-3 gap-4 md:gap-8 items-end">
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 leading-none">Current Value</Label>
-                                <Input 
-                                  type="text" 
-                                  inputMode="decimal" 
-                                  className="h-12 md:h-14 text-center text-base md:text-lg font-bold rounded-2xl bg-black/[0.03] dark:bg-black/40 border-black/5 dark:border-white/10 focus:ring-primary/20" 
-                                  value={details.unitValue2028} 
-                                  onChange={e => handleLocationDataChange(locationName, 'unitValue2028', e.target.value)} 
-                                />
-                            </div>
-                            <div className="space-y-3 relative">
-                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary leading-none">RPVARA Value</Label>
-                                <Input 
-                                  type="text" 
-                                  inputMode="decimal" 
-                                  className="h-12 md:h-14 text-center text-base md:text-lg font-bold rounded-2xl bg-primary/[0.05] dark:bg-primary/10 border-primary/20 text-primary focus:ring-primary/40 relative z-10" 
-                                  value={details.unitValue2029} 
-                                  onChange={e => handleLocationDataChange(locationName, 'unitValue2029', e.target.value)} 
-                                />
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 leading-none">Type</Label>
-                                <Select value={details.propertyType} onValueChange={(value: PropertyType) => handleLocationDataChange(locationName, 'propertyType', value)}>
-                                    <SelectTrigger className="h-12 md:h-14 rounded-2xl bg-black/[0.03] dark:bg-black/40 border-black/5 dark:border-white/10 font-bold px-2 md:px-4 text-xs md:text-sm">
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent className="glass-container border-black/10 dark:border-white/10 backdrop-blur-3xl shadow-2xl">
-                                        <SelectItem value="Residential" className="focus:bg-primary/20 rounded-lg">Residential</SelectItem>
-                                        <SelectItem value="Commercial" className="focus:bg-primary/20 rounded-lg">Commercial</SelectItem>
-                                        <SelectItem value="Industrial" className="focus:bg-primary/20 rounded-lg">Industrial</SelectItem>
-                                        <SelectItem value="Commercial / Industrial" className="focus:bg-primary/20 rounded-lg">Commercial / Industrial</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            )) : (
-                <div className="col-span-full py-24 text-center rounded-[2rem] border-2 border-dashed border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-black/20">
-                    <p className="text-xl font-medium text-muted-foreground opacity-40 italic">
-                        {selectedBarangay ? 'No locations found for your search.' : 'Please select a barangay to view data.'}
-                    </p>
-                </div>
-            )}
+        {/* Independently Scrollable Property Cards Grid */}
+        <div className="flex-1 overflow-y-auto premium-scrollbar scrollbar-hover-only scroll-smooth gpu-accelerated contain-layout-paint px-1">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 pt-4 pb-12">
+              {filteredLocations.length > 0 ? filteredLocations.map(([locationName, details]) => (
+                  <Card key={locationName} className="group glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/[0.08] transition-all duration-500 rounded-[24px] border-l-2 border-l-primary/40 overflow-hidden shadow-xl w-full">
+                      <CardHeader className="pb-6 pt-8 px-8">
+                        <CardTitle className="text-xl font-black tracking-tight text-foreground/90">{locationName}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="px-8 pb-10">
+                          <div className="grid grid-cols-3 gap-4 md:gap-8 items-end">
+                              <div className="space-y-3">
+                                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 leading-none">Current Value</Label>
+                                  <Input 
+                                    type="text" 
+                                    inputMode="decimal" 
+                                    className="h-12 md:h-14 text-center text-base md:text-lg font-bold rounded-2xl bg-black/[0.03] dark:bg-black/40 border-black/5 dark:border-white/10 focus:ring-primary/20" 
+                                    value={details.unitValue2028} 
+                                    onChange={e => handleLocationDataChange(locationName, 'unitValue2028', e.target.value)} 
+                                  />
+                              </div>
+                              <div className="space-y-3 relative">
+                                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary leading-none">RPVARA Value</Label>
+                                  <Input 
+                                    type="text" 
+                                    inputMode="decimal" 
+                                    className="h-12 md:h-14 text-center text-base md:text-lg font-bold rounded-2xl bg-primary/[0.05] dark:bg-primary/10 border-primary/20 text-primary focus:ring-primary/40 relative z-10" 
+                                    value={details.unitValue2029} 
+                                    onChange={e => handleLocationDataChange(locationName, 'unitValue2029', e.target.value)} 
+                                  />
+                              </div>
+                              <div className="space-y-3">
+                                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 leading-none">Type</Label>
+                                  <Select value={details.propertyType} onValueChange={(value: PropertyType) => handleLocationDataChange(locationName, 'propertyType', value)}>
+                                      <SelectTrigger className="h-12 md:h-14 rounded-2xl bg-black/[0.03] dark:bg-black/40 border-black/5 dark:border-white/10 font-bold px-2 md:px-4 text-xs md:text-sm">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent className="glass-container border-black/10 dark:border-white/10 backdrop-blur-3xl shadow-2xl">
+                                          <SelectItem value="Residential" className="focus:bg-primary/20 rounded-lg">Residential</SelectItem>
+                                          <SelectItem value="Commercial" className="focus:bg-primary/20 rounded-lg">Commercial</SelectItem>
+                                          <SelectItem value="Industrial" className="focus:bg-primary/20 rounded-lg">Industrial</SelectItem>
+                                          <SelectItem value="Commercial / Industrial" className="focus:bg-primary/20 rounded-lg">Commercial / Industrial</SelectItem>
+                                      </SelectContent>
+                                  </Select>
+                              </div>
+                          </div>
+                      </CardContent>
+                  </Card>
+              )) : (
+                  <div className="col-span-full py-24 text-center rounded-[2rem] border-2 border-dashed border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-black/20">
+                      <p className="text-xl font-medium text-muted-foreground opacity-40 italic">
+                          {selectedBarangay ? 'No locations found for your search.' : 'Please select a barangay to view data.'}
+                      </p>
+                  </div>
+              )}
+          </div>
         </div>
     </div>
   )
