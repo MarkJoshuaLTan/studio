@@ -202,6 +202,7 @@ export default function TaxCalculator({
         assessedValue2028: av2028,
         currentTax: estimatedTax2028,
         realYearlyTax2028: realTax2028,
+        taxRate: taxRate,
       });
     });
   };

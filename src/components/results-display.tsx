@@ -27,6 +27,7 @@ export type CalculationResults = {
   assessedValue2028: number;
   currentTax: number;
   realYearlyTax2028: number;
+  taxRate?: number;
 };
 
 interface ResultsDisplayProps {
