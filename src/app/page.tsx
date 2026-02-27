@@ -131,7 +131,7 @@ export default function Home() {
                 )}>
                   <div className={cn(
                     'w-full space-y-12',
-                    results ? 'lg:col-span-3' : 'max-w-[680px]'
+                    results ? 'lg:col-span-3' : 'max-w-3xl'
                   )}>
                     <TaxCalculator setResults={setResults} settings={settings} />
                     {results && (
