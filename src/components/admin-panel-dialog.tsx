@@ -15,11 +15,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Loader2, ArrowLeft, X, Maximize2, Minimize2, Save, LogOut } from "lucide-react";
+import { Settings, Loader2, ArrowLeft, X, Save, LogOut } from "lucide-react";
 import type { TaxSettings, LocationDetails, PropertyType, SuggestedItem } from "@/lib/definitions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AutocompleteInput } from "./autocomplete-input";
 import { cn } from "@/lib/utils";
@@ -88,13 +87,13 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
         className={cn(
           "p-0 border-none transition-all duration-500 ease-in-out overflow-hidden shadow-none",
           isAuthenticated 
-            ? "max-w-[98vw] w-[98vw] h-[96vh] rounded-[2rem] bg-[#0D1210]/60 backdrop-blur-[20px] border border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
+            ? "max-w-[98vw] w-[98vw] h-[96vh] rounded-[2rem] bg-white/80 dark:bg-[#0D1210]/60 backdrop-blur-[20px] border border-black/5 dark:border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
             : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2.5rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] shadow-primary/20"
         )}
       >
           {/* Mesh Gradient Background for Authenticated State */}
           {isAuthenticated && (
-            <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden opacity-30 dark:opacity-100">
               <div className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-primary/5 rounded-full blur-[150px] animate-pulse" />
               <div className="absolute bottom-[-20%] right-[-5%] w-[60%] h-[60%] bg-emerald-500/2 rounded-full blur-[120px] animate-[pulse_10s_infinite]" />
             </div>
@@ -250,13 +249,13 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
   return (
     <div className="h-full flex flex-col px-4 md:px-12 pt-8 md:pt-12 pb-10">
        <Tabs defaultValue="dashboard" onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-10">
-          <div className="space-y-6 flex-1 w-full md:w-auto">
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-8 mb-10">
+          <div className="space-y-6 flex-1 w-full lg:w-auto">
             <div className="space-y-1">
               <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-foreground">Admin Dashboard</h1>
               <p className="text-base md:text-lg font-medium text-muted-foreground/70">Manage application settings and data.</p>
             </div>
-            <TabsList className="h-14 bg-black/40 dark:bg-black/60 p-1.5 rounded-2xl border border-white/5 shadow-inner w-full md:w-auto">
+            <TabsList className="h-14 bg-black/[0.05] dark:bg-black/40 p-1.5 rounded-2xl border border-black/5 dark:border-white/5 shadow-inner w-full md:w-auto">
               <TabsTrigger 
                 value="dashboard" 
                 className="flex-1 md:flex-none rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg px-4 md:px-8 py-2.5 font-bold transition-all duration-300"
@@ -272,7 +271,7 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
             </TabsList>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 p-2 bg-black/20 rounded-[2rem] border border-white/5 backdrop-blur-md w-full md:w-auto justify-center md:justify-end">
+          <div className="flex flex-wrap items-center gap-3 p-2 bg-black/[0.03] dark:bg-black/20 rounded-[2rem] border border-black/5 dark:border-white/5 backdrop-blur-md w-full lg:w-auto justify-center md:justify-end">
             <Button 
               onClick={handleGlobalSave} 
               disabled={isSaving}
@@ -281,13 +280,13 @@ function AdminTabs({ onLogout, onClose, settings, onSettingsChange, onSaveSucces
               {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
               Save Changes
             </Button>
-            <Button variant="ghost" onClick={onClose} className="h-12 px-4 md:px-6 rounded-2xl hover:bg-white/5 text-foreground/80 transition-all font-semibold">
+            <Button variant="ghost" onClick={onClose} className="h-12 px-4 md:px-6 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 text-foreground/80 transition-all font-semibold">
               <ArrowLeft className="mr-2 h-4 w-4"/> Back to App
             </Button>
-            <div className="hidden md:block w-px h-8 bg-white/10 mx-1" />
+            <div className="hidden md:block w-px h-8 bg-black/10 dark:bg-white/10 mx-1" />
             <Button 
               variant="outline" 
-              className="h-12 px-4 md:px-6 rounded-2xl border-white/10 bg-white/5 hover:bg-destructive/20 hover:border-destructive/30 hover:text-destructive-foreground transition-all active:scale-95 font-bold" 
+              className="h-12 px-4 md:px-6 rounded-2xl border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 hover:bg-destructive/20 hover:border-destructive/30 hover:text-destructive-foreground transition-all active:scale-95 font-bold" 
               onClick={onLogout}
             >
               <LogOut className="mr-2 h-4 w-4" />
@@ -428,7 +427,7 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
                 <div className="relative">
                   <Input 
                     placeholder="Filter locations by name..." 
-                    className="glass-input h-14 rounded-[18px] border-white/10 bg-black/40 px-6 focus:ring-primary/30" 
+                    className="glass-input h-14 rounded-[18px] border-black/5 dark:border-white/10 bg-black/[0.02] dark:bg-black/40 px-6 focus:ring-primary/30" 
                     value={locationSearch} 
                     onChange={(e) => setLocationSearch(e.target.value)} 
                     disabled={!selectedBarangay} 
@@ -439,7 +438,7 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {filteredLocations.length > 0 ? filteredLocations.map(([locationName, details]) => (
-                <Card key={locationName} className="group glass-card border-white/5 bg-white/5 hover:bg-white/[0.08] transition-all duration-500 rounded-[24px] border-l-2 border-l-primary/40 overflow-hidden shadow-xl w-full">
+                <Card key={locationName} className="group glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/[0.08] transition-all duration-500 rounded-[24px] border-l-2 border-l-primary/40 overflow-hidden shadow-xl w-full">
                     <CardHeader className="pb-6 pt-8 px-8">
                       <CardTitle className="text-xl font-black tracking-tight text-foreground/90">{locationName}</CardTitle>
                     </CardHeader>
@@ -450,7 +449,7 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
                                 <Input 
                                   type="text" 
                                   inputMode="decimal" 
-                                  className="h-12 md:h-14 text-center text-base md:text-lg font-bold rounded-2xl bg-black/40 border-white/10 focus:ring-primary/20" 
+                                  className="h-12 md:h-14 text-center text-base md:text-lg font-bold rounded-2xl bg-black/[0.03] dark:bg-black/40 border-black/5 dark:border-white/10 focus:ring-primary/20" 
                                   value={details.unitValue2028} 
                                   onChange={e => handleLocationDataChange(locationName, 'unitValue2028', e.target.value)} 
                                 />
@@ -460,7 +459,7 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
                                 <Input 
                                   type="text" 
                                   inputMode="decimal" 
-                                  className="h-12 md:h-14 text-center text-base md:text-lg font-bold rounded-2xl bg-primary/10 border-primary/20 text-primary focus:ring-primary/40 relative z-10" 
+                                  className="h-12 md:h-14 text-center text-base md:text-lg font-bold rounded-2xl bg-primary/[0.05] dark:bg-primary/10 border-primary/20 text-primary focus:ring-primary/40 relative z-10" 
                                   value={details.unitValue2029} 
                                   onChange={e => handleLocationDataChange(locationName, 'unitValue2029', e.target.value)} 
                                 />
@@ -468,10 +467,10 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
                             <div className="space-y-3">
                                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 leading-none">Type</Label>
                                 <Select value={details.propertyType} onValueChange={(value: PropertyType) => handleLocationDataChange(locationName, 'propertyType', value)}>
-                                    <SelectTrigger className="h-12 md:h-14 rounded-2xl bg-black/40 border-white/10 font-bold px-2 md:px-4 text-xs md:text-sm">
+                                    <SelectTrigger className="h-12 md:h-14 rounded-2xl bg-black/[0.03] dark:bg-black/40 border-black/5 dark:border-white/10 font-bold px-2 md:px-4 text-xs md:text-sm">
                                       <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent className="glass-container border-white/10 backdrop-blur-3xl shadow-2xl">
+                                    <SelectContent className="glass-container border-black/10 dark:border-white/10 backdrop-blur-3xl shadow-2xl">
                                         <SelectItem value="Residential" className="focus:bg-primary/20 rounded-lg">Residential</SelectItem>
                                         <SelectItem value="Commercial" className="focus:bg-primary/20 rounded-lg">Commercial</SelectItem>
                                         <SelectItem value="Industrial" className="focus:bg-primary/20 rounded-lg">Industrial</SelectItem>
@@ -483,7 +482,7 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
                     </CardContent>
                 </Card>
             )) : (
-                <div className="col-span-full py-24 text-center rounded-[2rem] border-2 border-dashed border-white/5 bg-black/20">
+                <div className="col-span-full py-24 text-center rounded-[2rem] border-2 border-dashed border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-black/20">
                     <p className="text-xl font-medium text-muted-foreground opacity-40 italic">
                         {selectedBarangay ? 'No locations found for your search.' : 'Please select a barangay to view data.'}
                     </p>
@@ -579,17 +578,17 @@ const CalibrateSettings = forwardRef(({ settings: settingsProp, onSettingsChange
 
     return (
         <div className="grid gap-10 md:grid-cols-2 pb-16">
-            <Card className="glass-card border-white/5 bg-white/5 rounded-[32px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl">
+            <Card className="glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 rounded-[32px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl">
                 <CardHeader className="p-6 md:p-8 pb-4">
                     <CardTitle className="text-xl md:text-2xl font-black tracking-tight">Assessment Levels</CardTitle>
                     <CardDescription className="text-sm font-medium opacity-60">Base assessment percentage per property type.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 md:p-8 space-y-4">
                     {formValues && Object.entries(formValues.assessmentLevels).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between p-4 md:p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-primary/30 transition-all group">
+                        <div key={key} className="flex items-center justify-between p-4 md:p-5 rounded-2xl bg-black/[0.02] dark:bg-black/40 border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all group">
                             <Label className="font-bold text-sm md:text-base tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">{key}</Label>
                             <div className="flex items-center gap-4">
-                              <Input type="text" inputMode="decimal" className="w-20 md:w-28 h-10 md:h-12 text-center text-base md:text-lg font-black bg-white/5 border-white/10 rounded-xl focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
+                              <Input type="text" inputMode="decimal" className="w-20 md:w-28 h-10 md:h-12 text-center text-base md:text-lg font-black bg-black/[0.03] dark:bg-white/5 border-black/5 dark:border-white/10 rounded-xl focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
                               <span className="text-[10px] md:text-xs font-black text-primary/40 uppercase tracking-widest">%</span>
                             </div>
                         </div>
@@ -597,17 +596,17 @@ const CalibrateSettings = forwardRef(({ settings: settingsProp, onSettingsChange
                 </CardContent>
             </Card>
             
-            <Card className="glass-card border-white/5 bg-white/5 rounded-[32px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl">
+            <Card className="glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 rounded-[32px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl">
                 <CardHeader className="p-6 md:p-8 pb-4">
                     <CardTitle className="text-xl md:text-2xl font-black tracking-tight">Tax Rates</CardTitle>
                     <CardDescription className="text-sm font-medium opacity-60">Annual tax percentage applied to assessed value.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 md:p-8 space-y-4">
                     {formValues && Object.entries(formValues.taxRates).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between p-4 md:p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-primary/30 transition-all group">
+                        <div key={key} className="flex items-center justify-between p-4 md:p-5 rounded-2xl bg-black/[0.02] dark:bg-black/40 border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all group">
                             <Label className="font-bold text-sm md:text-base tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">{key}</Label>
                             <div className="flex items-center gap-4">
-                              <Input type="text" inputMode="decimal" className="w-20 md:w-28 h-10 md:h-12 text-center text-base md:text-lg font-black bg-white/5 border-white/10 rounded-xl focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
+                              <Input type="text" inputMode="decimal" className="w-20 md:w-28 h-10 md:h-12 text-center text-base md:text-lg font-black bg-black/[0.03] dark:bg-white/5 border-black/5 dark:border-white/10 rounded-xl focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
                               <span className="text-[10px] md:text-xs font-black text-primary/40 uppercase tracking-widest">%</span>
                             </div>
                         </div>
