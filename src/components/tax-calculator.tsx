@@ -209,16 +209,16 @@ export default function TaxCalculator({
 
   return (
       <Card className="w-full glass-container border-0 overflow-hidden">
-        <CardHeader className="relative z-10">
-          <CardTitle className="text-2xl">Property Details</CardTitle>
-          <CardDescription className="text-muted-foreground/80">
+        <CardHeader className="relative z-10 pb-3">
+          <CardTitle className="text-xl">Property Details</CardTitle>
+          <CardDescription className="text-muted-foreground/80 text-[13px]">
             Enter your property details to estimate your real property tax.
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-6 relative z-10">
+        <CardContent className="grid gap-4 relative z-10">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="barangay" className="text-foreground/90 font-medium">Barangay</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="barangay" className="text-foreground/90 font-semibold text-[13px]">Barangay</Label>
               <AutocompleteInput
                 placeholder="Search for a barangay..."
                 suggestions={barangaySuggestions}
@@ -233,8 +233,8 @@ export default function TaxCalculator({
                 onOpen={() => setBarangaySuggestions(allBarangays)}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="location" className="text-foreground/90 font-medium">Location / Subdivision</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="location" className="text-foreground/90 font-semibold text-[13px]">Location / Subdivision</Label>
               <AutocompleteInput
                 placeholder="Search for a location..."
                 suggestions={locationSuggestions}
@@ -253,13 +253,13 @@ export default function TaxCalculator({
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="lot-area" className="text-foreground/90 font-medium">Lot Area (in sq. m)</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="lot-area" className="text-foreground/90 font-semibold text-[13px]">Lot Area (in sq. m)</Label>
               <Input
                 id="lot-area"
                 type="number"
                 placeholder="e.g., 150"
-                className="h-12 glass-input rounded-[14px] text-foreground focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all duration-300"
+                className="h-10 glass-input rounded-[14px] text-foreground text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all duration-300"
                 value={lotArea}
                 onChange={(e) => {
                   setLotArea(e.target.value)
@@ -274,10 +274,10 @@ export default function TaxCalculator({
               />
             </div>
             {selectedLocation?.propertyType && (
-              <div className="space-y-2">
-                <Label className="text-foreground/90 font-medium">Property Type</Label>
-                <div className="flex h-12 items-center">
-                  <Badge variant="outline" className="text-sm font-semibold border-primary/30 bg-primary/10 px-4 py-2 text-primary backdrop-blur-md rounded-full">
+              <div className="space-y-1.5">
+                <Label className="text-foreground/90 font-semibold text-[13px]">Property Type</Label>
+                <div className="flex h-10 items-center">
+                  <Badge variant="outline" className="text-[12px] font-semibold border-primary/30 bg-primary/10 px-4 py-1.5 text-primary backdrop-blur-md rounded-full">
                     {selectedLocation.propertyType}
                   </Badge>
                 </div>
@@ -285,18 +285,18 @@ export default function TaxCalculator({
             )}
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col sm:flex-row gap-3 relative z-10 pt-2 pb-8">
+        <CardFooter className="flex flex-col sm:flex-row gap-3 relative z-10 pt-1 pb-6">
           <Button
             onClick={handleCalculate}
             disabled={isCalculating}
-            className="w-full sm:w-auto h-12 px-8 font-bold shadow-lg shadow-primary/20 rounded-full"
+            className="w-full sm:w-auto h-10 px-8 font-bold shadow-lg shadow-primary/20 rounded-full text-sm"
           >
             {isCalculating ? "Calculating..." : "Calculate Tax"}
           </Button>
           <Button
             variant="outline"
             onClick={handleClear}
-            className="w-full sm:w-auto h-12 px-8 bg-black/5 dark:bg-[#0B0F0E]/50 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-[#121615] rounded-full"
+            className="w-full sm:w-auto h-10 px-8 bg-black/5 dark:bg-[#0B0F0E]/50 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-[#121615] rounded-full text-sm"
           >
             Clear
           </Button>

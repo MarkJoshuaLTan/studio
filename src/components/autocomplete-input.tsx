@@ -69,8 +69,8 @@ export function AutocompleteInput({
             role="combobox"
             aria-expanded={open}
             className={cn(
-              "w-full min-h-[3rem] h-auto py-2 px-4 justify-between font-medium text-left transition-all duration-300 rounded-[14px]",
-              "glass-input text-foreground",
+              "w-full min-h-[2.5rem] h-auto py-1.5 px-4 justify-between font-medium text-left transition-all duration-300 rounded-[14px]",
+              "glass-input text-foreground text-sm",
               "focus:ring-2 focus:ring-primary/30 focus:border-primary/50",
               !value && "text-muted-foreground",
               disabled && "opacity-50 cursor-not-allowed"
@@ -104,7 +104,7 @@ export function AutocompleteInput({
             <Search className="h-4 w-4 shrink-0 opacity-40 mr-2 text-primary" />
             <input
               ref={searchInputRef}
-              className="flex h-12 w-full bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground/50 text-foreground"
+              className="flex h-10 w-full bg-transparent py-2 text-sm outline-none placeholder:text-muted-foreground/50 text-foreground"
               placeholder={`Search...`}
               value={localSearch}
               onChange={(e) => handleSearchChange(e.target.value)}
@@ -128,14 +128,15 @@ export function AutocompleteInput({
                   <button
                     key={item.name}
                     className={cn(
-                      "w-full text-left px-4 py-3.5 text-sm rounded-[12px] flex items-center justify-between group transition-all duration-200 mb-1 font-medium",
+                      "w-full text-left px-4 py-2.5 text-sm rounded-[12px] flex items-center justify-between group transition-all duration-200 mb-1 font-medium",
                       value?.name === item.name 
                         ? "bg-gradient-to-r from-[#14532D] to-[#166534] text-white shadow-[inset_0_0_10px_rgba(34,197,94,0.2)]" 
-                        : "hover:bg-black/5 dark:hover:bg-white/5 text-foreground/80 hover:text-foreground"
+                        : "hover:bg-black/5 dark:hover:bg-white/5 text-foreground/80 hover:text-foreground",
+                      "whitespace-normal break-words overflow-wrap-anywhere"
                     )}
                     onClick={() => handleSelect(item)}
                   >
-                    <span className="whitespace-normal break-words flex-1 mr-3">
+                    <span className="flex-1 mr-3">
                       {item.name}
                     </span>
                     {value?.name === item.name && (
