@@ -147,7 +147,7 @@ export function CalculationModal({
                 <div>Market Value Range</div>
                 <div className="text-right">Level</div>
               </div>
-              <div className="max-h-[140px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20">
+              <div className="overflow-hidden">
                 {table.map((row, idx) => {
                   const isActive = idx === finalActiveIdx;
                   return (
