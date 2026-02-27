@@ -38,17 +38,17 @@ export function AutocompleteInput({
   const [internalSearch, setInternalSearch] = React.useState("");
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  // Focus search input when popover opens
+  // Focus search input and reset parent list when popover opens
   React.useEffect(() => {
     if (open) {
+      onInputChange("");
+      setInternalSearch("");
       const timer = setTimeout(() => {
         inputRef.current?.focus();
       }, 50);
       return () => clearTimeout(timer);
-    } else {
-      setInternalSearch("");
     }
-  }, [open]);
+  }, [open, onInputChange]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -121,12 +121,12 @@ export function AutocompleteInput({
             "bg-white dark:bg-[#0F131E] border border-black/[0.06] dark:border-white/[0.08]"
           )}
         >
-          {/* Search Header */}
+          {/* Sticky Search Header */}
           <div className="sticky top-0 z-10 bg-muted/30 dark:bg-white/[0.03] backdrop-blur-md border-b border-black/[0.05] dark:border-white/[0.05] px-3 flex items-center h-12">
             <Search className="h-4 w-4 text-muted-foreground/50 shrink-0 ml-1" />
             <input
               ref={inputRef}
-              placeholder={`Search ${placeholder.toLowerCase().replace('search for a ', '')}...`}
+              placeholder={`Search ${placeholder.toLowerCase().replace('search for a ', '').replace('...', '')}...`}
               className="flex-1 bg-transparent border-0 px-3 py-2 text-sm focus:outline-none focus:ring-0 placeholder:text-muted-foreground/40 font-medium"
               value={internalSearch}
               onChange={handleInputChange}
@@ -134,7 +134,7 @@ export function AutocompleteInput({
             {isLoading && <Loader2 className="h-4 w-4 animate-spin text-primary/60 mr-1" />}
           </div>
 
-          {/* List Area */}
+          {/* List Area with strict height constraint */}
           <ScrollArea className="max-h-[280px]">
             <div className="p-1.5 space-y-0.5">
               {suggestions.length === 0 && !isLoading && (

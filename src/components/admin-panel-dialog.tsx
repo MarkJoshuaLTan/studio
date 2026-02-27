@@ -15,12 +15,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Loader2, ArrowLeft, X, Maximize2, Minimize2, Save } from "lucide-react";
-import type { TaxSettings, LocationDetails, PropertyType } from "@/lib/definitions";
+import type { TaxSettings, LocationDetails, PropertyType, SuggestedItem } from "@/lib/definitions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { AutocompleteInput } from "./autocomplete-input";
 
 export function AdminPanelDialog({ settings, onSettingsChange }: { settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void }) {
   const [open, setOpen] = useState(false);
@@ -294,6 +295,7 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
   const [editedSettings, setEditedSettings] = useState<TaxSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedBarangay, setSelectedBarangay] = useState<string>('');
+  const [barangaySearch, setBarangaySearch] = useState('');
   const [locationSearch, setLocationSearch] = useState('');
 
   useEffect(() => {
@@ -301,11 +303,19 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
         setIsLoading(true);
         setEditedSettings(JSON.parse(JSON.stringify(settingsProp))); 
         if (!selectedBarangay) {
-            setSelectedBarangay(Object.keys(settingsProp.taxData)[0] || '');
+            setSelectedBarangay(Object.keys(settingsProp.taxData).sort()[0] || '');
         }
         setIsLoading(false);
     }
   }, [settingsProp, selectedBarangay]);
+
+  const barangaySuggestions: SuggestedItem[] = editedSettings 
+    ? Object.keys(editedSettings.taxData).sort().map(b => ({ name: b, type: 'barangay' }))
+    : [];
+
+  const filteredBarangaySuggestions = barangaySuggestions.filter(b => 
+    b.name.toLowerCase().includes(barangaySearch.toLowerCase())
+  );
   
   const handleLocationDataChange = (locationName: string, field: keyof LocationDetails, value: string) => {
     if (!editedSettings || !selectedBarangay) return;
@@ -387,12 +397,18 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
             <div className="flex flex-col md:flex-row gap-4 mb-6">
                 <div className="w-full md:w-1/2">
                     <Label className="mb-1.5 block">Barangay</Label>
-                    <Select onValueChange={(value) => { setSelectedBarangay(value); setLocationSearch(''); }} value={selectedBarangay}>
-                        <SelectTrigger className="glass-input h-11"><SelectValue placeholder="Select a Barangay" /></SelectTrigger>
-                        <SelectContent className="glass-container border-0">
-                            {editedSettings && Object.keys(editedSettings.taxData).sort().map(b => <SelectItem key={b} value={b} className="focus:bg-primary/20">{b}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
+                    <AutocompleteInput
+                      placeholder="Search for a Barangay..."
+                      suggestions={filteredBarangaySuggestions}
+                      onInputChange={setBarangaySearch}
+                      onSelect={(item) => {
+                        if (item) {
+                          setSelectedBarangay(item.name);
+                          setLocationSearch('');
+                        }
+                      }}
+                      value={selectedBarangay ? { name: selectedBarangay, type: 'barangay' } : null}
+                    />
                 </div>
                 <div className="w-full md:w-1/2">
                     <Label className="mb-1.5 block">Search Location</Label>
