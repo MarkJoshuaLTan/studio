@@ -21,7 +21,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { AutocompleteInput } from "./autocomplete-input";
 
 export function AdminPanelDialog({ settings, onSettingsChange }: { settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void }) {
   const [open, setOpen] = useState(false);
@@ -295,7 +294,6 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
   const [editedSettings, setEditedSettings] = useState<TaxSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedBarangay, setSelectedBarangay] = useState<string>('');
-  const [barangaySearch, setBarangaySearch] = useState('');
   const [locationSearch, setLocationSearch] = useState('');
 
   useEffect(() => {
@@ -309,14 +307,6 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
     }
   }, [settingsProp, selectedBarangay]);
 
-  const barangaySuggestions: SuggestedItem[] = editedSettings 
-    ? Object.keys(editedSettings.taxData).sort().map(b => ({ name: b, type: 'barangay' }))
-    : [];
-
-  const filteredBarangaySuggestions = barangaySuggestions.filter(b => 
-    b.name.toLowerCase().includes(barangaySearch.toLowerCase())
-  );
-  
   const handleLocationDataChange = (locationName: string, field: keyof LocationDetails, value: string) => {
     if (!editedSettings || !selectedBarangay) return;
 
@@ -397,18 +387,14 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
             <div className="flex flex-col md:flex-row gap-4 mb-6">
                 <div className="w-full md:w-1/2">
                     <Label className="mb-1.5 block">Barangay</Label>
-                    <AutocompleteInput
-                      placeholder="Search for a Barangay..."
-                      suggestions={filteredBarangaySuggestions}
-                      onInputChange={setBarangaySearch}
-                      onSelect={(item) => {
-                        if (item) {
-                          setSelectedBarangay(item.name);
-                          setLocationSearch('');
-                        }
-                      }}
-                      value={selectedBarangay ? { name: selectedBarangay, type: 'barangay' } : null}
-                    />
+                    <Select value={selectedBarangay} onValueChange={setSelectedBarangay}>
+                        <SelectTrigger className="glass-input h-11"><SelectValue placeholder="Select a Barangay" /></SelectTrigger>
+                        <SelectContent className="glass-container border-0">
+                            {Object.keys(editedSettings.taxData).sort().map(b => (
+                                <SelectItem key={b} value={b} className="focus:bg-primary/20">{b}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
                 <div className="w-full md:w-1/2">
                     <Label className="mb-1.5 block">Search Location</Label>
