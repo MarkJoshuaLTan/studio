@@ -198,7 +198,7 @@ export function BuildingResultsDisplay({ results, mode = 'summary' }: BuildingRe
             proposalTax={results[`${prop}YearlyTax` as keyof BuildingCalculationResults] as number}
             proposalAL={results[`${prop}AssessmentLevel` as keyof BuildingCalculationResults] as number}
             proposalAV={results[`${prop}AssessedValue` as keyof BuildingCalculationResults] as number}
-            delayClass={idx === 0 ? "delay-0" : idx === 1 ? "delay-150" : "delay-300"}
+            delayClass={idx === 0 ? "delay-0" : idx === 1 ? "delay-300" : "delay-700"}
             onInfoClick={() => {
               setActiveProposal(prop);
               setModalOpen(true);
@@ -236,7 +236,7 @@ function ProposalCard({ title, currentTax, proposalTax, proposalAL, proposalAV, 
 
   return (
     <Card className={cn(
-      "relative flex flex-col glass-container border-0 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
+      "relative flex flex-col glass-container border-0 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-1000 ease-out fill-mode-backwards",
       delayClass
     )}>
       <Button

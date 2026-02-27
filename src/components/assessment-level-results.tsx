@@ -89,8 +89,8 @@ export function AssessmentLevelResults({
             <Card 
               key={level} 
               className={cn(
-                "relative flex flex-col glass-container border-white/10 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out fill-mode-backwards",
-                index === 0 ? "delay-0" : index === 1 ? "delay-150" : "delay-300"
+                "relative flex flex-col glass-container border-white/10 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-1000 ease-out fill-mode-backwards",
+                index === 0 ? "delay-0" : index === 1 ? "delay-300" : "delay-700"
               )}
             >
               <Button
