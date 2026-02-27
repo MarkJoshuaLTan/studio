@@ -259,7 +259,7 @@ export default function TaxCalculator({
                 id="lot-area"
                 type="number"
                 placeholder="e.g., 150"
-                className="glass-input h-11"
+                className="h-12 bg-[#0B0F0E] border-white/5 rounded-[14px] text-foreground focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all duration-300"
                 value={lotArea}
                 onChange={(e) => {
                   setLotArea(e.target.value)
@@ -276,8 +276,8 @@ export default function TaxCalculator({
             {selectedLocation?.propertyType && (
               <div className="space-y-2">
                 <Label className="text-foreground/90 font-medium">Property Type</Label>
-                <div className="flex h-10 items-center">
-                  <Badge variant="outline" className="text-sm font-semibold border-primary/30 bg-primary/10 px-4 py-1.5 text-primary backdrop-blur-md">
+                <div className="flex h-12 items-center">
+                  <Badge variant="outline" className="text-sm font-semibold border-primary/30 bg-primary/10 px-4 py-2 text-primary backdrop-blur-md rounded-full">
                     {selectedLocation.propertyType}
                   </Badge>
                 </div>
@@ -289,14 +289,14 @@ export default function TaxCalculator({
           <Button
             onClick={handleCalculate}
             disabled={isCalculating}
-            className="w-full sm:w-auto h-11 px-8 font-bold shadow-lg shadow-primary/20"
+            className="w-full sm:w-auto h-12 px-8 font-bold shadow-lg shadow-primary/20 rounded-full"
           >
             {isCalculating ? "Calculating..." : "Calculate Tax"}
           </Button>
           <Button
             variant="outline"
             onClick={handleClear}
-            className="w-full sm:w-auto h-11 px-8 glass-card border-white/10 hover:bg-white/10"
+            className="w-full sm:w-auto h-12 px-8 bg-[#0B0F0E]/50 border-white/10 hover:bg-[#121615] rounded-full"
           >
             Clear
           </Button>
