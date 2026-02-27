@@ -8,7 +8,7 @@ import { ResultsDisplay, type CalculationResults } from '@/components/results-di
 import { AssessmentLevelResults } from '@/components/assessment-level-results';
 import { InstallPWAButton } from '@/components/install-pwa-button';
 import type { TaxSettings } from '@/lib/definitions';
-import { cn } from '@/lib/utils';
+import { cn, smoothScrollTo } from '@/lib/utils';
 import { AdminPanelDialog } from '@/components/admin-panel-dialog';
 import { initialTaxSettings } from '@/lib/tax-settings';
 import { ContactSupportButton } from '@/components/contact-support-button';
@@ -43,32 +43,32 @@ export default function Home() {
     }
   }, []);
 
-  // Auto-scroll effect for Land Valuation results
+  // Slow smooth-scroll effect for Land Valuation results
   useEffect(() => {
     if (results) {
       const timer = setTimeout(() => {
         if (landResultsRef.current) {
           const yOffset = -100; // Account for sticky header
           const element = landResultsRef.current;
-          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({ top: y, behavior: 'smooth' });
+          const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+          smoothScrollTo(y, 1200); // Slower, 1.2s smooth scroll
         }
-      }, 100);
+      }, 150); // Slight delay to let the card animation start
       return () => clearTimeout(timer);
     }
   }, [results]);
 
-  // Auto-scroll effect for Building Valuation results
+  // Slow smooth-scroll effect for Building Valuation results
   useEffect(() => {
     if (buildingResults) {
       const timer = setTimeout(() => {
         if (buildingResultsRef.current) {
           const yOffset = -100; // Account for sticky header
           const element = buildingResultsRef.current;
-          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({ top: y, behavior: 'smooth' });
+          const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+          smoothScrollTo(y, 1200); // Slower, 1.2s smooth scroll
         }
-      }, 100);
+      }, 150);
       return () => clearTimeout(timer);
     }
   }, [buildingResults]);
