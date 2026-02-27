@@ -205,7 +205,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
               id="username"
               type="text"
               required
-              className="glass-input h-14 rounded-2xl text-foreground border-border/50 dark:border-white/10 bg-background/20 dark:bg-[#0B0F1B]/40 focus:ring-primary/50 text-base"
+              className="glass-input h-14 rounded-2xl text-foreground border-black/[0.1] dark:border-white/20 bg-background/50 dark:bg-white/5 focus:ring-primary/50 text-base"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -216,7 +216,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
               id="password"
               type="password"
               required
-              className="glass-input h-14 rounded-2xl text-foreground border-border/50 dark:border-white/10 bg-background/20 dark:bg-[#0B0F1B]/40 focus:ring-primary/50 text-base"
+              className="glass-input h-14 rounded-2xl text-foreground border-black/[0.1] dark:border-white/20 bg-background/50 dark:bg-white/5 focus:ring-primary/50 text-base"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
