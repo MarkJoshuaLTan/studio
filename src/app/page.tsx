@@ -43,7 +43,7 @@ export default function Home() {
     }
   }, []);
 
-  // Slow smooth-scroll effect for Land Valuation results
+  // Optimized smooth-scroll effect for Land Valuation results
   useEffect(() => {
     if (results) {
       const timer = setTimeout(() => {
@@ -51,14 +51,14 @@ export default function Home() {
           const yOffset = -100; // Account for sticky header
           const element = landResultsRef.current;
           const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
-          smoothScrollTo(y, 1200); // Slower, 1.2s smooth scroll
+          smoothScrollTo(y, 800); // Snappier 0.8s smooth scroll
         }
       }, 150); // Slight delay to let the card animation start
       return () => clearTimeout(timer);
     }
   }, [results]);
 
-  // Slow smooth-scroll effect for Building Valuation results
+  // Optimized smooth-scroll effect for Building Valuation results
   useEffect(() => {
     if (buildingResults) {
       const timer = setTimeout(() => {
@@ -66,7 +66,7 @@ export default function Home() {
           const yOffset = -100; // Account for sticky header
           const element = buildingResultsRef.current;
           const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
-          smoothScrollTo(y, 1200); // Slower, 1.2s smooth scroll
+          smoothScrollTo(y, 800); // Snappier 0.8s smooth scroll
         }
       }, 150);
       return () => clearTimeout(timer);

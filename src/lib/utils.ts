@@ -15,7 +15,7 @@ export function formatCurrency(amount: number) {
 /**
  * Programmatic smooth scroll with controllable duration and easing
  */
-export function smoothScrollTo(targetY: number, duration: number = 1200) {
+export function smoothScrollTo(targetY: number, duration: number = 800) {
   const startY = window.scrollY;
   const distance = targetY - startY;
   let startTime: number | null = null;
