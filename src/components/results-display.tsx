@@ -49,14 +49,19 @@ const InfoRow = ({
 }) => {
   const valueStr = String(value);
   let sizeClass = "";
-  if (valueStr.length > 15) {
+  if (valueStr.length > 25) {
     sizeClass = "text-xs";
+  } else if (valueStr.length > 15) {
+    sizeClass = "text-sm";
   }
 
   return (
-    <div className="flex justify-between py-2.5 text-sm border-b border-white/5 last:border-0">
-      <dt className="text-muted-foreground/80 font-medium">{label}</dt>
-      <dd className={cn("font-semibold text-right", sizeClass)}>
+    <div className="flex justify-between py-2.5 text-sm border-b border-white/5 last:border-0 gap-4">
+      <dt className="text-muted-foreground/80 font-medium shrink-0">{label}</dt>
+      <dd className={cn(
+        "font-semibold text-right whitespace-normal break-words min-w-0 flex-1", 
+        sizeClass
+      )}>
         {isCurrency && typeof value === 'number' ? (
           <AnimatedCurrency value={value} />
         ) : (
