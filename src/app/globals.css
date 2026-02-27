@@ -40,8 +40,8 @@ body {
   }
 
   .dark {
-    /* Refined Deep Midnight Navy: HSL 225, 50%, 3.5% */
-    --background: 225 50% 3.5%;
+    /* Refined Deep Midnight Navy: HSL 225, 50%, 3% */
+    --background: 225 50% 3%;
     --foreground: 210 40% 98%;
 
     --card: 225 50% 4.5%;
@@ -51,7 +51,7 @@ body {
     --popover-foreground: 210 40% 98%;
 
     --primary: 142 71% 45%;
-    --primary-foreground: 225 50% 3.5%;
+    --primary-foreground: 225 50% 3%;
 
     --secondary: 225 50% 8%;
     --secondary-foreground: 210 40% 98%;
@@ -60,7 +60,7 @@ body {
     --muted-foreground: 215 20.2% 65.1%;
     
     --accent: 142 71% 55%;
-    --accent-foreground: 225 50% 3.5%;
+    --accent-foreground: 225 50% 3%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
@@ -77,6 +77,45 @@ body {
   }
   body {
     @apply bg-background text-foreground selection:bg-primary/30;
+  }
+
+  /* Custom Modern Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    transition: background 0.3s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+    background-clip: content-box;
+  }
+
+  /* Dark Mode Scrollbar Overrides */
+  .dark ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(34, 197, 94, 0.35);
+    background-clip: content-box;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(34, 197, 94, 0.55);
+    background-clip: content-box;
   }
 }
 
