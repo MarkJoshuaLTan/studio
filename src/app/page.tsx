@@ -98,7 +98,7 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1">
-        <div className="container relative mx-auto max-w-7xl px-4 py-8 md:py-12">
+        <div className="container relative mx-auto max-w-7xl px-4 pt-8 pb-12 md:pt-12 md:pb-20">
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -197,12 +197,6 @@ export default function Home() {
           <ContactSupportButton />
         </div>
       </div>
-
-      <footer className="border-t border-white/5 py-6 md:px-8">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-          <p className="text-balance text-center text-sm leading-loose text-muted-foreground/60 md:text-left"></p>
-        </div>
-      </footer>
     </div>
   );
 }
