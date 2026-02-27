@@ -580,37 +580,37 @@ const CalibrateSettings = forwardRef(({ settings: settingsProp, onSettingsChange
     }
 
     return (
-        <div className="grid gap-10 md:grid-cols-2 pb-16">
-            <Card className="glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 rounded-[32px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl">
-                <CardHeader className="p-6 md:p-8 pb-4">
-                    <CardTitle className="text-xl md:text-2xl font-black tracking-tight">Assessment Levels</CardTitle>
-                    <CardDescription className="text-sm font-medium opacity-60">Base assessment percentage per property type.</CardDescription>
+        <div className="grid gap-6 md:grid-cols-2 pb-16 md:scale-[0.98] lg:scale-95 origin-top transition-transform duration-500">
+            <Card className="glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 rounded-[24px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl">
+                <CardHeader className="p-5 md:px-6 md:pt-6 md:pb-3">
+                    <CardTitle className="text-lg md:text-xl font-black tracking-tight">Assessment Levels</CardTitle>
+                    <CardDescription className="text-xs font-medium opacity-60">Base assessment percentage per property type.</CardDescription>
                 </CardHeader>
-                <CardContent className="p-6 md:p-8 space-y-4">
+                <CardContent className="p-5 md:px-6 md:pb-6 md:pt-0 space-y-2">
                     {formValues && Object.entries(formValues.assessmentLevels).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between p-4 md:p-5 rounded-2xl bg-black/[0.02] dark:bg-black/40 border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all group">
-                            <Label className="font-bold text-sm md:text-base tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">{key}</Label>
-                            <div className="flex items-center gap-4">
-                              <Input type="text" inputMode="decimal" className="w-20 md:w-28 h-10 md:h-12 text-center text-base md:text-lg font-black bg-black/[0.03] dark:bg-white/5 border-black/5 dark:border-white/10 rounded-xl focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
-                              <span className="text-[10px] md:text-xs font-black text-primary/40 uppercase tracking-widest">%</span>
+                        <div key={key} className="flex items-center justify-between p-3 md:py-3.5 md:px-4 rounded-xl bg-black/[0.02] dark:bg-black/40 border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all group">
+                            <Label className="font-bold text-xs md:text-sm tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">{key}</Label>
+                            <div className="flex items-center gap-3">
+                              <Input type="text" inputMode="decimal" className="w-16 md:w-24 h-9 md:h-10 text-center text-sm md:text-base font-black bg-black/[0.03] dark:bg-white/5 border-black/5 dark:border-white/10 rounded-lg focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('assessmentLevels', key, e.target.value)} />
+                              <span className="text-[9px] md:text-[10px] font-black text-primary/40 uppercase tracking-widest">%</span>
                             </div>
                         </div>
                     ))}
                 </CardContent>
             </Card>
             
-            <Card className="glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 rounded-[32px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl">
-                <CardHeader className="p-6 md:p-8 pb-4">
-                    <CardTitle className="text-xl md:text-2xl font-black tracking-tight">Tax Rates</CardTitle>
-                    <CardDescription className="text-sm font-medium opacity-60">Annual tax percentage applied to assessed value.</CardDescription>
+            <Card className="glass-card border-black/5 dark:border-white/5 bg-white/60 dark:bg-white/5 rounded-[24px] border-l-2 border-l-primary/40 overflow-hidden shadow-2xl">
+                <CardHeader className="p-5 md:px-6 md:pt-6 md:pb-3">
+                    <CardTitle className="text-lg md:text-xl font-black tracking-tight">Tax Rates</CardTitle>
+                    <CardDescription className="text-xs font-medium opacity-60">Annual tax percentage applied to assessed value.</CardDescription>
                 </CardHeader>
-                <CardContent className="p-6 md:p-8 space-y-4">
+                <CardContent className="p-5 md:px-6 md:pb-6 md:pt-0 space-y-2">
                     {formValues && Object.entries(formValues.taxRates).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between p-4 md:p-5 rounded-2xl bg-black/[0.02] dark:bg-black/40 border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all group">
-                            <Label className="font-bold text-sm md:text-base tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">{key}</Label>
-                            <div className="flex items-center gap-4">
-                              <Input type="text" inputMode="decimal" className="w-20 md:w-28 h-10 md:h-12 text-center text-base md:text-lg font-black bg-black/[0.03] dark:bg-white/5 border-black/5 dark:border-white/10 rounded-xl focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
-                              <span className="text-[10px] md:text-xs font-black text-primary/40 uppercase tracking-widest">%</span>
+                        <div key={key} className="flex items-center justify-between p-3 md:py-3.5 md:px-4 rounded-xl bg-black/[0.02] dark:bg-black/40 border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all group">
+                            <Label className="font-bold text-xs md:text-sm tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">{key}</Label>
+                            <div className="flex items-center gap-3">
+                              <Input type="text" inputMode="decimal" className="w-16 md:w-24 h-9 md:h-10 text-center text-sm md:text-base font-black bg-black/[0.03] dark:bg-white/5 border-black/5 dark:border-white/10 rounded-lg focus:ring-primary/30" value={value as string} onChange={(e) => handleSettingChange('taxRates', key, e.target.value)} />
+                              <span className="text-[9px] md:text-[10px] font-black text-primary/40 uppercase tracking-widest">%</span>
                             </div>
                         </div>
                     ))}
