@@ -2,89 +2,105 @@ import { BuildingPropertyClassification } from "./building-data";
 
 export type ProposalType = 'current' | 'p1' | 'p2' | 'p3';
 
-export function getBuildingAssessmentLevel(marketValue: number, classification: BuildingPropertyClassification, proposal: ProposalType): number {
+export interface AssessmentRange {
+  min: number;
+  max: number;
+  level: number;
+}
+
+const P3_TABLE: AssessmentRange[] = [
+  { min: 0, max: 500000, level: 0.20 },
+  { min: 500000, max: 1000000, level: 0.25 },
+  { min: 1000000, max: 2000000, level: 0.30 },
+  { min: 2000000, max: 5000000, level: 0.40 },
+  { min: 5000000, max: 10000000, level: 0.50 },
+  { min: 10000000, max: 20000000, level: 0.60 },
+  { min: 20000000, max: 40000000, level: 0.65 },
+  { min: 40000000, max: 80000000, level: 0.70 },
+  { min: 80000000, max: Infinity, level: 0.80 },
+];
+
+const RESIDENTIAL_TABLES: Record<Exclude<ProposalType, 'p3'>, AssessmentRange[]> = {
+  current: [
+    { min: 0, max: 175000, level: 0 },
+    { min: 175000, max: 300000, level: 0.10 },
+    { min: 300000, max: 500000, level: 0.20 },
+    { min: 500000, max: 750000, level: 0.25 },
+    { min: 750000, max: 1000000, level: 0.30 },
+    { min: 1000000, max: 2000000, level: 0.35 },
+    { min: 2000000, max: 5000000, level: 0.40 },
+    { min: 5000000, max: 10000000, level: 0.50 },
+    { min: 10000000, max: Infinity, level: 0.60 },
+  ],
+  p1: [
+    { min: 0, max: 175000, level: 0 },
+    { min: 175000, max: 300000, level: 0.07 },
+    { min: 300000, max: 500000, level: 0.14 },
+    { min: 500000, max: 750000, level: 0.18 },
+    { min: 750000, max: 1000000, level: 0.23 },
+    { min: 1000000, max: 2000000, level: 0.27 },
+    { min: 2000000, max: 5000000, level: 0.32 },
+    { min: 5000000, max: 10000000, level: 0.36 },
+    { min: 10000000, max: Infinity, level: 0.43 },
+  ],
+  p2: [
+    { min: 0, max: 175000, level: 0 },
+    { min: 175000, max: 300000, level: 0.06 },
+    { min: 300000, max: 500000, level: 0.09 },
+    { min: 500000, max: 750000, level: 0.12 },
+    { min: 750000, max: 1000000, level: 0.15 },
+    { min: 1000000, max: 2000000, level: 0.18 },
+    { min: 2000000, max: 4000000, level: 0.21 },
+    { min: 4000000, max: 6000000, level: 0.25 },
+    { min: 6000000, max: 8000000, level: 0.30 },
+    { min: 8000000, max: 10000000, level: 0.35 },
+    { min: 10000000, max: Infinity, level: 0.40 },
+  ],
+};
+
+const COMMERCIAL_TABLES: Record<Exclude<ProposalType, 'p3'>, AssessmentRange[]> = {
+  current: [
+    { min: 0, max: 300000, level: 0.30 },
+    { min: 300000, max: 500000, level: 0.35 },
+    { min: 500000, max: 750000, level: 0.40 },
+    { min: 750000, max: 1000000, level: 0.50 },
+    { min: 1000000, max: 2000000, level: 0.60 },
+    { min: 2000000, max: 5000000, level: 0.70 },
+    { min: 5000000, max: 10000000, level: 0.75 },
+    { min: 10000000, max: Infinity, level: 0.80 },
+  ],
+  p1: [
+    { min: 0, max: 300000, level: 0.15 },
+    { min: 300000, max: 500000, level: 0.20 },
+    { min: 500000, max: 750000, level: 0.25 },
+    { min: 750000, max: 1000000, level: 0.30 },
+    { min: 1000000, max: 2000000, level: 0.35 },
+    { min: 2000000, max: 4000000, level: 0.40 },
+    { min: 4000000, max: 6000000, level: 0.45 },
+    { min: 6000000, max: 8000000, level: 0.50 },
+    { min: 8000000, max: 10000000, level: 0.55 },
+    { min: 10000000, max: Infinity, level: 0.65 },
+  ],
+  p2: [
+    { min: 0, max: 500000, level: 0.20 },
+    { min: 500000, max: 1000000, level: 0.25 },
+    { min: 1000000, max: 2000000, level: 0.30 },
+    { min: 2000000, max: 5000000, level: 0.35 },
+    { min: 5000000, max: 10000000, level: 0.40 },
+    { min: 10000000, max: 20000000, level: 0.45 },
+    { min: 20000000, max: 30000000, level: 0.50 },
+    { min: 30000000, max: Infinity, level: 0.55 },
+  ],
+};
+
+export function getBuildingAssessmentTable(classification: BuildingPropertyClassification, proposal: ProposalType): AssessmentRange[] {
+  if (proposal === 'p3') return P3_TABLE;
   const isResidential = classification === "Residential";
+  return isResidential ? RESIDENTIAL_TABLES[proposal] : COMMERCIAL_TABLES[proposal];
+}
 
-  if (proposal === 'p3') {
-    // Both Residential and Commercial/Industrial have the same ranges for P3 in the prompt
-    if (marketValue <= 500000) return 0.20;
-    if (marketValue <= 1000000) return 0.25;
-    if (marketValue <= 2000000) return 0.30;
-    if (marketValue <= 5000000) return 0.40;
-    if (marketValue <= 10000000) return 0.50;
-    if (marketValue <= 20000000) return 0.60;
-    if (marketValue <= 40000000) return 0.65;
-    if (marketValue <= 80000000) return 0.70;
-    return 0.80;
-  }
-
-  if (isResidential) {
-    if (proposal === 'current') {
-      if (marketValue <= 175000) return 0;
-      if (marketValue <= 300000) return 0.10;
-      if (marketValue <= 500000) return 0.20;
-      if (marketValue <= 750000) return 0.25;
-      if (marketValue <= 1000000) return 0.30;
-      if (marketValue <= 2000000) return 0.35;
-      if (marketValue <= 5000000) return 0.40;
-      if (marketValue <= 10000000) return 0.50;
-      return 0.60;
-    } else if (proposal === 'p1') {
-      if (marketValue <= 175000) return 0;
-      if (marketValue <= 300000) return 0.07;
-      if (marketValue <= 500000) return 0.14;
-      if (marketValue <= 750000) return 0.18;
-      if (marketValue <= 1000000) return 0.23;
-      if (marketValue <= 2000000) return 0.27;
-      if (marketValue <= 5000000) return 0.32;
-      if (marketValue <= 10000000) return 0.36;
-      return 0.43;
-    } else if (proposal === 'p2') {
-      if (marketValue <= 175000) return 0;
-      if (marketValue <= 300000) return 0.06;
-      if (marketValue <= 500000) return 0.09;
-      if (marketValue <= 750000) return 0.12;
-      if (marketValue <= 1000000) return 0.15;
-      if (marketValue <= 2000000) return 0.18;
-      if (marketValue <= 4000000) return 0.21;
-      if (marketValue <= 6000000) return 0.25;
-      if (marketValue <= 8000000) return 0.30;
-      if (marketValue <= 10000000) return 0.35;
-      return 0.40;
-    }
-  } else {
-    // Commercial / Industrial / Commercial bucket
-    if (proposal === 'current') {
-      if (marketValue <= 300000) return 0.30;
-      if (marketValue <= 500000) return 0.35;
-      if (marketValue <= 750000) return 0.40;
-      if (marketValue <= 1000000) return 0.50;
-      if (marketValue <= 2000000) return 0.60;
-      if (marketValue <= 5000000) return 0.70;
-      if (marketValue <= 10000000) return 0.75;
-      return 0.80;
-    } else if (proposal === 'p1') {
-      if (marketValue <= 300000) return 0.15;
-      if (marketValue <= 500000) return 0.20;
-      if (marketValue <= 750000) return 0.25;
-      if (marketValue <= 1000000) return 0.30;
-      if (marketValue <= 2000000) return 0.35;
-      if (marketValue <= 4000000) return 0.40;
-      if (marketValue <= 6000000) return 0.45;
-      if (marketValue <= 8000000) return 0.50;
-      if (marketValue <= 10000000) return 0.55;
-      return 0.65;
-    } else if (proposal === 'p2') {
-      if (marketValue <= 500000) return 0.20;
-      if (marketValue <= 1000000) return 0.25;
-      if (marketValue <= 2000000) return 0.30;
-      if (marketValue <= 5000000) return 0.35;
-      if (marketValue <= 10000000) return 0.40;
-      if (marketValue <= 20000000) return 0.45;
-      if (marketValue <= 30000000) return 0.50;
-      return 0.55;
-    }
-  }
-
-  return 0;
+export function getBuildingAssessmentLevel(marketValue: number, classification: BuildingPropertyClassification, proposal: ProposalType): number {
+  const table = getBuildingAssessmentTable(classification, proposal);
+  const row = table.find(r => marketValue <= r.max);
+  return row ? row.level : table[table.length - 1].level;
 }

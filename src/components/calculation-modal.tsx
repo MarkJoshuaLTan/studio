@@ -13,6 +13,7 @@ import type { CalculationResults } from "./results-display";
 import type { BuildingCalculationResults } from "./building-calculator";
 import { Calculator, Info, ArrowDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getBuildingAssessmentTable } from "@/lib/building-logic";
 
 interface CalculationModalProps {
   open: boolean;
@@ -121,6 +122,11 @@ export function CalculationModal({
     const av = res[`${p}AssessedValue` as keyof BuildingCalculationResults] as number;
     const tax = res[`${p}YearlyTax` as keyof BuildingCalculationResults] as number;
     const taxRate = (res.classification === "Residential") ? 0.02 : 0.03;
+    const table = getBuildingAssessmentTable(res.classification, p);
+    
+    // Determine which row is active based on market value
+    const activeRowIdx = table.findIndex(r => res.marketValue <= r.max);
+    const finalActiveIdx = activeRowIdx === -1 ? table.length - 1 : activeRowIdx;
 
     return (
       <div className="space-y-4">
@@ -130,14 +136,61 @@ export function CalculationModal({
           formula={`${res.floorArea.toLocaleString()} sq.m × ${formatCurrency(res.unitValue)}`}
           result={res.marketValue}
         />
+
+        <div className="flex flex-col items-center w-full">
+          <div className="w-full glass-card p-5 border-border/50 dark:border-white/10 bg-foreground/[0.03] dark:bg-white/5 space-y-3">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80">Step 2: Assessment Level</h4>
+            <p className="text-[10px] text-muted-foreground/80 uppercase font-bold tracking-tight">Based on Classification & Market Value</p>
+            
+            <div className="rounded-xl border border-border/50 dark:border-white/10 overflow-hidden bg-background/20">
+              <div className="grid grid-cols-2 bg-foreground/[0.05] border-b border-border/50 dark:border-white/10 font-bold p-2 text-[9px] uppercase tracking-wider">
+                <div>Market Value Range</div>
+                <div className="text-right">Level</div>
+              </div>
+              <div className="max-h-[140px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20">
+                {table.map((row, idx) => {
+                  const isActive = idx === finalActiveIdx;
+                  return (
+                    <div 
+                      key={idx} 
+                      className={cn(
+                        "grid grid-cols-2 p-2 border-b border-border/50 dark:border-white/5 last:border-0 text-[10px] transition-colors",
+                        isActive ? "bg-primary/20 text-primary font-bold" : "text-muted-foreground/70"
+                      )}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        {isActive && <div className="h-1 w-1 rounded-full bg-primary" />}
+                        {row.max === Infinity 
+                          ? `Over ${formatCurrency(row.min)}` 
+                          : `${formatCurrency(row.min)} - ${formatCurrency(row.max)}`}
+                      </div>
+                      <div className="text-right">{(row.level * 100).toFixed(0)}%</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            
+            <div className="pt-2 border-t border-border/50 dark:border-white/5 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-muted-foreground/40 uppercase">Selected Assessment Level</span>
+              <p className="text-xl font-black tracking-tight text-primary drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]">
+                {(al * 100).toFixed(0)}%
+              </p>
+            </div>
+          </div>
+          <div className="my-2 text-primary/30">
+            <ArrowDown className="h-5 w-5" />
+          </div>
+        </div>
+
         <Step 
-          title="Step 2: Assessed Value"
+          title="Step 3: Assessed Value"
           label="Market Value × Assessment Level"
           formula={`${formatCurrency(res.marketValue)} × ${(al * 100).toFixed(0)}%`}
           result={av}
         />
         <Step 
-          title="Step 3: Yearly Tax"
+          title="Step 4: Yearly Tax"
           label="Assessed Value × Tax Rate"
           formula={`${formatCurrency(av)} × ${(taxRate * 100).toFixed(0)}%`}
           result={tax}
