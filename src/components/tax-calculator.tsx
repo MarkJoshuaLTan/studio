@@ -211,7 +211,6 @@ export default function TaxCalculator({
       <Card className="w-full glass-container border-0 overflow-hidden">
         <CardHeader className="relative z-10">
           <CardTitle className="text-2xl">Property Details</CardTitle>
-          <CardTitle className="text-2xl">Property Details</CardTitle>
           <CardDescription className="text-muted-foreground/80">
             Enter your property details to estimate your real property tax.
           </CardDescription>
