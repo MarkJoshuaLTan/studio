@@ -40,33 +40,33 @@ body {
   }
 
   .dark {
-    /* Using #0B0F1B: HSL 225, 42%, 7% */
-    --background: 225 42% 7%;
+    /* Refined Deep Midnight Navy: HSL 225, 50%, 3.5% */
+    --background: 225 50% 3.5%;
     --foreground: 210 40% 98%;
 
-    --card: 225 42% 7%;
+    --card: 225 50% 4.5%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 225 42% 7%;
+    --popover: 225 50% 4.5%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 142 71% 45%;
-    --primary-foreground: 225 42% 7%;
+    --primary-foreground: 225 50% 3.5%;
 
-    --secondary: 225 42% 15%;
+    --secondary: 225 50% 8%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 225 42% 15%;
+    --muted: 225 50% 8%;
     --muted-foreground: 215 20.2% 65.1%;
     
     --accent: 142 71% 55%;
-    --accent-foreground: 225 42% 7%;
+    --accent-foreground: 225 50% 3.5%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 225 42% 15%;
-    --input: 225 42% 15%;
+    --border: 225 50% 10%;
+    --input: 225 50% 10%;
     --ring: 142 71% 45%;
   }
 }
@@ -82,7 +82,7 @@ body {
 
 @layer components {
   .glass-container {
-    @apply bg-white/40 dark:bg-[#0B0F1B]/40 backdrop-blur-3xl border border-white/30 dark:border-white/10 rounded-[2rem] transition-all duration-500;
+    @apply bg-white/40 dark:bg-[#05070A]/60 backdrop-blur-3xl border border-white/30 dark:border-white/5 rounded-[2rem] transition-all duration-500;
     /* Unified Light Mode Shadow: Soft, clean elevation */
     box-shadow: 
       0 4px 12px rgba(0, 0, 0, 0.06),
@@ -94,14 +94,14 @@ body {
   .dark .glass-container {
     /* Deeper shadow for Dark Mode drama */
     box-shadow: 
-      0 30px 60px -12px rgba(0, 0, 0, 0.5),
-      0 18px 36px -18px rgba(0, 0, 0, 0.6),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.1),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      0 30px 60px -12px rgba(0, 0, 0, 0.7),
+      0 18px 36px -18px rgba(0, 0, 0, 0.8),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.02);
   }
   
   .glass-card {
-    @apply bg-white/30 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl transition-all duration-300;
+    @apply bg-white/30 dark:bg-white/[0.02] backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-2xl transition-all duration-300;
     /* Matching Light Mode Shadow */
     box-shadow: 
       0 4px 12px rgba(0, 0, 0, 0.06),
@@ -111,17 +111,17 @@ body {
 
   .dark .glass-card {
     box-shadow: 
-      0 10px 25px -5px rgba(0, 0, 0, 0.3),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      0 10px 25px -5px rgba(0, 0, 0, 0.5),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.03);
   }
 
   .glass-card-hover {
-    @apply hover:bg-white/40 dark:hover:bg-white/10 hover:-translate-y-1 hover:border-white/50 dark:hover:border-white/20;
+    @apply hover:bg-white/40 dark:hover:bg-white/[0.05] hover:-translate-y-1 hover:border-white/50 dark:hover:border-white/10;
     box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
   }
 
   .glass-input {
-    @apply bg-white/60 dark:bg-[#0B0F1B]/40 backdrop-blur-md border border-white/30 dark:border-white/10 focus:ring-primary/40 transition-all duration-300;
+    @apply bg-white/60 dark:bg-[#05070A]/40 backdrop-blur-md border border-white/30 dark:border-white/5 focus:ring-primary/40 transition-all duration-300;
     /* Recessed inset feel for inputs */
     box-shadow: 
       inset 0 2px 4px 0 rgba(0, 0, 0, 0.03),
@@ -130,7 +130,7 @@ body {
 
   .dark .glass-input {
     box-shadow: 
-      inset 0 2px 4px 0 rgba(0, 0, 0, 0.4),
-      0 1px 0 0 rgba(255, 255, 255, 0.05);
+      inset 0 2px 4px 0 rgba(0, 0, 0, 0.6),
+      0 1px 0 0 rgba(255, 255, 255, 0.02);
   }
 }

@@ -33,17 +33,17 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} font-body antialiased min-h-screen relative overflow-x-hidden`}>
-        {/* Modern atmospheric background for depth */}
+        {/* Deep atmospheric background for maximum contrast */}
         <div className="fixed inset-0 -z-10 bg-background overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background/80 to-primary/5" />
+          {/* Subtle dark gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/[0.02]" />
           
-          {/* Animated pulsing glow orbs */}
-          <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[120px] animate-[pulse_8s_infinite_ease-in-out]" />
-          <div className="absolute bottom-[-15%] right-[-5%] w-[50%] h-[50%] bg-green-500/5 rounded-full blur-[100px] animate-[pulse_12s_infinite_ease-in-out_2s]" />
-          <div className="absolute top-[20%] right-[-10%] w-[30%] h-[30%] bg-blue-500/5 rounded-full blur-[80px] animate-[pulse_10s_infinite_ease-in-out_1s]" />
+          {/* Very subtle glow orbs to prevent flat appearance */}
+          <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-primary/[0.03] rounded-full blur-[140px] animate-[pulse_10s_infinite_ease-in-out]" />
+          <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-green-500/[0.02] rounded-full blur-[120px] animate-[pulse_15s_infinite_ease-in-out_3s]" />
           
-          {/* Subtle noise texture for analog feel */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+          {/* Noise texture for that high-end OLED look */}
+          <div className="absolute inset-0 opacity-[0.02] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
         </div>
 
         <ThemeProvider>
