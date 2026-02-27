@@ -16,6 +16,7 @@ import { AboutDialog } from '@/components/about-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BuildingCalculator, { type BuildingCalculationResults } from '@/components/building-calculator';
 import { BuildingResultsDisplay } from '@/components/building-results-display';
+import { FullscreenToggle } from '@/components/fullscreen-toggle';
 
 export default function Home() {
   const [results, setResults] = useState<CalculationResults | null>(null);
@@ -91,6 +92,7 @@ export default function Home() {
             </h1>
           </div>
           <div className="flex items-center gap-1">
+            <FullscreenToggle />
             <AdminPanelDialog settings={settings} onSettingsChange={handleSettingsChange} />
             <InstallPWAButton />
             <ThemeToggle />
