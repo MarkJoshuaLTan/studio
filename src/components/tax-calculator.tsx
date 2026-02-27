@@ -211,6 +211,7 @@ export default function TaxCalculator({
       <Card className="w-full glass-container border-0 overflow-hidden">
         <CardHeader className="relative z-10">
           <CardTitle className="text-2xl">Property Details</CardTitle>
+          <CardTitle className="text-2xl">Property Details</CardTitle>
           <CardDescription className="text-muted-foreground/80">
             Enter your property details to estimate your real property tax.
           </CardDescription>
@@ -259,7 +260,7 @@ export default function TaxCalculator({
                 id="lot-area"
                 type="number"
                 placeholder="e.g., 150"
-                className="h-12 bg-[#0B0F0E] border-white/5 rounded-[14px] text-foreground focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all duration-300"
+                className="h-12 glass-input rounded-[14px] text-foreground focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all duration-300"
                 value={lotArea}
                 onChange={(e) => {
                   setLotArea(e.target.value)
@@ -296,7 +297,7 @@ export default function TaxCalculator({
           <Button
             variant="outline"
             onClick={handleClear}
-            className="w-full sm:w-auto h-12 px-8 bg-[#0B0F0E]/50 border-white/10 hover:bg-[#121615] rounded-full"
+            className="w-full sm:w-auto h-12 px-8 bg-black/5 dark:bg-[#0B0F0E]/50 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-[#121615] rounded-full"
           >
             Clear
           </Button>
