@@ -87,7 +87,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
           "p-0 border-none transition-all duration-500 ease-in-out overflow-hidden shadow-none",
           isAuthenticated 
             ? "max-w-[98vw] w-[98vw] h-[96dvh] rounded-[2rem] bg-white/80 dark:bg-[#0D1210]/60 backdrop-blur-[20px] border border-black/5 dark:border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
-            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2.5rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] shadow-primary/20"
+            : "max-w-[90vw] sm:max-w-md md:max-w-[500px] w-full h-auto max-h-[90dvh] rounded-[2.5rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] shadow-primary/20"
         )}
       >
           {/* Mesh Gradient Background for Authenticated State */}
@@ -105,7 +105,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
             </DialogClose>
           )}
 
-          <div className={cn("flex flex-col h-full relative z-10", !isAuthenticated ? "p-6 md:p-10" : "p-0")}>
+          <div className={cn("flex flex-col h-full relative z-10", !isAuthenticated ? "p-6 sm:p-10" : "p-0")}>
             {isAuthenticated ? (
               <>
                 <DialogTitle className="sr-only">Admin Dashboard</DialogTitle>
@@ -114,9 +114,9 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
                 </DialogDescription>
               </>
             ) : (
-              <div className="mb-10 space-y-1">
-                <DialogTitle className="text-4xl font-extrabold tracking-tight text-foreground">Admin Panel</DialogTitle>
-                <DialogDescription className="text-muted-foreground font-medium text-base">
+              <div className="mb-6 sm:mb-10 space-y-1 text-center sm:text-left">
+                <DialogTitle className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">Admin Panel</DialogTitle>
+                <DialogDescription className="text-muted-foreground font-medium text-sm sm:text-base">
                   Please log in to continue.
                 </DialogDescription>
               </div>
@@ -151,7 +151,7 @@ function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, 
               <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
             </div>
         ) : (
-            <div className="h-full overflow-y-auto md:overflow-hidden p-2">
+            <div className="h-full overflow-y-auto md:overflow-hidden p-1">
               <LoginForm onLoginSuccess={onLoginSuccess} />
             </div>
         )}
@@ -184,34 +184,34 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
   };
 
   return (
-    <div className="w-full p-8 rounded-[2.5rem] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-white/[0.03] shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
-      <form onSubmit={handleLogin} className="space-y-8">
-        <div className="space-y-2">
-          <h3 className="text-3xl font-bold text-foreground tracking-tight">Login</h3>
-          <p className="text-xs text-muted-foreground font-bold uppercase tracking-[0.2em]">
+    <div className="w-full p-6 sm:p-8 md:p-10 rounded-[2rem] sm:rounded-[2.5rem] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-white/[0.03] shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
+      <form onSubmit={handleLogin} className="space-y-6 sm:space-y-8">
+        <div className="space-y-2 text-center sm:text-left">
+          <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground tracking-tight">Login</h3>
+          <p className="text-[10px] sm:text-xs text-muted-foreground font-bold uppercase tracking-[0.2em]">
             Access secure admin controls
           </p>
         </div>
         
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="username" className="text-muted-foreground text-sm font-semibold ml-1">Username</Label>
+            <Label htmlFor="username" className="text-muted-foreground text-xs sm:text-sm font-semibold ml-1">Username</Label>
             <Input
               id="username"
               type="text"
               required
-              className="glass-input h-14 rounded-2xl border-black/[0.1] dark:border-white/20 bg-background/50 dark:bg-black/40"
+              className="glass-input h-12 sm:h-14 rounded-xl sm:rounded-2xl border-black/[0.1] dark:border-white/20 bg-background/50 dark:bg-black/40"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-muted-foreground text-sm font-semibold ml-1">Password</Label>
+            <Label htmlFor="password" className="text-muted-foreground text-xs sm:text-sm font-semibold ml-1">Password</Label>
             <Input
               id="password"
               type="password"
               required
-              className="glass-input h-14 rounded-2xl border-black/[0.1] dark:border-white/20 bg-background/50 dark:bg-black/40"
+              className="glass-input h-12 sm:h-14 rounded-xl sm:rounded-2xl border-black/[0.1] dark:border-white/20 bg-background/50 dark:bg-black/40"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -220,7 +220,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
 
         <Button 
           type="submit" 
-          className="w-full btn-ios-green h-16 rounded-[1.25rem] text-lg tracking-wide shadow-lg" 
+          className="w-full btn-ios-green h-14 sm:h-16 rounded-[1.25rem] text-base sm:text-lg tracking-wide shadow-lg" 
           disabled={isLoading}
         >
           {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : "Sign in"}
