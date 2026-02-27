@@ -27,7 +27,7 @@ export default function TaxCalculator({
   settings: TaxSettings;
 }) {
   const [barangaySearch, setBarangaySearch] = useState("");
-  const [locationSearch, setLocationSearch] =("");
+  const [locationSearch, setLocationSearch] = useState("");
   const [selectedBarangay, setSelectedBarangay] =
     useState<SuggestedItem | null>(null);
   const [selectedLocation, setSelectedLocation] =
