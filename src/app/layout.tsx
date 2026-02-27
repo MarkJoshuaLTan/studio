@@ -35,15 +35,15 @@ export default function RootLayout({
       <body className={`${inter.variable} font-body antialiased min-h-screen relative overflow-x-hidden`}>
         {/* Deep atmospheric background for maximum contrast */}
         <div className="fixed inset-0 -z-10 bg-background overflow-hidden">
-          {/* Subtle dark gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/[0.02]" />
+          {/* Subtle dark gradient overlay - slightly more opaque */}
+          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/[0.05]" />
           
-          {/* Very subtle glow orbs to prevent flat appearance */}
-          <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-primary/[0.03] rounded-full blur-[140px] animate-[pulse_10s_infinite_ease-in-out]" />
-          <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-green-500/[0.02] rounded-full blur-[120px] animate-[pulse_15s_infinite_ease-in-out_3s]" />
+          {/* Atmospheric glow orbs - intensified for visibility */}
+          <div className="absolute top-[-15%] left-[-10%] w-[80%] h-[80%] bg-primary/[0.12] rounded-full blur-[120px] animate-[pulse_8s_infinite_ease-in-out]" />
+          <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-green-500/[0.08] rounded-full blur-[100px] animate-[pulse_12s_infinite_ease-in-out_2s]" />
           
-          {/* Noise texture for that high-end OLED look */}
-          <div className="absolute inset-0 opacity-[0.02] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+          {/* Noise texture - intensified for high-end OLED depth */}
+          <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
         </div>
 
         <ThemeProvider>
