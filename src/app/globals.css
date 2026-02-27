@@ -40,32 +40,33 @@ body {
   }
 
   .dark {
-    --background: 224 71% 4%;
+    /* Using #0B0F1B: HSL 225, 42%, 7% */
+    --background: 225 42% 7%;
     --foreground: 210 40% 98%;
 
-    --card: 224 71% 4%;
+    --card: 225 42% 7%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 224 71% 4%;
+    --popover: 225 42% 7%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 142 71% 45%;
-    --primary-foreground: 224 71% 4%;
+    --primary-foreground: 225 42% 7%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 225 42% 15%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 225 42% 15%;
     --muted-foreground: 215 20.2% 65.1%;
     
     --accent: 142 71% 55%;
-    --accent-foreground: 224 71% 4%;
+    --accent-foreground: 225 42% 7%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 225 42% 15%;
+    --input: 225 42% 15%;
     --ring: 142 71% 45%;
   }
 }
@@ -81,7 +82,7 @@ body {
 
 @layer components {
   .glass-container {
-    @apply bg-white/40 dark:bg-black/40 backdrop-blur-3xl border border-white/30 dark:border-white/10 rounded-[2rem] transition-all duration-500;
+    @apply bg-white/40 dark:bg-[#0B0F1B]/40 backdrop-blur-3xl border border-white/30 dark:border-white/10 rounded-[2rem] transition-all duration-500;
     /* High-end iOS floating effect: Diffuse ambient shadow + sharp perimeter edge */
     box-shadow: 
       0 30px 60px -12px rgba(0, 0, 0, 0.15),
@@ -110,7 +111,7 @@ body {
   }
 
   .glass-input {
-    @apply bg-white/60 dark:bg-black/40 backdrop-blur-md border border-white/30 dark:border-white/10 focus:ring-primary/40 transition-all duration-300;
+    @apply bg-white/60 dark:bg-[#0B0F1B]/40 backdrop-blur-md border border-white/30 dark:border-white/10 focus:ring-primary/40 transition-all duration-300;
     /* Recessed inset feel for inputs */
     box-shadow: 
       inset 0 2px 4px 0 rgba(0, 0, 0, 0.03),

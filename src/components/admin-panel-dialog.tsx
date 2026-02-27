@@ -92,7 +92,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
             ? isMaximized
               ? "max-w-full w-full h-full max-h-full left-0 top-0 translate-x-0 translate-y-0 rounded-none bg-background" 
               : "max-w-6xl w-[calc(100vw-2rem)] h-[85vh] rounded-2xl glass-container border-0"
-            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2rem] glass-container bg-white/5 dark:bg-black/90 backdrop-blur-3xl border border-border/50 dark:border-white/10"
+            : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2rem] glass-container bg-white/5 dark:bg-[#0B0F1B]/90 backdrop-blur-3xl border border-border/50 dark:border-white/10"
         )}
       >
           {!isAuthenticated ? (
@@ -205,7 +205,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
               id="username"
               type="text"
               required
-              className="glass-input h-14 rounded-2xl text-foreground border-border/50 dark:border-white/10 bg-background/20 dark:bg-black/40 focus:ring-primary/50 text-base"
+              className="glass-input h-14 rounded-2xl text-foreground border-border/50 dark:border-white/10 bg-background/20 dark:bg-[#0B0F1B]/40 focus:ring-primary/50 text-base"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -216,7 +216,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
               id="password"
               type="password"
               required
-              className="glass-input h-14 rounded-2xl text-foreground border-border/50 dark:border-white/10 bg-background/20 dark:bg-black/40 focus:ring-primary/50 text-base"
+              className="glass-input h-14 rounded-2xl text-foreground border-border/50 dark:border-white/10 bg-background/20 dark:bg-[#0B0F1B]/40 focus:ring-primary/50 text-base"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -370,7 +370,7 @@ function AdminDashboard({ settings: settingsProp, onSettingsChange, onSaveSucces
                     <Input placeholder="Filter locations..." className="glass-input h-11" value={locationSearch} onChange={(e) => setLocationSearch(e.target.value)} disabled={!selectedBarangay} />
                 </div>
             </div>
-            <ScrollArea className="h-[40vh] rounded-xl border border-white/5 bg-black/20 p-4">
+            <ScrollArea className="h-[40vh] rounded-xl border border-white/5 bg-background/20 p-4">
                 <div className="space-y-4">
                     {filteredLocations.length > 0 ? filteredLocations.map(([locationName, details]) => (
                         <Card key={locationName} className="glass-card border-white/5 bg-white/5">

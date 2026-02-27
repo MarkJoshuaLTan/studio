@@ -45,7 +45,7 @@ export function AboutDialog() {
       </DialogTrigger>
       <DialogContent 
         showClose={false}
-        className="max-w-2xl w-[95vw] h-[85vh] flex flex-col p-0 overflow-hidden border-0 glass-container bg-white/5 dark:bg-black/90 backdrop-blur-3xl shadow-2xl"
+        className="max-w-2xl w-[95vw] h-[85vh] flex flex-col p-0 overflow-hidden border-0 glass-container bg-white/5 dark:bg-[#0B0F1B]/90 backdrop-blur-3xl shadow-2xl"
       >
         {/* Custom Circular Close Button to match reference */}
         <DialogClose className="absolute right-6 top-6 rounded-full border border-primary/50 p-1.5 opacity-70 transition-all hover:opacity-100 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary z-50">
