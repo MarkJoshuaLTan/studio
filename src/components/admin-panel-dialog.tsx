@@ -86,15 +86,15 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
         className={cn(
           "p-0 border-none transition-all duration-500 ease-in-out overflow-hidden shadow-none",
           isAuthenticated 
-            ? "max-w-[98vw] w-[98vw] h-[96vh] rounded-[2rem] bg-white/80 dark:bg-[#0D1210]/60 backdrop-blur-[20px] border border-black/5 dark:border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
+            ? "max-w-[98vw] w-[98vw] h-[96dvh] rounded-[2rem] bg-white/80 dark:bg-[#0D1210]/60 backdrop-blur-[20px] border border-black/5 dark:border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
             : "max-w-md w-[calc(100vw-2rem)] h-auto max-h-[85vh] rounded-[2.5rem] bg-white dark:bg-[#0B0F1B]/95 border border-black/[0.06] dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] shadow-primary/20"
         )}
       >
-          {/* Mesh Gradient Background for Authenticated State - Reduced Opacity for Cleanliness */}
+          {/* Mesh Gradient Background for Authenticated State */}
           {isAuthenticated && (
-            <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden opacity-10 dark:opacity-5 transition-opacity duration-1000">
-              <div className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-primary/5 rounded-full blur-[150px] animate-pulse" />
-              <div className="absolute bottom-[-20%] right-[-5%] w-[60%] h-[60%] bg-emerald-500/2 rounded-full blur-[120px] animate-[pulse_10s_infinite]" />
+            <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden opacity-[0.03] dark:opacity-[0.02] transition-opacity duration-1000">
+              <div className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-primary/10 rounded-full blur-[150px] animate-pulse" />
+              <div className="absolute bottom-[-20%] right-[-5%] w-[60%] h-[60%] bg-emerald-500/5 rounded-full blur-[120px] animate-[pulse_10s_infinite]" />
             </div>
           )}
 
@@ -141,17 +141,19 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
 
 function AdminPanel({ isAuthenticated, onLoginSuccess, onLogout, isLoadingAuth, onClose, settings, onSettingsChange, onSaveSuccess }: { isAuthenticated: boolean; onLoginSuccess: () => void; onLogout: () => void; isLoadingAuth: boolean; onClose: () => void; settings: TaxSettings | null, onSettingsChange: (newSettings: TaxSettings) => void; onSaveSuccess: () => void; }) {
   if (isLoadingAuth) {
-     return <div className="flex-1 flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-green-500" /></div>
+     return <div className="flex-1 flex items-center justify-center h-full"><Loader2 className="h-8 w-8 animate-spin text-green-500" /></div>
   }
 
   return (
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 h-full overflow-hidden">
         {isAuthenticated ? (
-            <div className="admin-dashboard-wrapper h-full overflow-y-auto overflow-x-hidden scroll-smooth premium-scrollbar">
+            <div className="admin-dashboard-wrapper h-full overflow-y-auto overflow-x-hidden scroll-smooth premium-scrollbar relative z-10">
               <AdminTabs onLogout={onLogout} onClose={onClose} settings={settings} onSettingsChange={onSettingsChange} onSaveSuccess={onSaveSuccess} />
             </div>
         ) : (
-            <LoginForm onLoginSuccess={onLoginSuccess} />
+            <div className="h-full overflow-y-auto md:overflow-hidden p-2">
+              <LoginForm onLoginSuccess={onLoginSuccess} />
+            </div>
         )}
       </div>
   );
