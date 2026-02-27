@@ -41,11 +41,11 @@ export function CalculationModal({
     isCapped?: boolean;
   }) => (
     <div className="flex flex-col items-center w-full">
-      <div className="w-full glass-card p-5 border-white/10 bg-white/5 space-y-2">
+      <div className="w-full glass-card p-5 border-border/50 dark:border-white/10 bg-foreground/[0.03] dark:bg-white/5 space-y-2">
         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80">{title}</h4>
-        <p className="text-[10px] text-muted-foreground/60 uppercase font-bold tracking-tight">{label}</p>
+        <p className="text-[10px] text-muted-foreground/80 uppercase font-bold tracking-tight">{label}</p>
         <p className="text-sm font-medium text-foreground/90">{formula}</p>
-        <div className="pt-2 border-t border-white/5 flex justify-between items-center">
+        <div className="pt-2 border-t border-border/50 dark:border-white/5 flex justify-between items-center">
           <span className="text-[10px] font-bold text-muted-foreground/40 uppercase">Result</span>
           <p className={cn(
             "text-xl font-black tracking-tight",
@@ -149,26 +149,26 @@ export function CalculationModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md w-[95vw] glass-container border-0 bg-[#0B0F1B]/95 backdrop-blur-3xl p-0 overflow-hidden shadow-none">
+      <DialogContent className="max-w-md w-[95vw] glass-container border-0 bg-white/95 dark:bg-[#0B0F1B]/95 backdrop-blur-3xl p-0 overflow-hidden shadow-none">
         <DialogHeader className="p-6 pb-2">
           <div className="flex items-center gap-3 mb-1">
             <div className="p-2 bg-primary/10 rounded-xl">
               <Calculator className="h-5 w-5 text-primary" />
             </div>
-            <DialogTitle className="text-xl font-extrabold tracking-tight">
+            <DialogTitle className="text-xl font-extrabold tracking-tight text-foreground">
               {type === 'land' ? 'Land Valuation Breakdown' : 'Building Valuation Breakdown'}
             </DialogTitle>
           </div>
-          <DialogDescription className="text-muted-foreground/60 text-xs font-medium">
+          <DialogDescription className="text-muted-foreground/80 text-xs font-medium">
             Step-by-step transparency into your property tax computation.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="p-6 pt-2 max-h-[70vh] overflow-y-auto scrollbar-thin">
+        <div className="p-6 pt-2 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20">
           {type === 'land' ? renderLandContent() : renderBuildingContent()}
         </div>
 
-        <div className="p-6 pt-0 mt-2 border-t border-white/5 bg-foreground/[0.02] flex flex-col items-center">
+        <div className="p-6 pt-0 mt-2 border-t border-border/50 dark:border-white/5 bg-foreground/[0.02] flex flex-col items-center">
           <p className="text-[10px] text-primary uppercase tracking-[0.2em] font-black mt-4">
             Official Calculation Breakdown
           </p>
