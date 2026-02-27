@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Building2, Loader2, Map as MapIcon, Home as HomeIcon } from 'lucide-react';
 import TaxCalculator from '@/components/tax-calculator';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -23,6 +23,9 @@ export default function Home() {
   const [settings, setSettings] = useState<TaxSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const landResultsRef = useRef<HTMLDivElement>(null);
+  const buildingResultsRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     try {
       const localSettings = localStorage.getItem('tax-settings');
@@ -39,6 +42,36 @@ export default function Home() {
       setIsLoading(false);
     }
   }, []);
+
+  // Auto-scroll effect for Land Valuation results
+  useEffect(() => {
+    if (results) {
+      const timer = setTimeout(() => {
+        if (landResultsRef.current) {
+          const yOffset = -100; // Account for sticky header
+          const element = landResultsRef.current;
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [results]);
+
+  // Auto-scroll effect for Building Valuation results
+  useEffect(() => {
+    if (buildingResults) {
+      const timer = setTimeout(() => {
+        if (buildingResultsRef.current) {
+          const yOffset = -100; // Account for sticky header
+          const element = buildingResultsRef.current;
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [buildingResults]);
 
   const handleSettingsChange = (newSettings: TaxSettings) => {
     setSettings(newSettings);
@@ -100,7 +133,7 @@ export default function Home() {
                   )}>
                     <TaxCalculator setResults={setResults} settings={settings} />
                     {results && (
-                      <div className="space-y-12">
+                      <div ref={landResultsRef} className="space-y-12">
                         <div className="lg:hidden">
                           <ResultsDisplay results={results} />
                         </div>
@@ -134,7 +167,7 @@ export default function Home() {
                   )}>
                     <BuildingCalculator setResults={setBuildingResults} />
                     {buildingResults && (
-                      <div className="space-y-12">
+                      <div ref={buildingResultsRef} className="space-y-12">
                         <div className="lg:hidden">
                           <BuildingResultsDisplay results={buildingResults} mode="summary" />
                         </div>
