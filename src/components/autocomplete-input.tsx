@@ -22,6 +22,7 @@ interface AutocompleteInputProps {
   disabled?: boolean;
   onOpen?: () => void;
   disablePortal?: boolean;
+  className?: string;
 }
 
 export function AutocompleteInput({
@@ -34,6 +35,7 @@ export function AutocompleteInput({
   disabled = false,
   onOpen,
   disablePortal,
+  className,
 }: AutocompleteInputProps) {
   const [open, setOpen] = React.useState(false);
   const [localSearch, setLocalSearch] = React.useState("");
@@ -69,15 +71,17 @@ export function AutocompleteInput({
             role="combobox"
             aria-expanded={open}
             className={cn(
-              "w-full min-h-[2.5rem] h-auto py-1.5 px-4 justify-between font-medium text-left transition-all duration-300 rounded-[14px]",
+              "w-full px-4 justify-between font-bold text-left transition-all duration-300 rounded-[14px]",
               "glass-input text-foreground text-sm",
               "focus:ring-2 focus:ring-primary/30 focus:border-primary/50",
               !value && "text-muted-foreground",
-              disabled && "opacity-50 cursor-not-allowed"
+              disabled && "opacity-50 cursor-not-allowed",
+              !className && "h-11",
+              className
             )}
             disabled={disabled}
           >
-            <span className="whitespace-normal break-words flex-1 mr-2">
+            <span className="whitespace-normal break-words flex-1 mr-2 line-clamp-1">
               {value ? value.name : placeholder}
             </span>
             <div className="flex items-center gap-1.5 opacity-40 shrink-0 self-center">

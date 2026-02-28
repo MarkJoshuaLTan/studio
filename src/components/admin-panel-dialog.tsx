@@ -105,7 +105,7 @@ export function AdminPanelDialog({ settings, onSettingsChange }: { settings: Tax
             </DialogClose>
           )}
 
-          <div className={cn("flex flex-col relative z-10", !isAuthenticated ? "p-6 sm:p-10 h-auto" : "p-0 h-full overflow-hidden")}>
+          <div className={cn("flex flex-col relative z-10 h-full", !isAuthenticated ? "p-6 sm:p-10 h-auto" : "p-0 h-full overflow-hidden")}>
             {isAuthenticated ? (
               <>
                 <DialogTitle className="sr-only">Admin Dashboard</DialogTitle>
@@ -433,6 +433,7 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
                       value={selectedBarangay ? { name: selectedBarangay, type: 'barangay' } : null}
                       onOpen={() => setBarangaySearch("")}
                       disablePortal={true}
+                      className="h-14 rounded-[18px] px-6 border-black/5 dark:border-white/10 bg-black/[0.02] dark:bg-black/40 font-bold"
                   />
               </div>
               <div className="space-y-3">
@@ -440,12 +441,12 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
                   <div className="relative">
                     <Input 
                       placeholder="Filter locations by name..." 
-                      className="glass-input h-14 rounded-[18px] border-black/5 dark:border-white/10 bg-black/[0.02] dark:bg-black/40 px-6 focus:ring-primary/30" 
+                      className="glass-input h-14 rounded-[18px] border-black/5 dark:border-white/10 bg-black/[0.02] dark:bg-black/40 px-6 focus:ring-primary/30 font-bold text-sm" 
                       value={locationSearch} 
                       onChange={(e) => setLocationSearch(e.target.value)} 
                       disabled={!selectedBarangay} 
                     />
-                    <Search className="absolute right-5 top-4 h-5 w-5 opacity-20" />
+                    <Search className="absolute right-6 top-1/2 -translate-y-1/2 h-5 w-5 opacity-40 text-primary pointer-events-none" />
                   </div>
               </div>
           </div>
