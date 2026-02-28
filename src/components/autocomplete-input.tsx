@@ -41,13 +41,14 @@ export function AutocompleteInput({
   const [localSearch, setLocalSearch] = React.useState("");
   const searchInputRef = React.useRef<HTMLInputElement>(null);
 
-  // Clear internal search when popover closes
+  // Reset internal input state when popover closes.
+  // We DO NOT clear the parent's state here (onInputChange("")) as that
+  // would overwrite a successful selection during the close transition.
   React.useEffect(() => {
     if (!open) {
       setLocalSearch("");
-      onInputChange("");
     }
-  }, [open, onInputChange]);
+  }, [open]);
 
   const handleSearchChange = (val: string) => {
     setLocalSearch(val);
