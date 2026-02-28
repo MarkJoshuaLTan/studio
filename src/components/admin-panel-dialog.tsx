@@ -412,6 +412,14 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
     b.name.toLowerCase().includes(barangaySearch.toLowerCase())
   );
 
+  const locationSuggestions: SuggestedItem[] = editedSettings && selectedBarangay && editedSettings.taxData[selectedBarangay]
+    ? Object.keys(editedSettings.taxData[selectedBarangay]).sort().map(name => ({ name, type: 'location' }))
+    : [];
+
+  const filteredLocationSuggestions = locationSuggestions.filter(l => 
+    l.name.toLowerCase().includes(locationSearch.toLowerCase())
+  );
+
   if (isLoading || !editedSettings) {
     return <div className="flex h-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
@@ -438,16 +446,20 @@ const AdminDashboard = forwardRef(({ settings: settingsProp, onSettingsChange, o
               </div>
               <div className="space-y-3">
                   <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary ml-1">Search Location</Label>
-                  <div className="relative">
-                    <Input 
-                      placeholder="Filter locations by name..." 
-                      className="glass-input h-14 rounded-[18px] border-black/5 dark:border-white/10 bg-black/[0.02] dark:bg-black/40 px-6 focus:ring-primary/30 font-bold text-sm" 
-                      value={locationSearch} 
-                      onChange={(e) => setLocationSearch(e.target.value)} 
-                      disabled={!selectedBarangay} 
-                    />
-                    <Search className="absolute right-6 top-1/2 -translate-y-1/2 h-5 w-5 opacity-40 text-primary pointer-events-none" />
-                  </div>
+                  <AutocompleteInput
+                      placeholder="Search for a location..."
+                      suggestions={filteredLocationSuggestions}
+                      onInputChange={setLocationSearch}
+                      onSelect={(item) => {
+                          if (item) setLocationSearch(item.name);
+                          else setLocationSearch("");
+                      }}
+                      value={locationSearch ? { name: locationSearch, type: 'location' } : null}
+                      disabled={!selectedBarangay}
+                      onOpen={() => setLocationSearch("")}
+                      disablePortal={true}
+                      className="h-14 rounded-[18px] px-6 border-black/5 dark:border-white/10 bg-black/[0.02] dark:bg-black/40 font-bold"
+                  />
               </div>
           </div>
         </div>
